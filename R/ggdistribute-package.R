@@ -26,42 +26,42 @@ NULL
 #'
 #' @inheritParams ggplot2::geom_violin
 #' @param geom Use to override the default connection between `geom_posterior`
-#'   and `stat_density_ci`
+#' and `stat_density_ci`
 #' @param draw_ci *geom*. Toggles drawing of the confidence interval lines and
-#'   segments.
+#' segments.
 #' @param draw_sd *geom*. Toggles drawing of the standard deviation interval
-#'   lines and segments.
+#' lines and segments.
 #' @param midline_color *geom*. Color of the vertical, center line. Set to `NA`
-#'   to omit the line.
+#' to omit the line.
 #' @param brighten *geom*. Numeric adjustments to the fill color. A value above
-#'   1 increases brightness, below decreases. Should be of length 1 or 5,
-#'   otherwise values are recycled
+#' 1 increases brightness, below decreases. Should be of length 1 or 5,
+#' otherwise values are recycled
 #' @param interp_thresh *geom*. If the number of samples used to estimate the
-#'   density is low, this will result in gaps between segments. This argument
-#'   decides to interpolate points based on gap proportion for a segment.
+#' density is low, this will result in gaps between segments. This argument
+#' decides to interpolate points based on gap proportion for a segment.
 #' @param mirror *geom*. Show standard densities (`mirror=FALSE`) or horizontal
-#'   violin densities (`mirror=TRUE`).
+#' violin densities (`mirror=TRUE`).
 #' @param stat Used to override the default connection between `geom_posterior`
-#'   and `stat_density_ci`.
+#' and `stat_density_ci`.
 #'
 #' @param center_stat *stat*. character string of method to compute the
-#'   distribution's central tendency, such as `"median"`, `"mean"`, or `"mode"`.
+#' distribution's central tendency, such as `"median"`, `"mean"`, or `"mode"`.
 #' @param interval_type *stat*. method of computing the interval, either `"hdi"`
-#'   or `"ci"`
+#' or `"ci"`
 #' @param ci_width *stat*. Width of the distribution's confidence/highest
-#'   density interval, e.g., 0.95
+#' density interval, e.g., 0.95
 #' @param trim If a value between 0 and 1 is given, trim the tails of `x` by
-#'   some proportion according to `trim`. If `NULL` or `NA`, don't trim the
-#'   tails. See [trim_ends()].
+#' some proportion according to `trim`. If `NULL` or `NA`, don't trim the
+#' tails. See [trim_ends()].
 #' @param cut The values to use for the start and end of the density estimation
-#'   are `cut` bandwidths (e.g., `0.5*bw`) *beyond* the extremes of the data.
-#'   This allows the estimated density to drop to approximately zero at the
-#'   extremes.
+#' are `cut` bandwidths (e.g., `0.5*bw`) *beyond* the extremes of the data.
+#' This allows the estimated density to drop to approximately zero at the
+#' extremes.
 #' @param bw The smoothing bandwidth to be used. If numeric, the standard
-#'   deviation of the smoothing kernel. If character, a rule to choose the
-#'   bandwidth, as listed in [stats::bandwidth]. If the bandwidth character
-#'   starts wit a `"."` (e.g., `".nrd0"`), then the average bandwidth will be
-#'   calculated among all groups in a panel and used for each density estimate.
+#' deviation of the smoothing kernel. If character, a rule to choose the
+#' bandwidth, as listed in [stats::bandwidth]. If the bandwidth character
+#' starts wit a `"."` (e.g., `".nrd0"`), then the average bandwidth will be
+#' calculated among all groups in a panel and used for each density estimate.
 #' @inheritParams ggplot2::stat_density
 #' @section Aesthetics:
 #' `geom_posterior` understands the following aesthetics (required

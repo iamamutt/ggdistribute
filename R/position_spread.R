@@ -4,19 +4,19 @@
 #' within the data's `y` range.
 #'
 #' @param height One of `total` (default), `panel`, `single`, a numeric scalar
-#'   value to give all geoms equal space, or a numeric vector the length of
-#'   `panels*groups` for manually specifying the height of each group.
+#' value to give all geoms equal space, or a numeric vector the length of
+#' `panels*groups` for manually specifying the height of each group.
 #' @param reverse Reverse the order of segments within overlapping `y` ranges.
 #' @param padding Multiple of height. Will shrink/enlarge groups to fit within a
-#'   region.
+#' region.
 #' @return NULL
 #' @export
 #' @examples
 #' TODO: geom_point(aes(group=myGroup), position_spread(height = 0.5))
 position_spread <- function(height = NULL, reverse = FALSE, padding = 0.2) {
   ggproto(NULL, PositionSpread,
-          height = height,
-          reverse = reverse, padding = padding)
+    height = height,
+    reverse = reverse, padding = padding)
 }
 
 # ggproto object ----------------------------------------------------------
@@ -47,7 +47,7 @@ PositionSpread <- ggproto(
         padding = params$padding) %>%
       rescale_overlapping(scales = scales, skip = params$custom) %>%
       set_col_order(c("PANEL", "group", "x", "y") %Names%
-                      data) %>%
+        data) %>%
       as.data.frame()
   }
 )
@@ -59,8 +59,8 @@ standardize_height_param <- function(data, height) {
 
   if (is_none(height_type)) {
     stop("Invalid height argument specified for position_spread: ",
-         height,
-         call. = FALSE)
+      height,
+      call. = FALSE)
   }
 
   assert_names(c("PANEL", "group", "y"), data)
@@ -74,8 +74,8 @@ standardize_height_param <- function(data, height) {
 
       # get all individual heights ("single")
       height_data <- set_range_data(data, "y",
-                                    force_cols = TRUE,
-                                    copy = FALSE) %>%
+        force_cols = TRUE,
+        copy = FALSE) %>%
         # order by min and use only these variables
         .[order(.__min), .(PANEL, group, .__min, .__max, .__len)] %>%
         # unique data
@@ -86,7 +86,7 @@ standardize_height_param <- function(data, height) {
         .[, space := unique_apply(.__min, ygroup, append_diff)] %>%
         # get last space for the top of the panel
         .[is.na(space), space := max(c(.[, max(space %NA% .__len,
-                                               na.rm = TRUE)], .__len))] %>%
+          na.rm = TRUE)], .__len))] %>%
         # pick the smallest space according to user group
         .[, uspace := min(space), by = grouping] %>%
         # height is the max of user heights or y group space
@@ -100,9 +100,9 @@ standardize_height_param <- function(data, height) {
       n_user_heights <- length(height)
       if (n_user_heights != 1 && n_user_heights != n_heights) {
         warning("Height length was size ", n_user_heights,
-                " but ", n_heights, " heights are required. ",
-                "Recycling heights if any are missing.",
-                call. = FALSE)
+          " but ", n_heights, " heights are required. ",
+          "Recycling heights if any are missing.",
+          call. = FALSE)
       }
 
       rep_len(height, n_heights)
@@ -115,7 +115,7 @@ standardize_height_param <- function(data, height) {
 
 height_char_groups <- function(height_str = c("total", "panel", "single")) {
   switch(tolower(match.arg(height_str)), total = NULL,
-         panel = "PANEL", single = c("PANEL", "group"), NULL)
+    panel = "PANEL", single = c("PANEL", "group"), NULL)
 }
 
 transform_heights <- function(data, heights, padding) {
@@ -147,8 +147,8 @@ panel_spread <- function(SD, reverse = FALSE, padding = 0) {
 
   dt <- force_dt(SD, copy = TRUE) %>%
     set_range_data("y",
-                   force_cols = TRUE,
-                   names = c(".__min", ".__max", ".__len"), copy = FALSE)
+      force_cols = TRUE,
+      names = c(".__min", ".__max", ".__len"), copy = FALSE)
 
   n_groups <- length(unique(dt$group))
   padding <- check_padding(dt$y, dt$.__len, padding)
@@ -189,7 +189,7 @@ panel_spread <- function(SD, reverse = FALSE, padding = 0) {
     .[
       , .__y := rescale_as_other(y, c(0, .__hn * pad_adj)),
       .(.__grp, .__hn)
-      ] %>%
+    ] %>%
     # reposition y by stacking based on group height values
     .[, .__csum := unique_apply(.__y * (1 / pad_adj), .__grp, csum_left)] %>%
     .[, y := .__y + .__csum + .__min] %>%
@@ -236,7 +236,7 @@ rescale_overlapping <- function(data, scales, skip = FALSE) {
   h_adj <- 1.2 * h_y * dt[
     group %in% c(o_laps$group1, o_laps$group2),
     1 - (resolution(y, FALSE) / diff(range_no_inf(y)))
-    ]
+  ]
 
   rm_temp_cols(rescale_groups(dt, "y", scaler = shrink, by = h_adj))
 }

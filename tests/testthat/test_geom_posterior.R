@@ -13,6 +13,6 @@ test_that("Identity stat", {
       geom_posterior(
         stat = "identity", position = "identity",
         draw_ci = FALSE, draw_sd = FALSE, aes(mid = mid)
-      ),
-    "ggplot")
+      ), "ggplot"
+  )
 })

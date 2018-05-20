@@ -47,7 +47,8 @@ assert_names <- function(required, from_obj, ...) {
   }
 
   if (!(required %Names?% from_obj)) {
-    stop("names missing: ", paste0(required, collapse = ", "), "\n", err,
+    stop("names missing: ", paste0(required, collapse = ", "),
+      "\n", err,
       call. = FALSE)
   }
 }

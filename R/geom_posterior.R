@@ -1,9 +1,7 @@
 # Posterior layer wrapper -------------------------------------------------
 
 .alt_colors <- function() {
-  list(midline_color = "#767698",
-       fill = "#8989B2",
-       colour = "#585872")
+  list(midline_color = "#767698", fill = "#8989B2", colour = "#585872")
 }
 
 #' @describeIn GeomPosterior geom_posterior Posterior Geom
@@ -42,7 +40,7 @@ GeomPosterior <- ggproto(
   setup_data = function(self, data, params) {
     if (!("y" %Names?% data) && "count" %Names?% data) {
       warning("Missing `y` in aesthetics. Defaulting to `count`",
-              call. = FALSE)
+        call. = FALSE)
       data$y <- data$count
     }
 
@@ -56,33 +54,33 @@ GeomPosterior <- ggproto(
   },
 
   # draw_layer = function(self, data, params, layout, coord) {
-  #   if (empty(data)) {
-  #     n <- if (is.factor(data$PANEL)) nlevels(data$PANEL) else 1L
-  #     return(rep(list(zeroGrob()), n))
-  #   }
+  # if (empty(data)) {
+  # n <- if (is.factor(data$PANEL)) nlevels(data$PANEL) else 1L
+  # return(rep(list(zeroGrob()), n))
+  # }
   #
-  #   # Trim off extra parameters
-  #   params <- params[intersect(names(params), self$parameters())]
+  # # Trim off extra parameters
+  # params <- params[intersect(names(params), self$parameters())]
   #
-  #   lapply(split(force_dt(data), list(data$PANEL)), function(data) {
-  #     if (empty(data)) return(zeroGrob())
-  #     panel_params <- layout$panel_params
-  #     if (is.null(panel_params)) {
-  #       panel_ranges <- layout$panel_ranges[[data$PANEL[1]]]
-  #       args <- c(alist(data, panel_ranges, coord), params)
-  #     } else {
-  #       panel_params <- layout$panel_params[[data$PANEL[1]]]
-  #       args <- c(alist(data, panel_params, coord), params)
-  #     }
+  # lapply(split(force_dt(data), list(data$PANEL)), function(data) {
+  # if (empty(data)) return(zeroGrob())
+  # panel_params <- layout$panel_params
+  # if (is.null(panel_params)) {
+  # panel_ranges <- layout$panel_ranges[[data$PANEL[1]]]
+  # args <- c(alist(data, panel_ranges, coord), params)
+  # } else {
+  # panel_params <- layout$panel_params[[data$PANEL[1]]]
+  # args <- c(alist(data, panel_params, coord), params)
+  # }
   #
-  #     args <- c(alist(data, panel_params, coord), params)
-  #     do.call(self$draw_panel, args)
-  #   })
+  # args <- c(alist(data, panel_params, coord), params)
+  # do.call(self$draw_panel, args)
+  # })
   # },
-  draw_group = function(self, data, ..., #panel_scales, coord,
-                        draw_ci = TRUE, draw_sd = TRUE,
-                        midline_color = "#767698", brighten = TRUE,
-                        mirror = FALSE, interp_thresh = NULL) {
+  draw_group = function(self, data, ..., # panel_scales, coord,
+                          draw_ci = TRUE, draw_sd = TRUE,
+                          midline_color = "#767698", brighten = TRUE,
+                          mirror = FALSE, interp_thresh = NULL) {
     if (nrow(data) == 1) {
       return(zeroGrob())
     }
@@ -98,38 +96,44 @@ GeomPosterior <- ggproto(
     interp_thresh <- interp_thresh %:% 0.01
 
     if (draw_ci) {
-      assert_names(c("cil", "ciu"), data, "No confidence intervals found."," Set `draw_ci=FALSE` to remove this segment or use ","`stat_density_ci` to compute this variable automatically.")
+      assert_names(
+        c("cil", "ciu"), data, "No confidence intervals found.",
+        " Set `draw_ci=FALSE` to remove this segment or use ",
+        "`stat_density_ci` to compute this variable automatically."
+      )
     }
 
     if (draw_sd) {
-      assert_names(c("sdl", "sdu"), data, "No SD intervals found."," Set `draw_sd=FALSE` to remove this segment or use ","`stat_density_ci` to compute this variable automatically.")
+      assert_names(
+        c("sdl", "sdu"), data, "No SD intervals found.",
+        " Set `draw_sd=FALSE` to remove this segment or use ",
+        "`stat_density_ci` to compute this variable automatically."
+      )
     }
 
     dt <- force_dt(data, copy = TRUE) %>%
-      set_range_data("x", names = c("xmin", "xmax"), force_cols = FALSE, copy = FALSE) %>%
+      set_range_data("x",
+        names = c("xmin", "xmax"),
+        force_cols = FALSE, copy = FALSE) %>%
       set_range_data("y", "group",
-                     names = c("grp_min", "grp_max"),
-                     force_cols = TRUE, copy = FALSE)
+        names = c("grp_min", "grp_max"),
+        force_cols = TRUE, copy = FALSE)
 
-    params <- setup_posterior_params(dt, draw_ci = draw_ci, draw_sd = draw_sd,
-                                     midline_color = midline_color,
-                                     mirror = mirror, brighten = brighten,
-                                     interp_thresh = interp_thresh, warn = warn)
+    params <- setup_posterior_params(
+      dt,
+      draw_ci = draw_ci, draw_sd = draw_sd,
+      midline_color = midline_color, mirror = mirror,
+      brighten = brighten, interp_thresh = interp_thresh, warn = warn
+    )
 
     ggname(
       "geom_posterior",
       grid::gTree(children = do.call(
         grid::gList,
         c(
-          get_posterior_segment_grobs(
-            dt, params,
-            ...
-          ),
-          get_posterior_line_grobs(
-            dt, params,
-            ...
-          ))
-      )))
+          get_posterior_segment_grobs(dt, params, ...),
+          get_posterior_line_grobs(dt, params, ...))
+    )))
   }
 )
 
@@ -242,8 +246,8 @@ get_posterior_data <- function(data, lower_cut = NULL, upper_cut = NULL,
     rbind(.[1, ])
 }
 
-compute_post_seg_data <- function(data, lower_cut = NULL,
-                                  upper_cut = NULL, interp_thresh = NULL, warn = TRUE) {
+compute_post_seg_data <- function(data, lower_cut = NULL, upper_cut = NULL,
+                                  interp_thresh = NULL, warn = TRUE) {
   assert_names(c("xmin", "xmax", "x", "y"), data)
 
   interp_thresh <- interp_thresh %NA% Inf
@@ -294,14 +298,15 @@ compute_post_seg_data <- function(data, lower_cut = NULL,
           "The left side at %.2f is missing %.2f%%,",
           " and the right side at %.2f is missing %.2f%%",
           " of the CI width."), lower_cut,
-        lower_gap * 100, upper_cut, upper_gap * 100)
+        lower_gap * 100, upper_cut, upper_gap * 100
+      )
 
-    warning(
-      "Interpolating gaps. ", gap_info, " Try setting `n` to a higher value,",
-      " setting `interp_thresh` to a smaller value, ", "or do `interp_thresh=NA` to turn off interpolation completely.",
-      call. = FALSE
-    )
-}
+      warning("Interpolating gaps. ", gap_info,
+        " Try setting `n` to a higher value,",
+        " setting `interp_thresh` to a smaller value, ",
+        "or do `interp_thresh=NA` to turn off interpolation completely.",
+        call. = FALSE)
+    }
     dxy <- interp_low_res(
       dt$x, dt$y, lower_cut, upper_cut,
       max(1 / interp_thresh, 1024))
@@ -384,8 +389,7 @@ get_posterior_segment_grobs <- function(data, params, ...) {
     })
 }
 
-grob_posterior <- function(data, ...,
-                           use_fill = FALSE, use_color = TRUE) {
+grob_posterior <- function(data, ..., use_fill = FALSE, use_color = TRUE) {
   if (nrow(data) == 1) {
     return(zeroGrob())
   }
@@ -409,7 +413,7 @@ grob_posterior <- function(data, ...,
           1 %:% ((first_rows$alpha) %:% 1), lwd = first_rows$size,
         lex = .pt, lty = first_rows$linetype
       )
-    ))
+  ))
 }
 
 # misc --------------------------------------------------------------------

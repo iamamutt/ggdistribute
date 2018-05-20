@@ -14,10 +14,10 @@ stat_density_ci <- function(mapping = NULL, data = NULL, geom = "Posterior",
     geom = geom, position = position,
     show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(...,
-                  center_stat = center_stat, ci_width = ci_width,
-                  interval_type = interval_type, bw = bw,
-                  adjust = adjust, kernel = kernel, cut = cut,
-                  n = n, trim = trim, na.rm = na.rm))
+      center_stat = center_stat, ci_width = ci_width,
+      interval_type = interval_type, bw = bw,
+      adjust = adjust, kernel = kernel, cut = cut,
+      n = n, trim = trim, na.rm = na.rm))
 }
 
 
@@ -46,9 +46,9 @@ StatDensityCI <- ggproto(
   },
 
   compute_group = function(data, center_stat = "median", ci_width = 0.9,
-                           interval_type = "ci", adjust = 1,
-                           kernel = "gaussian", cut = 1, n = 1024,
-                           bw = "nrd0", trim = 0.01, na.rm = FALSE, ...) {
+                             interval_type = "ci", adjust = 1,
+                             kernel = "gaussian", cut = 1, n = 1024,
+                             bw = "nrd0", trim = 0.01, na.rm = FALSE, ...) {
     if (length(unique(data$x)) < 2) {
       warning("x contains a single unique value. Dropping group.")
       return(NULL)
@@ -95,15 +95,15 @@ compute_density <- function(x, y = NULL, w = NULL, cut = 1, bw = "nrd0",
 
   if (n_x < 2) {
     warning("Returning NA while trying to compute density. ",
-            "`x` must be at least length 2, ",
-            "or set `na.rm=TRUE`.",
-            call. = FALSE)
+      "`x` must be at least length 2, ",
+      "or set `na.rm=TRUE`.",
+      call. = FALSE)
     return(as.data.frame(df))
   }
 
   dcoord <- stats::density(x,
-                           weights = w, bw = bw, adjust = adjust,
-                           kernel = kernel, n = n, cut = cut)
+    weights = w, bw = bw, adjust = adjust,
+    kernel = kernel, n = n, cut = cut)
 
   # actual number of samples
   n <- length(dcoord$y)
@@ -142,9 +142,8 @@ compute_density <- function(x, y = NULL, w = NULL, cut = 1, bw = "nrd0",
 compute_conf_ints <- function(x, center_stat = NULL, ci_width = NULL,
                               interval_type = NULL) {
   interval_frame <- data.frame(
-    mid = NA_real_, sdl = NA_real_,
-    sdu = NA_real_, cil = NA_real_, ciu = NA_real_
-  )
+    mid = NA_real_, sdl = NA_real_, sdu = NA_real_,
+    cil = NA_real_, ciu = NA_real_)
 
   # setup defaults from missing
   ci_width <- max(ci_width %NA% 0.9)
@@ -153,8 +152,8 @@ compute_conf_ints <- function(x, center_stat = NULL, ci_width = NULL,
 
   # compute interval line positions regardless of being drawn
   markers <- post_int(x,
-                      mid = center_stat,
-                      int = interval_type, widths = ci_width)
+    mid = center_stat,
+    int = interval_type, widths = ci_width)
 
   # assign to data which are to be drawn
   interval_frame$mid <- markers$c
@@ -171,13 +170,13 @@ calc_bw <- function(x, bw) {
   if (is.character(bw)) {
     if (length(x) < 2) {
       stop("need at least 2 points to select a bandwidth automatically",
-           call. = FALSE)
+        call. = FALSE)
     }
     bw <- switch(tolower(bw), nrd0 = stats::bw.nrd0(x), nrd = stats::bw.nrd(x),
-                 ucv = stats::bw.ucv(x), bcv = stats::bw.bcv(x), sj = ,
-                 `sj-ste` = stats::bw.SJ(x, method = "ste"),
-                 `sj-dpi` = stats::bw.SJ(x, method = "dpi"),
-                 stop("unknown bandwidth rule"))
+      ucv = stats::bw.ucv(x), bcv = stats::bw.bcv(x), sj = ,
+      `sj-ste` = stats::bw.SJ(x, method = "ste"),
+      `sj-dpi` = stats::bw.SJ(x, method = "dpi"),
+      stop("unknown bandwidth rule"))
   }
   bw
 }
@@ -196,6 +195,6 @@ calc_avg_bw <- function(data, bw, grps = "group") {
   force_dt(data) %>%
     .[!is.na(x), .(b = calc_bw(x, bw_str)),
       by = grps
-      ] %>%
+    ] %>%
     .[, mean(b, na.rm = TRUE)]
 }
