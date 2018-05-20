@@ -1,0 +1,27 @@
+Package: ggdistribute
+Title: ggplot2 Extension for Plotting Distributions
+Version: 1.0.0.0000
+Date: 2018-5-19
+Authors@R:
+    c(person(
+        "Joseph M.", "Burling", ,
+        "josephburling@gmail.com",
+        c("aut", "cre")))
+Description:
+    Uses the ggproto system to provide different geoms, stats, and 
+    positions for plotting distributions.
+License: GPL-3 | file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends:
+    R (>= 3.4.0)
+Imports:
+    data.table,
+    ggplot2
+Suggests:
+    knitr,
+    testthat,
+    rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1.9000
+Roxygen: list(markdown=TRUE)
