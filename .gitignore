@@ -23,6 +23,5 @@ src-x64
 vignettes/*.html
 vignettes/*.pdf
 
-inst/doc
 ggdistribute.code-workspace
 ggdistribute.Rproj
