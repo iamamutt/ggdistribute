@@ -362,3 +362,30 @@ range_no_inf <- function(x, na.rm = TRUE) {
 
   range(x, na.rm = na.rm)
 }
+
+
+logit <- function(p) {
+  p[p < 0 | p > 1] <- NA
+  log(p / (1 - p))
+}
+
+sigmoid <- function(x) {
+  # more computationally stable form of: 1 / (1 + exp(-x))
+  # also: logistic(x, l=1, k=1)
+  exp(-log(1 + exp(-x)))
+}
+
+col_adj <- function(c, a) {
+  v <- log(exp(c + 1) * sqrt(a)) - 1
+  pmax(pmin(v, 1), 0)
+}
+
+clip_range <- function(x, min = NULL, max = NULL) {
+  if (!is.null(max)) {
+    x <- pmin(x, max)
+  }
+  if (!is.null(min)) {
+    x <- pmax(x, min)
+  }
+  return(x)
+}

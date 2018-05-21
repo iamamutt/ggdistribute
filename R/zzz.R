@@ -17,7 +17,10 @@ set_pkg_opts <- function(..., opt_list = NULL) {
 }
 
 .onLoad <- function(libname, pkgname) {
-  set_pkg_opts(ggdistribute.font = "serif")
+  set_pkg_opts(
+    ggdistribute.font = "",
+    ggdistribute.geom.defaults = list(edited = FALSE),
+    ggdistribute.geom.edits = list())
   invisible()
 }
 

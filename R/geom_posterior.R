@@ -1,8 +1,6 @@
 # Posterior layer wrapper -------------------------------------------------
 
-.alt_colors <- function() {
-  list(midline_color = "#767698", fill = "#8989B2", colour = "#585872")
-}
+
 
 #' @describeIn GeomPosterior geom_posterior Posterior Geom
 #' @export
@@ -53,30 +51,6 @@ GeomPosterior <- ggproto(
     compute_vjust(data, "y", params$vjust)
   },
 
-  # draw_layer = function(self, data, params, layout, coord) {
-  # if (empty(data)) {
-  # n <- if (is.factor(data$PANEL)) nlevels(data$PANEL) else 1L
-  # return(rep(list(zeroGrob()), n))
-  # }
-  #
-  # # Trim off extra parameters
-  # params <- params[intersect(names(params), self$parameters())]
-  #
-  # lapply(split(force_dt(data), list(data$PANEL)), function(data) {
-  # if (empty(data)) return(zeroGrob())
-  # panel_params <- layout$panel_params
-  # if (is.null(panel_params)) {
-  # panel_ranges <- layout$panel_ranges[[data$PANEL[1]]]
-  # args <- c(alist(data, panel_ranges, coord), params)
-  # } else {
-  # panel_params <- layout$panel_params[[data$PANEL[1]]]
-  # args <- c(alist(data, panel_params, coord), params)
-  # }
-  #
-  # args <- c(alist(data, panel_params, coord), params)
-  # do.call(self$draw_panel, args)
-  # })
-  # },
   draw_group = function(self, data, ..., # panel_scales, coord,
                           draw_ci = TRUE, draw_sd = TRUE,
                           midline_color = "#767698", brighten = TRUE,
@@ -147,10 +121,10 @@ setup_post_seg_params <- function(data, brighten, draw_ci, draw_sd, ...) {
   fill <- first_non_na(data$fill) %NA% NA
 
   brighten <- if (all(brighten == 0)) {
-    rep(1.0, 5)
+    rep(0, 5)
   } else {
     if (all(brighten == 1)) {
-      c(1.67, 1, 1.15, 1, 1.67)
+      c(3, 0, 1.5, 0, 3)
     } else {
       rep_len(c(brighten, rev(brighten)[-1]), 5)
     }

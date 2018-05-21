@@ -1,34 +1,20 @@
-.pt <- 72.27 / 25.4
-.stroke <- 96 / 25.4
-
 ggname <- function(prefix, grob) {
   grob$name <- grid::grobName(grob, prefix)
   grob
 }
 
-change_brightness <- function(hex_col, adjust) {
-  if (adjust <= 0 || adjust == 1 || all_missing(hex_col)) {
-    return(hex_col)
-  }
-
-  rgb_mat <- apply(
-    col2rgb(hex_col) / 255,
-    2,
-    function(i) {
-      v <- log(exp(i + 1) * adjust) - 1
-      pmax(pmin(v, 1), 0)
-    })
-
-  apply(
-    rgb_mat,
-    2,
-    function(i) {
-      do.call(rgb, as.list(i))
-    })
-}
-
 res_adjust <- function(x, scale_res = 1, zero = FALSE) {
   x + (resolution(x, zero) * scale_res)
+}
+
+#' scale and add
+#'
+#' @param base_size start value
+#' @param amount multiple by
+#' @param adj add after
+#' @return numeric
+scale_add <- function(base_size, amount = 1, adj = 0) {
+  (base_size * amount) + adj
 }
 
 set_range_data <- function(data, axis = c("x", "y"), by = "group",

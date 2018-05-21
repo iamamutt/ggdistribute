@@ -322,3 +322,9 @@ unique_simplex <- function(size_vec, grp_idx = NULL, offset_vec = 0) {
       x / sum(x)
     })
 }
+
+print_fn <- function(chunk_name, ...) {
+  fns <- as.character(match.call())[-1L]
+  txt <- capture.output(dump(fns[-1], ''))
+  knitr::read_chunk(lines = txt, labels = fns[1])
+}
