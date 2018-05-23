@@ -27,6 +27,5 @@ If multiple panels, will write to all panels.
 }
 \examples{
 example_plot()+annotate_corner('Hi.')
-
 example_plot()+annotate_corner('Hi.', "bottomright")
 }

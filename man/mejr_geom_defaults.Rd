@@ -9,6 +9,11 @@ mejr_geom_defaults(base_size = 11, black = 51, gray = 214, lty = 3,
   alpha = 0.5, pch = 21, txt = base_size/4, reset = FALSE)
 }
 \arguments{
+\item{base_size}{base font size}
+
+\item{black}{Values from 0 to 255, indicating the darkest line and
+text colors (255).}
+
 \item{gray}{gray color value (0-255)}
 
 \item{lty}{linetype}

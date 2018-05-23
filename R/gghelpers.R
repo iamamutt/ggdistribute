@@ -217,3 +217,43 @@ rm_temp_cols <- function(data, temp_names = NULL) {
     .[, eval(temp_names) := NULL] %>%
     .[]
 }
+
+# unexported ggplot2 functions --------------------------------------------
+
+
+find_subclass <- function(super, class, env) {
+  name <- paste0(super, camelize(class, first = TRUE))
+  obj <- find_global(name, env = env)
+  if (is.null(name)) {
+    stop("No ", tolower(super), " called ", name, ".", call. = FALSE)
+  } else {
+    if (!inherits(obj, super)) {
+      stop("Found object is not a ", tolower(super), ".", call. = FALSE)
+    }
+  }
+  obj
+}
+
+find_global <- function(name, env, mode = "any") {
+  if (exists(name, envir = env, mode = mode)) {
+    return(get(name, envir = env, mode = mode))
+  }
+  nsenv <- asNamespace("ggplot2")
+  if (exists(name, envir = nsenv, mode = mode)) {
+    return(get(name, envir = nsenv, mode = mode))
+  }
+  NULL
+}
+
+firstUpper <- function(s) {
+  paste(toupper(substring(s, 1, 1)), substring(s, 2), sep = "")
+}
+
+
+camelize <- function(x, first = FALSE) {
+  x <- gsub("_(.)", "\\U\\1", x, perl = TRUE)
+  if (first) {
+    x <- firstUpper(x)
+  }
+  x
+}

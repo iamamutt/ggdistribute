@@ -29,7 +29,7 @@ library(ggplot2)
 library(data.table)
 library(magrittr)
 theme_set(theme_gray(10))
-rebuild_showcase_plot <- TRUE
+rebuild_showcase_plot <- FALSE
 ```
 
 # Introduction
@@ -47,7 +47,6 @@ mu <- c(-1, 0, 2, 5, 10)
 value <- unlist(lapply(mu, function(x) rnorm(1000, x, runif(1, 0.8, 1.2))))
 cond <- rep(letters[1:5], each = 1000)
 grp <- rep(LETTERS[1:2], each = 2500)
-         
 data <- data.frame(grp, cond, value)
 ```
 
@@ -84,15 +83,20 @@ ggplot(data, aes(x = value, y = cond))+
 The `StatDensityCI` class is the default stat for the `geom_posterior` wrapper. It computes densities for each group and finds the confidence intervals. See `help("stat_density_ci")` for additional options and computed variables.
 
 ```{r}
-ggplot(data, aes(x = value, y = cond))+
+ggplot(data, aes(x = value, y = cond)) +
   stat_density_ci(n = 1024, interp_thresh = .001)
 ```
 
 The `stat_density_ci` wrapper can also be used with other geoms that make use of `density`, `count`, and `scaled` variables.
 
 ```{r}
-ggplot(data, aes(x = value, y = ..density.., fill=cond))+
-  stat_density_ci(alpha = 0.5, n = 1024, geom = "density", position = "identity")
+ggplot(data, aes(x = value, y = ..density.., fill = cond)) +
+  stat_density_ci(
+    alpha = 0.5,
+    n = 1024,
+    geom = "density",
+    position = "identity"
+  )
 ```
 
 ## `position_spread(...)`, `PositionSpread`
@@ -100,8 +104,8 @@ ggplot(data, aes(x = value, y = ..density.., fill=cond))+
 The `PositionSpread` class spreads out overlapping densities within the range of their y axis value. For instance, condition `c`, there are two different groups in `grp`. Each group in `c` is resized and spread over the group interval. Padding is turned off below to see where distributions begin and end.
 
 ```{r}
-ggplot(data, aes(x = value, y = cond, group = grp))+
-  geom_posterior(position = position_spread(padding = 0))+
+ggplot(data, aes(x = value, y = cond, group = grp)) +
+  geom_posterior(position = position_spread(padding = 0)) +
   theme(panel.grid.major.y = element_line(color = gray(.8)))
 ```
 
@@ -120,10 +124,7 @@ if (rebuild_showcase_plot) {
   if (requireNamespace("extrafont", quietly = TRUE)) {
     library(extrafont)
     font <- "Oswald Medium"
-  } else {
-    
   }
-  
   theme_set(theme_mejr(base_family = font))
 }else {
   theme_set(theme_gray(base_family = font))
@@ -160,39 +161,43 @@ if (rebuild_showcase_plot) {
 
 ```{r, eval=FALSE, echo=FALSE}
 # other tests
-dt <- ggdistribute:::ggdist_data(1000, j=5)
+dt <- ggdistribute:::ggdist_data(1000, j = 5)
+
+ggplot(dt) + aes(x = value) + geom_posterior(n = 512, interp_thresh = .001)
 
 ggplot(dt) + aes(x = value) +
-  geom_posterior(n=32)
+  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete))
 
-ggplot(dt) + aes(x = value) +
-  geom_posterior(n=32, aes(group=j_discrete))
+ggplot(dt) + aes(x = value, y = j_discrete) +
+  geom_posterior(
+    n = 512, interp_thresh = .001,
+    position = position_spread(height = 20))
 
-ggplot(dt) + aes(x = value, y=j_discrete) +
-  geom_posterior(n=32, position = position_spread(height = 20))
+ggplot(dt) + aes(x = value, y = j_discrete, group = k_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001)
 
-ggplot(dt) + aes(x = value, y=j_discrete, group = k_discrete) +
-  geom_posterior(n=32)
+ggplot(dt) + aes(x = value, y = 10) +
+  geom_posterior(n = 512, interp_thresh = .001)
 
-ggplot(dt) + aes(x = value, y=10) +
-  geom_posterior(n=32)
+ggplot(dt) + aes(x = value, y = j_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete))
 
-ggplot(dt) + aes(x = value, y=j_discrete) +
-  geom_posterior(n=32, aes(group=j_discrete))
+ggplot(dt) + aes(x = value, y = j_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001, aes(fill = k_discrete))
 
-ggplot(dt) + aes(x = value, y=j_discrete) +
-  geom_posterior(n=32, aes(fill=k_discrete))
+ggplot(dt) + aes(x = value, y = I) +
+  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete))
 
-ggplot(dt) + aes(x = value, y=I) +
-  geom_posterior(n=32, aes(group=j_discrete))
+ggplot(dt) + aes(x = value, y = variable) +
+  geom_posterior(
+    n = 512, interp_thresh = .001,
+    mirror = TRUE, aes(group = j_discrete))
 
-ggplot(dt) + aes(x = value, y=variable) +
-  geom_posterior(n=32, mirror = F, aes(group=j_discrete))
+ggplot(dt) + aes(x = value, y = variable * 10) +
+  geom_posterior(
+    n = 512, interp_thresh = .001, mirror = TRUE,
+    aes(group = j_discrete)) + facet_wrap(~k_discrete)
 
-ggplot(dt) + aes(x = value, y=variable * 10) +
-  geom_posterior(n=32, mirror = F, aes(group=j_discrete))+
-  facet_wrap(~k_discrete)
-
-ggplot(dt) + aes(x = value, y=k_discrete) +
-  geom_posterior(n=32, aes(group=j_discrete))
+ggplot(dt) + aes(x = value, y = k_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete))
 ```

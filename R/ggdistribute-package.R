@@ -130,35 +130,30 @@ example_plot <- function() {
         # order of groups within panels
         reverse = TRUE, # shrink heights of distributions
         padding = 0.3, # scale by heights within panels
-        height = "panel"),
-      # geom options
-      draw_ci = TRUE,
-      draw_sd = TRUE, mirror = FALSE, midline_color = "#797979",
-      brighten = c(3, 0, 1.5), interp_thresh = .001,
-      # stat options for estimating intervals
-      center_stat = "median",
-      ci_width = 0.90, interval_type = "ci",
-      # stat options passed to density estimation
-      bw = ".nrd0",
-      adjust = 1.5, n = 1024, trim = .005, cut = 1.5,
-      # standard options
-      size = 0.15,
-      color = colors$gray, vjust = 0.7, show.legend = FALSE) +
-    scale_x_continuous(breaks = seq(-1, 1, .05)) +
-    scale_fill_manual(values = c(colors$yellow, colors$magenta, colors$cyan))+
+        height = "panel"), # geom options
+      draw_ci = TRUE, draw_sd = TRUE, mirror = FALSE,
+      midline_color = "#797979", brighten = c(3, 0, 1.5),
+      interp_thresh = .001, # stat options for estimating intervals
+      center_stat = "median", ci_width = 0.90,
+      interval_type = "ci", # stat options passed to density estimation
+      bw = ".nrd0", adjust = 1.5, n = 1024,
+      trim = .005, cut = 1.5, # standard options
+      size = 0.15, color = colors$gray, vjust = 0.7,
+      show.legend = FALSE) + scale_x_continuous(breaks = seq(-1, 1, .05)) +
+    scale_fill_manual(values = c(
+      colors$yellow, colors$magenta,
+      colors$cyan)) +
     theme(
-      panel.grid.major.x = element_blank(),
-      panel.ontop = FALSE,
-      panel.border = element_rect(fill = NA,
-                                  colour = gray(0.84),
-                                  size = 0.67),
+      panel.grid.major.x = element_blank(), panel.ontop = FALSE,
+      panel.border = element_rect(
+        fill = NA, colour = gray(0.84), size = 0.67
+      ),
       axis.title.y = element_blank(),
-      strip.text.y = element_text(angle = 0,
-                                  hjust = 0.5,
-                                  margin = margin(t = 0, r = 0, b = 0, l = 0,
-                                                  unit = "pt")),
+      strip.text.y = element_text(
+        angle = 0, hjust = 0.5,
+        margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
+      ),
       plot.margin = margin(t = 2, r = 4, b = 2, l = 2, unit = "pt"),
       legend.box.background = element_blank(),
-      legend.background = element_blank()
-    )
+      legend.background = element_blank())
 }

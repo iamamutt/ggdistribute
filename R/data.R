@@ -1,4 +1,3 @@
-
 #' Raw SRE dataset
 #'
 #' @format Dataset is an object of class [tibble::tibble].

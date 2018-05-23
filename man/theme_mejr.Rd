@@ -8,6 +8,10 @@ theme_mejr(base_size = 11, base_family = getOption("ggdistribute.font"),
   black = 67, margin_add = 2, debug = FALSE, FUN = NULL, ...)
 }
 \arguments{
+\item{base_size}{base font size}
+
+\item{base_family}{base font family}
+
 \item{black}{Values from 0 to 255, indicating the darkest line and
 text colors (255).}
 

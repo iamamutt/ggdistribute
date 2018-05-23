@@ -23,7 +23,7 @@ mejr_palette <- function() {
 #' You can use `theme_update` to change some aspect of this theme after
 #' using `theme_set`.
 #'
-#' @inheritParams ggplot2::theme
+#' @inheritParams ggplot2::theme_gray
 #' @param black  Values from 0 to 255, indicating the darkest line and
 #' text colors (255).
 #' @param margin_add additive adjustment of margin spacing and tick length (in "pt"
@@ -276,7 +276,7 @@ theme_mejr <- function(base_size = 11, base_family = getOption(
 
 #' Setup defaults for specific geoms
 #'
-#' @inheritParams ggplot2::theme
+#' @inheritParams theme_mejr
 #' @param gray gray color value (0-255)
 #' @param lty linetype
 #' @param lwd linewidth
@@ -357,7 +357,7 @@ mejr_geom_defaults <- function(base_size = 11, black = 51, gray = 214, lty = 3,
 
 geom_defaults <- function(geom) {
   if (is.character(geom)) {
-    g <- ggplot2:::find_subclass("Geom", geom, parent.frame())
+    g <- find_subclass("Geom", geom, parent.frame())
   } else {
     if (inherits(geom, "Geom")) {
       g <- geom
@@ -427,14 +427,18 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
 
   # combine_plots(p_mejr1, p_mejr2, ncols = 1, show=FALSE)
   ggsave(
-    filename = normalizePath(file.path("~/../Desktop/theme_mejr1.pdf"),
-      mustWork = FALSE), p_mejr1,
-    width = w, height = h, device = "pdf")
+    filename = normalizePath(
+      file.path("~/../Desktop/theme_mejr1.pdf"),
+      mustWork = FALSE
+    ),
+    p_mejr1, width = w, height = h, device = "pdf")
 
   ggsave(
-    filename = normalizePath(file.path("~/../Desktop/theme_mejr2.pdf"),
-      mustWork = FALSE), p_mejr2,
-    width = w, height = h, device = "pdf")
+    filename = normalizePath(
+      file.path("~/../Desktop/theme_mejr2.pdf"),
+      mustWork = FALSE
+    ),
+    p_mejr2, width = w, height = h, device = "pdf")
 
   if (print) {
     grid::grid.draw(p_mejr2)
@@ -459,7 +463,6 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
 #'
 #' @examples
 #' example_plot()+annotate_corner('Hi.')
-#'
 #' example_plot()+annotate_corner('Hi.', "bottomright")
 annotate_corner <- function(text, pos = "tl", geom = c("text", "label"), ...) {
   x <- -Inf
