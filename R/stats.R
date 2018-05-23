@@ -380,6 +380,7 @@ col_adj <- function(c, a) {
   pmax(pmin(v, 1), 0)
 }
 
+# Snap a value to either the min or max if outside some range
 clip_range <- function(x, min = NULL, max = NULL) {
   if (!is.null(max)) {
     x <- pmin(x, max)
