@@ -1,3 +1,19 @@
+
+#' Raw SRE dataset
+#'
+#' @format Dataset is an object of class [tibble::tibble].
+#' @seealso [sre_data()]
+#' @return A dataset of [tibble::tibble].
+#' @examples
+#' sre
+#'
+#' sre_data()
+"sre"
+
+
+#' @describeIn sre create samples from sre data
+#' @param n number of samplers per effect and contrast
+#' @param seed set.seed number
 #' @export
 sre_data <- function(n = 1000, seed = 19850519) {
   set.seed(seed)
@@ -9,6 +25,8 @@ sre_data <- function(n = 1000, seed = 19850519) {
     ] %>%
     tibble::as.tibble()
 }
+
+
 
 ggdist_data <- function(n = 500, j = 3, k = 2, na.rm = TRUE, seed = 20130110) {
   set.seed(seed)

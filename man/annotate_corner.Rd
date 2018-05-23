@@ -12,6 +12,8 @@ annotate_corner(text, pos = "tl", geom = c("text", "label"), ...)
 \item{pos}{character of \code{'tl'}, \code{'tr'}, \code{'bl'}, \code{'br'} to
 indicate position}
 
+\item{geom}{"text" or "label" geoms}
+
 \item{...}{additional options passed to \link[ggplot2:geom_label]{ggplot2::geom_label}}
 }
 \value{

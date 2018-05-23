@@ -1,3 +1,5 @@
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggdistribute)](https://cran.r-project.org/package=ggdistribute)
+
 # ggdistribute
 
 ggplot2 extension for plotting distributions.

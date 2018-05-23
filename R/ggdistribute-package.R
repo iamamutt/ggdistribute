@@ -16,9 +16,14 @@
 #' @import ggplot2
 #' @import data.table
 #' @importFrom magrittr "%>%"
+#' @importFrom grDevices col2rgb gray rainbow rgb
+#' @importFrom stats density ecdf mad median na.omit quantile rgamma rnbinom rnorm runif sd
+#' @importFrom utils capture.output modifyList
 #' @docType package
 #' @name ggdistribute-package
 NULL
+
+
 
 #' Geom for plotting posterior distributions
 #'
@@ -92,6 +97,8 @@ NULL
 #' - ciu: ciu cutoff value based on `ci_width`
 #' - xmax: maximum value of `x` from the data
 #' @examples
+#' library(ggplot2)
+#'
 #' x <- cbind(replicate(4, rnorm(2000, runif(1, -3, 3))), rnorm(2000, 15))
 #' x <- data.frame(
 #' cond = rep(letters[1:5], each = 2000),
@@ -101,6 +108,10 @@ NULL
 #' @md
 NULL
 
+#' Print an example of the package functions
+#'
+#' @return NULL
+#' @export
 example_plot <- function() {
   colors <- mejr_palette()
 

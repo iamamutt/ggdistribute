@@ -17,11 +17,15 @@ Depends:
     R (>= 3.5.0)
 Imports:
     data.table,
-    ggplot2
+    ggplot2,
+    tibble,
+    magrittr,
+    grDevices
 Suggests:
     knitr,
     testthat,
-    rmarkdown
+    rmarkdown,
+    viridisLite
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1.9000
 Roxygen: list(markdown=TRUE)

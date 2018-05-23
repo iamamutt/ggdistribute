@@ -28,6 +28,8 @@ You can use \code{theme_update} to change some aspect of this theme after
 using \code{theme_set}.
 }
 \examples{
+library(ggplot2)
+
 theme_set(theme_mejr(debug = TRUE))
 example_plot()
 

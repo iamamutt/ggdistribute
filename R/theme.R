@@ -1,7 +1,14 @@
 .pt <- 72.27 / 25.4
 .stroke <- 96 / 25.4
 
+
+#' theme_mejr color mejr_palette
+#'
+#' @return list
 #' @export
+#'
+#' @examples
+#' mejr_palette()
 mejr_palette <- function() {
   list(
     black = "#141214", gray = "#939393", yellow = "#E0CF7C",
@@ -25,6 +32,8 @@ mejr_palette <- function() {
 #' @param FUN Call a function before returning the theme elements.
 #' @param ... Arguments passed to `FUN`
 #' @examples
+#' library(ggplot2)
+#'
 #' theme_set(theme_mejr(debug = TRUE))
 #' example_plot()
 #'
@@ -267,7 +276,7 @@ theme_mejr <- function(base_size = 11, base_family = getOption(
 
 #' Setup defaults for specific geoms
 #'
-#' @inheritParams theme_mejr
+#' @inheritParams ggplot2::theme
 #' @param gray gray color value (0-255)
 #' @param lty linetype
 #' @param lwd linewidth
@@ -374,6 +383,7 @@ geom_defaults <- function(geom) {
 #'
 #' @return NULL
 #' @examples
+#' \dontrun{
 #' test_mejr_theme(w = 3.25, h = 3,
 #' mejr = list(base_size = 8, debug=TRUE),
 #' gg = theme(plot.title=element_blank()))
@@ -381,6 +391,7 @@ geom_defaults <- function(geom) {
 #' test_mejr_theme(w = 5.25, h = 4,
 #' mejr = list(base_size = 11, debug=TRUE),
 #' gg = theme(plot.title=element_blank()))
+#' }
 test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
                             mejr = list(), gg = theme(),
                             print = TRUE, with_test_theme = FALSE) {
@@ -402,7 +413,7 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
     mejr_geom_defaults(reset = TRUE)
     theme_set(theme_test())
     ggsave(
-      file = normalizePath(
+      filename = normalizePath(
         file.path("~/../Desktop/theme_test.pdf"),
         mustWork = F
       ),
@@ -416,12 +427,12 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
 
   # combine_plots(p_mejr1, p_mejr2, ncols = 1, show=FALSE)
   ggsave(
-    file = normalizePath(file.path("~/../Desktop/theme_mejr1.pdf"),
+    filename = normalizePath(file.path("~/../Desktop/theme_mejr1.pdf"),
       mustWork = FALSE), p_mejr1,
     width = w, height = h, device = "pdf")
 
   ggsave(
-    file = normalizePath(file.path("~/../Desktop/theme_mejr2.pdf"),
+    filename = normalizePath(file.path("~/../Desktop/theme_mejr2.pdf"),
       mustWork = FALSE), p_mejr2,
     width = w, height = h, device = "pdf")
 
@@ -436,10 +447,12 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
 #' Write text to one of four corners of a plot
 #'
 #' @details If multiple panels, will write to all panels.
+#'
 #' @param text character string
 #' @param pos character of `'tl'`, `'tr'`, `'bl'`, `'br'` to
 #' indicate position
 #' @param ... additional options passed to [ggplot2::geom_label]
+#' @param geom "text" or "label" geoms
 #'
 #' @return ggplot layer
 #' @export
@@ -531,6 +544,7 @@ label_plot <- function(labels, x, y,
 #' @param colors character vector of hex value colors
 #' @param show.legend show the legend with hex values (logical)
 #' @param ncols number of columns in the plot
+#' @param alpha set alpha level for all colors
 #'
 #' @return A plot with the index of the color in the tile
 #' @export

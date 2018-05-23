@@ -104,6 +104,7 @@ assert <- function(..., err = NULL, envir = parent.frame(), print) {
 #' @param rhs object to return if `lhs` is `TRUE`.
 #' @return object on `rhs` or `NULL`
 #' @examples
+#' \dontrun{
 #' TRUE  %?% 1 %:% 0  #> 1
 #' FALSE %?% 1 %:% 0  #> 0
 #'
@@ -120,6 +121,7 @@ assert <- function(..., err = NULL, envir = parent.frame(), print) {
 #' # decide what to return in %:%
 #' #   `TRUE %?% NULL` and `FALSE %?% obj` would both return NULL.
 #' (x == 0) %?% NULL %:% "n"
+#' }
 `%?%` <- function(lhs, rhs) {
   if (!is.logical(lhs) || length(lhs) > 1 || anyNA(lhs)) {
     stop("Value left of %?% must be logical, of length 1, and not NA.")

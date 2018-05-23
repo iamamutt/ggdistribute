@@ -168,6 +168,8 @@ aesthetics are in bold):
 }
 
 \examples{
+library(ggplot2)
+
 x <- cbind(replicate(4, rnorm(2000, runif(1, -3, 3))), rnorm(2000, 15))
 x <- data.frame(
 cond = rep(letters[1:5], each = 2000),

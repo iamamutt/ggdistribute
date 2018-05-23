@@ -12,6 +12,8 @@ show_colors(colors, show.legend = TRUE, ncols = NULL, alpha = NA)
 \item{show.legend}{show the legend with hex values (logical)}
 
 \item{ncols}{number of columns in the plot}
+
+\item{alpha}{set alpha level for all colors}
 }
 \value{
 A plot with the index of the color in the tile

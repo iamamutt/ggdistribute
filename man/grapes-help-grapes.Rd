@@ -22,6 +22,7 @@ This is primarily used in conjuction with the \code{\%:\%} operator. See
 examples.
 }
 \examples{
+\dontrun{
 TRUE  \%?\% 1 \%:\% 0  #> 1
 FALSE \%?\% 1 \%:\% 0  #> 0
 
@@ -38,4 +39,5 @@ x == 0 \%?\% "y" \%:\% "n"
 # decide what to return in \%:\%
 #   `TRUE \%?\% NULL` and `FALSE \%?\% obj` would both return NULL.
 (x == 0) \%?\% NULL \%:\% "n"
+}
 }
