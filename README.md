@@ -15,7 +15,7 @@ library(ggplot2)
 library(ggdistribute)
 ```
 
-<img src="media/example_fig-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
+<img src="media/turtle_snails-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
 
 ``` r
 example_plot <-
@@ -145,7 +145,7 @@ ggplot(dt) +
     x = "Parameter estimate")
 ```
 
-<img src="media/example_fig_facets-1.png" width="80%" height="100%" style="display: block; margin: auto;" />
+<img src="media/space_ships-1.png" width="80%" height="100%" style="display: block; margin: auto;" />
 
 ### Changing the appearance of `geom_posterior`
 
@@ -174,7 +174,7 @@ ggplot(dt) +
     panel.grid.major.y = element_line(color = gray(.92)))
 ```
 
-<img src="media/example_fig_lines-1.png" width="80%" height="100%" style="display: block; margin: auto;" />
+<img src="media/candy_wrappers-1.png" width="80%" height="100%" style="display: block; margin: auto;" />
 
 ## How to install
 
