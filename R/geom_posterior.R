@@ -62,6 +62,10 @@ GeomPosterior <- ggproto(
     # handle NA options
     draw_ci <- draw_ci %NA% FALSE
     draw_sd <- draw_sd %NA% FALSE
+
+    if (is.null(midline_color)) {
+      midline_color <- first_non_na(data$colour)
+    }
     midline_color <- midline_color %NA% NA
     brighten <- as.numeric(brighten %NA% FALSE)
     mirror <- mirror %NA% FALSE
@@ -85,7 +89,7 @@ GeomPosterior <- ggproto(
       )
     }
 
-    dt <- force_dt(data, copy = TRUE) %>%
+    dt <- as_dtbl(data, copy = TRUE) %>%
       set_range_data("x",
         names = c("xmin", "xmax"),
         force_cols = FALSE, copy = FALSE) %>%
@@ -198,12 +202,20 @@ get_posterior_data <- function(data, lower_cut = NULL, upper_cut = NULL,
   dt <- compute_post_seg_data(data, lower_cut, upper_cut, interp_thresh, warn)
 
   # find the bottom and top parts of the distribution to make a complete line
-  assert_names(c("grp_max", "grp_min"), data)
+  assert_names(c("ymin", "ymax", "grp_max", "grp_min"), data)
 
   if (mirror) {
     dt[, `:=`(
       ylower = grp_max / 2 + grp_min - y / 2,
       yupper = grp_max / 2 + y / 2)]
+
+    adj <- 0
+    adj <- dt[
+      , .(adj = mean(c(ymax, ymin)) - mean(c(grp_min, grp_max))),
+      .(grp_min, grp_max, ymin, ymax)
+    ] %>%
+      .[, adj]
+    dt[, `:=`(ylower = ylower + adj, yupper = yupper + adj)]
   } else {
     dt[, `:=`(ylower = grp_min, yupper = y)]
   }
@@ -230,7 +242,7 @@ compute_post_seg_data <- function(data, lower_cut = NULL, upper_cut = NULL,
     stop("`interp_thresh` must be greater than 0.")
   }
 
-  dt <- force_dt(data, copy = TRUE) %>%
+  dt <- as_dtbl(data, copy = TRUE) %>%
     .[order(x, y), .(x, y)]
 
   static <- get_static_data(data, dt)
@@ -295,12 +307,12 @@ compute_post_line_data <- function(data, ci_column, ci_color = "#000000",
   line_column <- data[[ci_column]]
 
   if (all_missing(line_column)) {
-    return(force_dt(data[1, ]))
+    return(as_dtbl(data[1, ]))
   }
 
   assert_names(c("ylower", "yupper", "x"), data)
 
-  dt <- force_dt(data)
+  dt <- as_dtbl(data)
   vline <- first_non_na(line_column)
 
   grob_data <- data.table(
@@ -310,7 +322,7 @@ compute_post_line_data <- function(data, ci_column, ci_color = "#000000",
   )
 
   other_data <- get_static_data(dt, grob_data)
-  grob_data <- cbind(rep(force_dt(other_data), nrow(grob_data)), grob_data)
+  grob_data <- cbind(rep(as_dtbl(other_data), nrow(grob_data)), grob_data)
   grob_data$colour <- ci_color
   grob_data$size <- grob_data$size * ci_lwd_adj
   grob_data$fill <- NA

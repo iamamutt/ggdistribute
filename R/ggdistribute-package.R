@@ -5,7 +5,8 @@
 #' `ggdistribute` Uses the ggproto system to provide different geoms, stats, and
 #' positions for plotting distributions.
 #'
-#' `ggdistribute` ...
+#' `ggdistribute` Displaying the distributions relies heavily on stacking
+#' distributions using position_spread, which may not align with other geoms.
 #'
 #' @seealso [ggplot2::geom_density], [ggplot2::position_dodge]
 #'
@@ -17,7 +18,8 @@
 #' @import data.table
 #' @importFrom magrittr "%>%"
 #' @importFrom grDevices col2rgb gray rainbow rgb
-#' @importFrom stats density ecdf mad median na.omit quantile rgamma rnbinom rnorm runif sd
+#' @importFrom stats density ecdf mad median na.omit quantile rgamma rnbinom
+#' rnorm runif sd
 #' @importFrom utils capture.output modifyList
 #' @docType package
 #' @name ggdistribute-package
@@ -122,24 +124,45 @@ example_plot <- function() {
       color = colors$gray, size = 0.333,
       linetype = 1, xintercept = 0) +
     geom_posterior(
+      # ------------------------
       # geom specific aesthetics
+      # ------------------------
       aes(x = value, fill = contrast),
-
+      # ----------------
       # position options
+      # ----------------
       position = position_spread(
-        # order of groups within panels
-        reverse = TRUE, # shrink heights of distributions
-        padding = 0.3, # scale by heights within panels
-        height = "panel"), # geom options
-      draw_ci = TRUE, draw_sd = TRUE, mirror = FALSE,
-      midline_color = "#797979", brighten = c(3, 0, 1.5),
-      interp_thresh = .001, # stat options for estimating intervals
-      center_stat = "median", ci_width = 0.90,
-      interval_type = "ci", # stat options passed to density estimation
-      bw = ".nrd0", adjust = 1.5, n = 1024,
-      trim = .005, cut = 1.5, # standard options
-      size = 0.15, color = colors$gray, vjust = 0.7,
-      show.legend = FALSE) + scale_x_continuous(breaks = seq(-1, 1, .05)) +
+        reverse = TRUE, # order of groups within panels
+        padding = 0.3, # shrink heights of distributions
+        height = "panel" # scale by heights within panels
+      ), # ------------
+      # geom options
+      # ------------
+      draw_ci = TRUE, # confidence interval parts
+      draw_sd = TRUE, # standard deviation parts
+      mirror = FALSE, # violion-like toggle
+      midline_color = "#797979", # color of line showing center of dist.
+      brighten = c(3, 0, 1.5), # modify interval fill segments
+      # -------------------------------------
+      # stat options for estimating intervals
+      # -------------------------------------
+      interp_thresh = .001, # threshold for interpolating segment gaps
+      center_stat = "median", # measure of central tendency
+      ci_width = 0.90, # width corresponding to CI segments
+      interval_type = "ci", # quantile intervals not highest density interval
+      # -------------------------------------
+      # stat options for density estimation
+      # -------------------------------------
+      bw = ".nrd0", # bandwidth estimator type
+      adjust = 1.5, # adjustment to bandwidth
+      n = 1024, # number of samples in final density
+      trim = .005, # trim x before estimating density
+      cut = 1.5, # tail extension
+      # ----------------
+      # standard options
+      # ---------------
+      size = 0.15, color = colors$gray, vjust = 0.7, show.legend = FALSE) +
+    scale_x_continuous(breaks = seq(-1, 1, .05)) +
     scale_fill_manual(values = c(
       colors$yellow, colors$magenta,
       colors$cyan)) +
@@ -149,10 +172,7 @@ example_plot <- function() {
         fill = NA, colour = gray(0.84), size = 0.67
       ),
       axis.title.y = element_blank(),
-      strip.text.y = element_text(
-        angle = 0, hjust = 0.5,
-        margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
-      ),
+      strip.text.y = element_text(angle = 0, hjust = 0.5),
       plot.margin = margin(t = 2, r = 4, b = 2, l = 2, unit = "pt"),
       legend.box.background = element_blank(),
       legend.background = element_blank())

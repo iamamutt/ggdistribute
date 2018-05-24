@@ -32,6 +32,7 @@ You can use \code{theme_update} to change some aspect of this theme after
 using \code{theme_set}.
 }
 \examples{
+\dontrun{
 library(ggplot2)
 
 theme_set(theme_mejr(debug = TRUE))
@@ -40,6 +41,7 @@ example_plot()
 theme_set(theme_mejr())
 theme_update(axis.text = element_blank()) # any updates can go here
 example_plot()
+}
 }
 \seealso{
 \link{mejr_geom_defaults}, \link[ggplot2:theme_update]{ggplot2::theme_update}, \link[ggplot2:theme_set]{ggplot2::theme_set}

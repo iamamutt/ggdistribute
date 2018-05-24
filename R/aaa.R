@@ -11,6 +11,7 @@ if (getRversion() >= "2.15.1") {
     ".__max",
     ".__mid",
     ".__min",
+    ".__n",
     ".__v",
     ".__y",
     "PANEL",
@@ -55,9 +56,9 @@ if (getRversion() >= "2.15.1") {
     "variable",
     "x",
     "y",
-    "ygroup",
     "ylower",
     "ymin",
+    "ymax",
     "yupper",
     "z"))
 }
@@ -75,6 +76,7 @@ if (getRversion() >= "3.1.0") {
     ".__max",
     ".__mid",
     ".__min",
+    ".__n",
     ".__v",
     ".__y",
     "PANEL",
@@ -122,6 +124,7 @@ if (getRversion() >= "3.1.0") {
     "ygroup",
     "ylower",
     "ymin",
+    "ymax",
     "yupper",
     "z"))
 }

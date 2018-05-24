@@ -39,7 +39,7 @@ StatDensityCI <- ggproto(
       stop("in stat_density_ci, `x` cannot be discrete.")
     }
 
-    force_dt(data) %>%
+    as_dtbl(data) %>%
       split_discrete_by_group(scales, "y") %>%
       .[, self$compute_group(.SD, ...), .(PANEL, group)] %>%
       as.data.frame()
@@ -192,7 +192,7 @@ calc_avg_bw <- function(data, bw, grps = "group") {
 
   bw_str <- sub(".", "", bw)
 
-  force_dt(data) %>%
+  as_dtbl(data) %>%
     .[!is.na(x), .(b = calc_bw(x, bw_str)),
       by = grps
     ] %>%

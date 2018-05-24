@@ -31,7 +31,10 @@ mejr_palette <- function() {
 #' @param debug Add debug info to text.
 #' @param FUN Call a function before returning the theme elements.
 #' @param ... Arguments passed to `FUN`
+#' @seealso [mejr_geom_defaults], [ggplot2::theme_update], [ggplot2::theme_set]
+#' @export
 #' @examples
+#' \dontrun{
 #' library(ggplot2)
 #'
 #' theme_set(theme_mejr(debug = TRUE))
@@ -40,8 +43,7 @@ mejr_palette <- function() {
 #' theme_set(theme_mejr())
 #' theme_update(axis.text = element_blank()) # any updates can go here
 #' example_plot()
-#' @seealso [mejr_geom_defaults], [ggplot2::theme_update], [ggplot2::theme_set]
-#' @export
+#' }
 theme_mejr <- function(base_size = 11, base_family = getOption(
                          "ggdistribute.font"
                        ), black = 67,
@@ -133,7 +135,7 @@ theme_mejr <- function(base_size = 11, base_family = getOption(
     axis.title.x = element_text(
       vjust = 0.5, hjust = 0.5,
       margin = margin(
-        t = scale_add(base_size, 0.5, margin_add / 2),
+        t = scale_add(base_size, 0.4, margin_add / 2),
         r = scale_add(base_size, 0), b = scale_add(base_size, 0),
         l = scale_add(base_size, 0), unit = "pt"
       )
@@ -141,7 +143,7 @@ theme_mejr <- function(base_size = 11, base_family = getOption(
     axis.title.x.top = element_text(
       margin = margin(
         t = scale_add(base_size, 0), r = scale_add(base_size, 0),
-        b = scale_add(base_size, 0.5, margin_add / 2),
+        b = scale_add(base_size, 0.4, margin_add / 2),
         l = scale_add(base_size, 0), unit = "pt"
       )
     ),
@@ -149,7 +151,7 @@ theme_mejr <- function(base_size = 11, base_family = getOption(
       angle = 90, vjust = 0.5, hjust = 0,
       margin = margin(
         t = scale_add(base_size, 0),
-        r = scale_add(base_size, 0.5, margin_add / 2),
+        r = scale_add(base_size, 0.4, margin_add / 2),
         b = scale_add(base_size, 0),
         l = scale_add(base_size, 0), unit = "pt")
     ),
@@ -158,7 +160,7 @@ theme_mejr <- function(base_size = 11, base_family = getOption(
       margin = margin(
         t = scale_add(base_size, 0), r = scale_add(base_size, 0),
         b = scale_add(base_size, 0),
-        l = scale_add(base_size, 0.5, margin_add / 2), unit = "pt"
+        l = scale_add(base_size, 0.4, margin_add / 2), unit = "pt"
       )
     ),
     legend.background = element_blank(),
@@ -212,21 +214,21 @@ theme_mejr <- function(base_size = 11, base_family = getOption(
     strip.background = element_rect(
       colour = gray(.94), size = rel(0.5), fill = light_gray
     ),
-    strip.text = element_text(size = rel(0.8), face = "bold"),
+    strip.text = element_text(size = rel(0.7), face = "bold"),
     strip.text.x = element_text(
       hjust = 0.5, vjust = 0.5,
       margin = margin(
         t = scale_add(base_size, 0.25),
-        r = scale_add(base_size, 0),
+        r = scale_add(base_size, 0.125),
         b = scale_add(base_size, 0.25),
-        l = scale_add(base_size, 0), unit = "pt")
+        l = scale_add(base_size, 0.125), unit = "pt")
     ),
     strip.text.y = element_text(
       vjust = 0.5, hjust = 0.5, angle = 270,
       margin = margin(
-        t = scale_add(base_size, 0),
+        t = scale_add(base_size, 0.125),
         r = scale_add(base_size, 0.25),
-        b = scale_add(base_size, 0),
+        b = scale_add(base_size, 0.125),
         l = scale_add(base_size, 0.25), unit = "pt")
     ),
     strip.placement = "outside",
@@ -453,8 +455,8 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
 #' @details If multiple panels, will write to all panels.
 #'
 #' @param text character string
-#' @param pos character of `'tl'`, `'tr'`, `'bl'`, `'br'` to
-#' indicate position
+#' @param pos character of `"tl"`, `"tr"`, `"bl"`, `"br"` to
+#' indicate position (you may also use the full names, `"bottomleft"`, etc...)
 #' @param ... additional options passed to [ggplot2::geom_label]
 #' @param geom "text" or "label" geoms
 #'
@@ -462,8 +464,7 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
 #' @export
 #'
 #' @examples
-#' example_plot()+annotate_corner('Hi.')
-#' example_plot()+annotate_corner('Hi.', "bottomright")
+#' posterior_plot() + annotate_corner("Hi.", "bottomright")
 annotate_corner <- function(text, pos = "tl", geom = c("text", "label"), ...) {
   x <- -Inf
   y <- Inf

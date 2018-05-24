@@ -9,8 +9,8 @@ annotate_corner(text, pos = "tl", geom = c("text", "label"), ...)
 \arguments{
 \item{text}{character string}
 
-\item{pos}{character of \code{'tl'}, \code{'tr'}, \code{'bl'}, \code{'br'} to
-indicate position}
+\item{pos}{character of \code{"tl"}, \code{"tr"}, \code{"bl"}, \code{"br"} to
+indicate position (you may also use the full names, \code{"bottomleft"}, etc...)}
 
 \item{geom}{"text" or "label" geoms}
 
@@ -26,6 +26,5 @@ Write text to one of four corners of a plot
 If multiple panels, will write to all panels.
 }
 \examples{
-example_plot()+annotate_corner('Hi.')
-example_plot()+annotate_corner('Hi.', "bottomright")
+posterior_plot() + annotate_corner("Hi.", "bottomright")
 }

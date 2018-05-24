@@ -43,12 +43,12 @@ PositionSpread <- ggproto(
   },
 
   compute_panel = function(data, params, scales) {
-    force_dt(data) %>%
+    as_dtbl(data) %>%
       transform_heights(
         heights = params$height,
         padding = params$padding) %>%
       spread_by_ymin(
-        spreader = panel_spread, reverse = params$reverse,
+        spreader = shrink_and_stack, reverse = params$reverse,
         padding = params$padding) %>%
       rescale_overlapping(scales = scales, skip = params$custom) %>%
       set_col_order(c("PANEL", "group", "x", "y") %Names%
@@ -58,7 +58,6 @@ PositionSpread <- ggproto(
 )
 
 # subfunctions ------------------------------------------------------------
-
 standardize_height_param <- function(data, height) {
   height_type <- c("num", "char")[c(is.numeric(height), is.character(height))]
 
@@ -71,37 +70,61 @@ standardize_height_param <- function(data, height) {
   assert_names(c("PANEL", "group", "y"), data)
 
   height_type <- height_type[1]
+  n_heights <- nrow(unique(data[, c("PANEL", "group")]))
+  dt <- as_dtbl(data, copy = TRUE)
 
   heights <- switch(
     height_type,
     char = {
       grouping <- height_char_groups(height[1])
 
-      # get all individual heights ("single")
-      height_data <- set_range_data(data, "y",
-        force_cols = TRUE,
-        copy = FALSE) %>%
-        # order by min and use only these variables
-        .[order(.__min), .(PANEL, group, .__min, .__max, .__len)] %>%
-        # unique data
-        unique() %>%
-        # group by common y min values
-        .[, ygroup := .GRP, .(.__min)] %>%
-        # space in between y groups (from min y to next groups min y)
-        .[, space := unique_apply(.__min, ygroup, append_diff)] %>%
-        # get last space for the top of the panel
-        .[is.na(space), space := max(c(.[, max(space %NA% .__len,
-          na.rm = TRUE)], .__len))] %>%
-        # pick the smallest space according to user group
-        .[, uspace := min(space), by = grouping] %>%
-        # height is the max of user heights or y group space
-        .[, ht := max(c(.__len, uspace)), by = c(grouping, "uspace")]
+      # check if only one group per panel
+      lonely_groups <- dt[] %>%
+        set_range_data("y",
+          by = c("group", "PANEL"),
+          force_cols = TRUE, copy = FALSE) %>%
+        .[, .(.__n = length(unique(.__min))), PANEL] %>%
+        .[, all(.__n == 1)]
 
-      rm_temp_cols(data)
-      height_data$ht
+      ht <- if (lonely_groups) {
+        height <- dt[
+          , .(.__len = max(.__max - (y - .__min))),
+          PANEL
+        ] %>%
+          .[, max(.__len, na.rm = TRUE)]
+
+        rep_len(height, n_heights)
+      } else {
+        # get all individual heights ("single")
+        height_data <- set_range_data(dt, "y",
+          force_cols = TRUE,
+          copy = FALSE) %>%
+          # order by min and use only these variables
+          .[order(.__min), .(PANEL, group, .__min, .__max, .__len)] %>%
+          # unique data
+          unique() %>%
+          # group by common y min values
+          .[, .__grp := .GRP, .(.__min)] %>%
+          # space in between y groups (from min y to next groups min y)
+          .[, space := unique_apply(.__min, .__grp, append_diff)] %>%
+          # get last space for the top of the panel
+          .[
+            is.na(space),
+            space := max(
+              c(.[, max(space %NA% .__len, na.rm = TRUE)], .__len)
+            )
+          ] %>%
+          # pick the smallest space according to user group
+          .[, uspace := min(space), by = grouping] %>%
+          # height is the max of user heights or y group space
+          .[, ht := max(c(.__len, uspace)), by = c(grouping, "uspace")]
+
+        height_data$ht
+      }
+
+      ht
     },
     num = {
-      n_heights <- nrow(unique(data[, c("PANEL", "group")]))
       n_user_heights <- length(height)
       if (n_user_heights != 1 && n_user_heights != n_heights) {
         warning("Height length was size ", n_user_heights,
@@ -115,6 +138,8 @@ standardize_height_param <- function(data, height) {
     NULL
   )
 
+  heights <- dt[, .(`.__ht` = heights[.GRP]), .(PANEL, group)]
+  rm_temp_cols(data)
   list(heights = heights, type = height_type, custom = height_type == "num")
 }
 
@@ -126,42 +151,46 @@ height_char_groups <- function(height_str = c("total", "panel", "single")) {
 transform_heights <- function(data, heights, padding) {
   assert_names(c("group", "y"), data)
 
-  force_dt(data) %>%
+  as_dtbl(data) %>%
+    merge(heights, by = c("PANEL", "group"), all.y = FALSE) %>%
     set_range_data("y", names = ".__min", copy = FALSE) %>%
-    .[, .__len := heights[.GRP], .(PANEL, group)] %>%
-    rescale_groups("y") %>%
+    rescale_groups("y", ht_col = ".__ht") %>%
     rm_temp_cols()
 }
 
 spread_by_ymin <- function(data, spreader, ...) {
   assert_names(c("PANEL", "group", "y"), data)
 
-  force_dt(data) %>%
-    .[, ymin := min(y, na.rm = TRUE), .(PANEL, group)] %>%
-    .[, spreader(.SD, ...), .(ymin, PANEL)] %>%
-    .[, `:=`(ymin = NULL)] %>%
-    .[]
+  as_dtbl(data) %>%
+    set_range_data("y",
+      by = c("PANEL", "group"),
+      force_cols = TRUE, names = c("ymin", "ymax"),
+      copy = FALSE) %>%
+    .[, .__min := ymin] %>%
+    .[, spreader(.SD, ...), .(.__min, PANEL)] %>%
+    rm_temp_cols()
 }
 
-# Spread overlapping interval.
-# used as j arg in data.table
-panel_spread <- function(SD, reverse = FALSE, padding = 0) {
+# shrink each group to fit within y range and stack on top of each other.
+# groups should be overlapping
+shrink_and_stack <- function(SD, reverse = FALSE, padding = 0) {
   if (all(SD$group < 0)) {
     return(SD)
   }
 
-  dt <- force_dt(SD, copy = TRUE) %>%
-    set_range_data("y",
-      force_cols = TRUE,
-      names = c(".__min", ".__max", ".__len"), copy = FALSE)
+  assert_names(c("ymin", "ymax"), SD)
+
+  # must copy if as j within data.table
+  dt <- as_dtbl(SD, copy = TRUE)
+  dt[, .__len := ymax - ymin]
 
   n_groups <- length(unique(dt$group))
   padding <- check_padding(dt$y, dt$.__len, padding)
 
   if (n_groups <= 1) {
-    dt <- rescale_groups(dt, "y", scaler = padding) %>%
-      rm_temp_cols()
-    return(dt)
+    return(rm_temp_cols(rescale_groups(dt, "y",
+      min_col = "ymin",
+      scaler = padding)))
   }
 
   # stack order
@@ -176,7 +205,6 @@ panel_spread <- function(SD, reverse = FALSE, padding = 0) {
     .[order(-.__mid, -group, -y), ] %>%
     .[, `:=`(.__grp = .GRP), .(group)]
 
-  # TODO fix reverse
   if (reverse) {
     dt <- dt[order(-.__grp), .__grp := .GRP, .__grp]
   }
@@ -187,7 +215,7 @@ panel_spread <- function(SD, reverse = FALSE, padding = 0) {
     # total height of data
     .[, .__len := diff(range_no_inf(y))] %>%
     # each overlapping groups height
-    .[, .__hg := .__max - .__min] %>%
+    .[, .__hg := ymax - ymin] %>%
     # group heights sum to total height
     .[, .__hn := .__len * unique_simplex(.__hg, .__grp)] %>%
     # shrink y by group height segments
@@ -197,7 +225,11 @@ panel_spread <- function(SD, reverse = FALSE, padding = 0) {
     ] %>%
     # reposition y by stacking based on group height values
     .[, .__csum := unique_apply(.__y * (1 / pad_adj), .__grp, csum_left)] %>%
-    .[, y := .__y + .__csum + .__min] %>%
+    .[, y := .__y + .__csum + ymin] %>%
+    .[
+      , `:=`(ymin = min(y), ymax = min(y) + .__hn),
+      .(.__grp)
+    ] %>%
     # junk
     rm_temp_cols()
 }

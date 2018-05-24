@@ -27,9 +27,7 @@ knitr::opts_chunk$set(
 ```{r, echo=FALSE, message=FALSE}
 library(ggplot2)
 library(data.table)
-library(magrittr)
 theme_set(theme_gray(10))
-rebuild_showcase_plot <- FALSE
 ```
 
 # Introduction
@@ -43,11 +41,7 @@ library(ggdistribute)
 Randomly generate a dataset of 5 different normal distributions and assign two different factors `cond` and `grp` to the generated values.
 
 ```{r}
-mu <- c(-1, 0, 2, 5, 10)
-value <- unlist(lapply(mu, function(x) rnorm(1000, x, runif(1, 0.8, 1.2))))
-cond <- rep(letters[1:5], each = 1000)
-grp <- rep(LETTERS[1:2], each = 2500)
-data <- data.frame(grp, cond, value)
+data <- data_normal_sample(mu = c(-1, 0, 2, 5, 10), n = 1000)
 ```
 
 # Extensions passed to `ggplot2::layer`
@@ -57,7 +51,7 @@ data <- data.frame(grp, cond, value)
 This is the main function wrapper to generate the posterior distribution grobs. See `help("geom_posterior")` for a list of options passed to the ggproto object `GeomPosterior`. The `geom_posterior()` function with no arguments and no `y` aesthetic defaults to estimating the normalized density (integerates to 1) times the number of data points. This is the same as `aes(y = ..count..)` with `geom_posterior`.
 
 ```{r}
-b_cond <- data[with(data, cond == "b"), ]
+b_cond <- data[with(data, cond == "B"), ]
 
 ggplot(b_cond, aes(x = value))+
   geom_posterior()
@@ -118,17 +112,8 @@ An overview of combining `ggdistribute` with other `ggplot2` elements.
 
 Setup theme options for the final plot.
 
-```{r, echo=FALSE, results='hide', message=FALSE}
-font <- "serif"
-if (rebuild_showcase_plot) {
-  if (requireNamespace("extrafont", quietly = TRUE)) {
-    library(extrafont)
-    font <- "Oswald Medium"
-  }
-  theme_set(theme_mejr(base_family = font))
-}else {
-  theme_set(theme_gray(base_family = font))
-}
+```{r, results='hide', message=FALSE}
+ theme_set(theme_gray(base_family = "serif"))
 ```
 
 ```{r, echo=FALSE}
@@ -144,60 +129,70 @@ Print the plot to the graphics device.
 plot(example_plot())
 ```
 
-```{r, echo=FALSE, message=FALSE, results='hide'}
-if (rebuild_showcase_plot) {
-  ggsave(
-    file = file.path("media", "example_fig.png"),
-    example_plot(),
-    device = "png",
-    width = 5,
-    height = 3,
-    units = "in",
-    family = font,
-    dpi = 600)
-}
-```
-
-
 ```{r, eval=FALSE, echo=FALSE}
-# other tests
+# other visual inspections
 dt <- ggdistribute:::ggdist_data(1000, j = 5)
 
-ggplot(dt) + aes(x = value) + geom_posterior(n = 512, interp_thresh = .001)
+ggplot(dt) + aes(x = value) +
+  geom_posterior(n = 512, interp_thresh = .001) + labs(title = "no y")
+
+ggplot(dt) + aes(x = value, y = 10) +
+  geom_posterior(n = 512, interp_thresh = .001) + labs(title = "scalar y")
+
+ggplot(dt) + aes(x = value, y = j_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001) + labs(title = "char y")
+
+ggplot(dt) + aes(x = value, y = j_discrete, group = k_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001) +
+  labs(title = "char y, w/ group")
+
+ggplot(dt) + aes(x = value, y = k_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete)) +
+  labs(title = "char y, w/ group switched")
 
 ggplot(dt) + aes(x = value) +
-  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete))
+  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete)) +
+  labs(title = "no y, w/ group")
+
+ggplot(dt) + aes(x = value, y = j_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete)) +
+  labs(title = "char y, w/ same y group")
+
+ggplot(dt) + aes(x = value, y = j_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001, aes(fill = k_discrete)) +
+  labs(title = "char y, w/ diff group")
+
+ggplot(dt) + aes(x = value, y = I) +
+  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete)) +
+  labs(title = "integer y, w/ group")
 
 ggplot(dt) + aes(x = value, y = j_discrete) +
   geom_posterior(
     n = 512, interp_thresh = .001,
-    position = position_spread(height = 20))
-
-ggplot(dt) + aes(x = value, y = j_discrete, group = k_discrete) +
-  geom_posterior(n = 512, interp_thresh = .001)
-
-ggplot(dt) + aes(x = value, y = 10) +
-  geom_posterior(n = 512, interp_thresh = .001)
-
-ggplot(dt) + aes(x = value, y = j_discrete) +
-  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete))
-
-ggplot(dt) + aes(x = value, y = j_discrete) +
-  geom_posterior(n = 512, interp_thresh = .001, aes(fill = k_discrete))
-
-ggplot(dt) + aes(x = value, y = I) +
-  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete))
+    position = position_spread(height = 20)) +
+  labs(title = "manual height, w/ group")
 
 ggplot(dt) + aes(x = value, y = variable) +
   geom_posterior(
     n = 512, interp_thresh = .001,
-    mirror = TRUE, aes(group = j_discrete))
+    mirror = TRUE, aes(group = j_discrete)) +
+  labs(title = "cont. y, w/ group, mirrored")
 
 ggplot(dt) + aes(x = value, y = variable * 10) +
   geom_posterior(
     n = 512, interp_thresh = .001, mirror = TRUE,
-    aes(group = j_discrete)) + facet_wrap(~k_discrete)
+    aes(group = j_discrete)) + facet_wrap(~k_discrete) +
+  labs(title = "cont. y, w/ group, wrap, mirrored")
 
-ggplot(dt) + aes(x = value, y = k_discrete) +
-  geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete))
+dt$k[dt$j == 1 & dt$k == 2] <- NA
+
+ggplot(dt) + aes(x = value, y = j_discrete, group = k_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001) +
+  facet_grid(j_discrete ~ ., scales = "free_y") +
+  labs(title = "char y, w/ group, grid, missing group")
+
+ggplot(dt) + aes(x = value, group = k_discrete) +
+  geom_posterior(n = 512, interp_thresh = .001) +
+  facet_grid(j_discrete ~ ., scales = "free_y") +
+  labs(title = "no y, w/ group, grid, missing group")
 ```

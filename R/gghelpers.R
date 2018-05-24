@@ -1,3 +1,29 @@
+#' Print a small example plot with geom_posterior
+#'
+#' @param data A dataset to use, called at the top layer within `ggplot`.
+#' @param x A character string of the `x` axis variable name (e.g., values
+#' making up the distribution).
+#' @param y A grouping variable for generating groups of distributions. Defaults
+#' to `..count..` for no groups and displays the density as counts of the
+#' number of samples for the value of `x`.
+#' @param ... Additional arguments passed to [geom_posterior()].
+#'
+#' @return Object of class `gg`, `ggplot`.
+#' @export
+#' @examples
+#' # Generate a basic example plot if no data is specified.
+#' posterior_plot()
+posterior_plot <- function(data, x, y = "..count..", ...) {
+  if (missing(data)) {
+    data <- data_normal_sample(0)
+    x <- "value"
+    y <- "..count.."
+  }
+
+  ggplot(data, aes_string(x = x, y = y)) + geom_posterior(...)
+}
+
+
 ggname <- function(prefix, grob) {
   grob$name <- grid::grobName(grob, prefix)
   grob
@@ -32,7 +58,7 @@ set_range_data <- function(data, axis = c("x", "y"), by = "group",
     names(do_ops) <- names
   }
 
-  dt <- force_dt(data, copy = copy)
+  dt <- as_dtbl(data, copy = copy)
 
   Map(
     function(n, f) {
@@ -71,9 +97,10 @@ split_discrete_by_group <- function(data, scales, axis = c("x", "y")) {
   }
 
   assert_names("group", data)
-  dt <- force_dt(data)
 
-  if (is.null(data[[axis]])) {
+  dt <- as_dtbl(data)
+
+  if (is.null(dt[[axis]])) {
     dt <- dt[order(group)]
   } else {
     dt <- dt[order(get(axis), group)]
@@ -87,8 +114,7 @@ split_discrete_by_group <- function(data, scales, axis = c("x", "y")) {
     }
   }, group] %>%
     .[, group := .GRP, .__grp] %>%
-    .[, .__grp := NULL] %>%
-    .[]
+    rm_temp_cols()
 }
 
 axis_is_within <- function(min1, max1, min2, max2) {
@@ -101,7 +127,7 @@ axis_is_within <- function(min1, max1, min2, max2) {
 get_overlaps <- function(data, axis = c("x", "y"), tol = -1e-04) {
   axis <- match.arg(axis)
   assert_names(c(axis, "group"), data)
-  dt <- force_dt(data)
+  dt <- as_dtbl(data)
 
   if (!("PANEL" %Names?% data)) {
     dt$PANEL <- 1L
@@ -128,7 +154,7 @@ get_overlaps <- function(data, axis = c("x", "y"), tol = -1e-04) {
     space = NA_real_, space_ratio = NA_real_,
     scaled_space = NA_real_, overlap = NA, within = NA)
 
-  overlap_data <- force_dt(pairs) %>%
+  overlap_data <- as_dtbl(pairs) %>%
     setnames(c("V1", "V2"), c("i1", "i2")) %>%
     .[, I := .I] %>%
     .[, `:=`(
@@ -166,7 +192,7 @@ rescale_groups <- function(data, axis = c("x", "y"), min_col = ".__min",
   axis <- match.arg(axis)
   assert_names(unique(c("group", min_col, ht_col, axis)), data)
 
-  dt <- force_dt(data)
+  dt <- as_dtbl(data)
   dt[, .__by_ht := get(ht_col)]
   by_grp <- by
 
@@ -202,9 +228,10 @@ check_padding <- function(x, size, padding, mult = 1.5) {
 rm_temp_cols <- function(data, temp_names = NULL) {
   if (is.null(temp_names)) {
     temp_names <- c(
-      ".__min", ".__min_y", ".__max_y", ".__min_x", ".__max_x",
-      ".__max", ".__mid", ".__grp", ".__len", ".__hg", ".__hn",
-      ".__y", ".__csum", ".__tmp", ".__y_t", ".__y_b")
+      ".__n", ".__min", ".__min_y", ".__max_y", ".__min_x",
+      ".__max_x", ".__max", ".__mid", ".__grp",
+      ".__len", ".__ht", ".__hg", ".__hn", ".__y",
+      ".__csum", ".__tmp", ".__y_t", ".__y_b")
   }
 
   temp_names <- temp_names %Names% data
@@ -213,7 +240,7 @@ rm_temp_cols <- function(data, temp_names = NULL) {
     return(data)
   }
 
-  force_dt(data) %>%
+  as_dtbl(data) %>%
     .[, eval(temp_names) := NULL] %>%
     .[]
 }

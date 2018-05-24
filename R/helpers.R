@@ -228,7 +228,7 @@ empty <- function(x) {
   is.null(x) || nrow(x) == 0 || ncol(x) == 0
 }
 
-force_dt <- function(x, copy = FALSE) {
+as_dtbl <- function(x, copy = FALSE) {
   if (data.table::is.data.table(x)) {
     if (copy) {
       return(data.table::copy(x))
@@ -263,7 +263,7 @@ rep.data.table <- function(x, ...) {
 }
 
 get_static_data <- function(from, ref = NULL) {
-  from <- force_dt(from)
+  from <- as_dtbl(from)
 
   if (is.null(ref)) {
     use_names <- non_empty_names(from)

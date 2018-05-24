@@ -16,19 +16,10 @@ rebuild_showcase_plot <- TRUE
 library(ggdistribute)
 
 ## ------------------------------------------------------------------------
-mu <- c(-1, 0, 2, 5, 10)
-value <- unlist(lapply(
-  mu,
-  function(x) {
-    rnorm(1000, x, runif(1, 0.8, 1.2))
-  }))
-cond <- rep(letters[1:5], each = 1000)
-grp <- rep(LETTERS[1:2], each = 2500)
-
-data <- data.frame(grp, cond, value)
+data <- data_normal_sample(mu = c(-1, 0, 2, 5, 10), n = 1000)
 
 ## ------------------------------------------------------------------------
-b_cond <- data[with(data, cond == "b"), ]
+b_cond <- data[with(data, cond == "B"), ]
 
 ggplot(b_cond, aes(x = value)) + geom_posterior()
 
@@ -60,11 +51,7 @@ if (rebuild_showcase_plot) {
   if (requireNamespace("extrafont", quietly = TRUE)) {
     library(extrafont)
     font <- "Oswald Medium"
-  } else {
-
-
   }
-
   theme_set(theme_mejr(base_family = font))
 } else {
   theme_set(theme_gray(base_family = font))
@@ -98,10 +85,10 @@ example_plot <- function() {
       interp_thresh = .001, # stat options for estimating intervals
       center_stat = "median", ci_width = 0.90,
       interval_type = "ci", # stat options passed to density estimation
-      bw = ".nrd0", adjust = 1.5, n = 1024,
-      trim = .005, cut = 1.5, # standard options
-      size = 0.15, color = colors$gray, vjust = 0.7,
-      show.legend = FALSE) + scale_x_continuous(breaks = seq(-1, 1, .05)) +
+      bw = ".nrd0", adjust = 1.5, n = 1024, trim = .005,
+      cut = 1.5, # standard options
+      size = 0.15, color = colors$gray, vjust = 0.7, show.legend = FALSE) +
+    scale_x_continuous(breaks = seq(-1, 1, .05)) +
     scale_fill_manual(values = c(
       colors$yellow, colors$magenta,
       colors$cyan)) +
@@ -111,10 +98,7 @@ example_plot <- function() {
         fill = NA, colour = gray(0.84), size = 0.67
       ),
       axis.title.y = element_blank(),
-      strip.text.y = element_text(
-        angle = 0, hjust = 0.5,
-        margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
-      ),
+      strip.text.y = element_text(angle = 0, hjust = 0.5),
       plot.margin = margin(t = 2, r = 4, b = 2, l = 2, unit = "pt"),
       legend.box.background = element_blank(),
       legend.background = element_blank())
@@ -132,39 +116,68 @@ if (rebuild_showcase_plot) {
 }
 
 ## ---- eval=FALSE, echo=FALSE---------------------------------------------
-# # other tests
-# dt <- ggdistribute:::ggdist_data(1000, j=5)
+# # other visual inspections
+# dt <- ggdistribute:::ggdist_data(1000, j = 5)
 #
 # ggplot(dt) + aes(x = value) +
-# geom_posterior(n=32)
+# geom_posterior(n = 512, interp_thresh = .001) + labs(title = "no y")
+#
+# ggplot(dt) + aes(x = value, y = 10) +
+# geom_posterior(n = 512, interp_thresh = .001) + labs(title = "scalar y")
+#
+# ggplot(dt) + aes(x = value, y = j_discrete) +
+# geom_posterior(n = 512, interp_thresh = .001) + labs(title = "char y")
+#
+# ggplot(dt) + aes(x = value, y = j_discrete, group = k_discrete) +
+# geom_posterior(n = 512, interp_thresh = .001) +
+# labs(title = "char y, w/ group")
+#
+# ggplot(dt) + aes(x = value, y = k_discrete) +
+# geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete)) +
+# labs(title = "char y, w/ group switched")
 #
 # ggplot(dt) + aes(x = value) +
-# geom_posterior(n=32, aes(group=j_discrete))
+# geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete)) +
+# labs(title = "no y, w/ group")
 #
-# ggplot(dt) + aes(x = value, y=j_discrete) +
-# geom_posterior(n=32, position = position_spread(height = 20))
+# ggplot(dt) + aes(x = value, y = j_discrete) +
+# geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete)) +
+# labs(title = "char y, w/ same y group")
 #
-# ggplot(dt) + aes(x = value, y=j_discrete, group = k_discrete) +
-# geom_posterior(n=32)
+# ggplot(dt) + aes(x = value, y = j_discrete) +
+# geom_posterior(n = 512, interp_thresh = .001, aes(fill = k_discrete)) +
+# labs(title = "char y, w/ diff group")
 #
-# ggplot(dt) + aes(x = value, y=10) +
-# geom_posterior(n=32)
+# ggplot(dt) + aes(x = value, y = I) +
+# geom_posterior(n = 512, interp_thresh = .001, aes(group = j_discrete)) +
+# labs(title = "integer y, w/ group")
 #
-# ggplot(dt) + aes(x = value, y=j_discrete) +
-# geom_posterior(n=32, aes(group=j_discrete))
+# ggplot(dt) + aes(x = value, y = j_discrete) +
+# geom_posterior(
+# n = 512, interp_thresh = .001,
+# position = position_spread(height = 20)) +
+# labs(title = "manual height, w/ group")
 #
-# ggplot(dt) + aes(x = value, y=j_discrete) +
-# geom_posterior(n=32, aes(fill=k_discrete))
+# ggplot(dt) + aes(x = value, y = variable) +
+# geom_posterior(
+# n = 512, interp_thresh = .001,
+# mirror = TRUE, aes(group = j_discrete)) +
+# labs(title = "cont. y, w/ group, mirrored")
 #
-# ggplot(dt) + aes(x = value, y=I) +
-# geom_posterior(n=32, aes(group=j_discrete))
+# ggplot(dt) + aes(x = value, y = variable * 10) +
+# geom_posterior(
+# n = 512, interp_thresh = .001, mirror = TRUE,
+# aes(group = j_discrete)) + facet_wrap(~k_discrete) +
+# labs(title = "cont. y, w/ group, wrap, mirrored")
 #
-# ggplot(dt) + aes(x = value, y=variable) +
-# geom_posterior(n=32, mirror = F, aes(group=j_discrete))
+# dt$k[dt$j == 1 & dt$k == 2] <- NA
 #
-# ggplot(dt) + aes(x = value, y=variable * 10) +
-# geom_posterior(n=32, mirror = F, aes(group=j_discrete))+
-# facet_wrap(~k_discrete)
+# ggplot(dt) + aes(x = value, y = j_discrete, group = k_discrete) +
+# geom_posterior(n = 512, interp_thresh = .001) +
+# facet_grid(j_discrete ~ ., scales = "free_y") +
+# labs(title = "char y, w/ group, grid, missing group")
 #
-# ggplot(dt) + aes(x = value, y=k_discrete) +
-# geom_posterior(n=32, aes(group=j_discrete))
+# ggplot(dt) + aes(x = value, group = k_discrete) +
+# geom_posterior(n = 512, interp_thresh = .001) +
+# facet_grid(j_discrete ~ ., scales = "free_y") +
+# labs(title = "no y, w/ group, grid, missing group")

@@ -1,12 +1,16 @@
 Package: ggdistribute
 Title: A 'ggplot2' Extension for Plotting Distributions
-Version: 1.0.0
+Version: 1.0.1.9000
 Date: 2018-5-19
-Authors@R: as.person(c(
-    "Joseph M. Burling <josephburling@gmail.com> [aut, cre]"))
+Authors@R: c(
+        person("Joseph M.", "Burling",
+               email = "josephburling@gmail.com",
+               role = c("aut", "cre")))
 Description:
-    This package uses the ggproto system to extend geoms, stats, and
-    positions for plotting distributions.
+    An extension for plotting posterior or other types of unimodal distributions
+    that require overlaying information about a distribution's intervals.
+    It makes use of the 'ggproto' system to extend 'ggplot2' with
+    additional geoms, stats, and positions and integrates into existing layers.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

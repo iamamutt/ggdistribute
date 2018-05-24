@@ -17,7 +17,7 @@
 sre_data <- function(n = 1000, seed = 19850519) {
   set.seed(seed)
 
-  force_dt(sre) %>%
+  as_dtbl(sre) %>%
     .[
       , .(value = sample(value, n, replace = TRUE)),
       .(effect, contrast)
@@ -25,6 +25,39 @@ sre_data <- function(n = 1000, seed = 19850519) {
     tibble::as.tibble()
 }
 
+
+#' Testing dataset of grouped Normal distributions
+#'
+#' @param mu Means for each group. A [numeric] vector with the length
+#' corresponding to the number of groups.
+#' @param n Number of observations for each group. Length 1 [integer].
+#' @param sd_range The min and max to use for standard deviations. Length 2
+#' @param seed A seed value to generate the same sample. [numeric] vector.
+#' @return A [data.frame] with the following variables: `grp`, `cond`, `value`.
+#' @export
+#'
+#' @examples
+#' data_normal_sample(0, 100)
+data_normal_sample <- function(mu = c(-0.5, 4), n = 500L,
+                               sd_range = c(0.6, 1.4), seed = 19850519) {
+  set.seed(seed)
+  k <- clip_range(length(mu), max = 13)
+  N <- n * k
+  adj <- median(diff(sort(unique(c(0, mu))))) / max(1, (k - 1))
+  adj <- rep(c(-adj, adj), each = ceiling(n / 2))[1:n]
+  value <- unlist(lapply(
+    mu,
+    function(x) {
+      rnorm(n,
+        mean = x,
+        sd = runif(1L,
+          min = sd_range[1],
+          max = sd_range[2])) + adj
+    }))
+  cond <- rep(LETTERS[seq_len(k)], each = n)
+  grp <- sort(rep_len(letters[seq_len(k * 2)], N))
+  tibble::tibble(grp, cond, value)
+}
 
 
 ggdist_data <- function(n = 500, j = 3, k = 2, na.rm = TRUE, seed = 20130110) {
@@ -70,7 +103,7 @@ diamonds_ggdistribute <- function(N = 1000,
   set.seed(seed)
 
   dt <- ggplot2::diamonds %>%
-    force_dt() %>%
+    as_dtbl() %>%
     .[, .(cut, color, clarity, carat, price)] %>%
     .[, price := as.numeric(price)] %>%
     melt(measure.vars = c("carat", "price")) %>%

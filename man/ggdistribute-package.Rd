@@ -9,7 +9,8 @@
 positions for plotting distributions.
 }
 \details{
-\code{ggdistribute} ...
+\code{ggdistribute} Displaying the distributions relies heavily on stacking
+distributions using position_spread, which may not align with other geoms.
 }
 \seealso{
 \link[ggplot2:geom_density]{ggplot2::geom_density}, \link[ggplot2:position_dodge]{ggplot2::position_dodge}
