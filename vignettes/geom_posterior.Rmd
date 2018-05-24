@@ -95,9 +95,11 @@ ggplot(data, aes(x = value, y = ..density.., fill = cond)) +
 
 ## `position_spread(...)`, `PositionSpread`
 
-The `PositionSpread` class spreads out overlapping densities within the range of their y axis value. For instance, condition `c`, there are two different groups in `grp`. Each group in `c` is resized and spread over the group interval. Padding is turned off below to see where distributions begin and end.
+The `PositionSpread` class spreads out overlapping densities within the range of their y axis value. For instance, there are two different groups for `cond` A-D, but only one group in E. Distributions within each `cond` are resized and spread over the group's y interval. Padding is turned off below to see where distributions begin and end.
 
 ```{r}
+data$grp[data$cond == "E"] <- "z"
+
 ggplot(data, aes(x = value, y = cond, group = grp)) +
   geom_posterior(position = position_spread(padding = 0)) +
   theme(panel.grid.major.y = element_line(color = gray(.8)))

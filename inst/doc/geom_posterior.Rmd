@@ -27,9 +27,7 @@ knitr::opts_chunk$set(
 ```{r, echo=FALSE, message=FALSE}
 library(ggplot2)
 library(data.table)
-library(magrittr)
 theme_set(theme_gray(10))
-rebuild_showcase_plot <- TRUE
 ```
 
 # Introduction
@@ -97,9 +95,11 @@ ggplot(data, aes(x = value, y = ..density.., fill = cond)) +
 
 ## `position_spread(...)`, `PositionSpread`
 
-The `PositionSpread` class spreads out overlapping densities within the range of their y axis value. For instance, condition `c`, there are two different groups in `grp`. Each group in `c` is resized and spread over the group interval. Padding is turned off below to see where distributions begin and end.
+The `PositionSpread` class spreads out overlapping densities within the range of their y axis value. For instance, there are two different groups for `cond` A-D, but only one group in E. Distributions within each `cond` are resized and spread over the group's y interval. Padding is turned off below to see where distributions begin and end.
 
 ```{r}
+data$grp[data$cond == "E"] <- "z"
+
 ggplot(data, aes(x = value, y = cond, group = grp)) +
   geom_posterior(position = position_spread(padding = 0)) +
   theme(panel.grid.major.y = element_line(color = gray(.8)))
@@ -114,17 +114,8 @@ An overview of combining `ggdistribute` with other `ggplot2` elements.
 
 Setup theme options for the final plot.
 
-```{r, echo=FALSE, results='hide', message=FALSE}
-font <- "serif"
-if (rebuild_showcase_plot) {
-  if (requireNamespace("extrafont", quietly = TRUE)) {
-    library(extrafont)
-    font <- "Oswald Medium"
-  }
-  theme_set(theme_mejr(base_family = font))
-}else {
-  theme_set(theme_gray(base_family = font))
-}
+```{r, results='hide', message=FALSE}
+ theme_set(theme_gray(base_family = "serif"))
 ```
 
 ```{r, echo=FALSE}
@@ -139,21 +130,6 @@ Print the plot to the graphics device.
 ```{r, fig.width=5, fig.height=3, out.width="100%"}
 plot(example_plot())
 ```
-
-```{r, echo=FALSE, message=FALSE, results='hide'}
-if (rebuild_showcase_plot) {
-  ggsave(
-    file = file.path("media", "example_fig.png"),
-    example_plot(),
-    device = "png",
-    width = 5,
-    height = 3,
-    units = "in",
-    family = font,
-    dpi = 600)
-}
-```
-
 
 ```{r, eval=FALSE, echo=FALSE}
 # other visual inspections
