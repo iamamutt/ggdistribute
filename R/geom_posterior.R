@@ -66,6 +66,7 @@ GeomPosterior <- ggproto(
     if (is.null(midline_color)) {
       midline_color <- first_non_na(data$colour)
     }
+
     midline_color <- midline_color %NA% NA
     brighten <- as.numeric(brighten %NA% FALSE)
     mirror <- mirror %NA% FALSE
@@ -91,11 +92,14 @@ GeomPosterior <- ggproto(
 
     dt <- as_dtbl(data, copy = TRUE) %>%
       set_range_data("x",
-        names = c("xmin", "xmax"),
-        force_cols = FALSE, copy = FALSE) %>%
-      set_range_data("y", "group",
-        names = c("grp_min", "grp_max"),
-        force_cols = TRUE, copy = FALSE)
+                     names = c("xmin", "xmax"),
+                     force_cols = FALSE, copy = FALSE) %>%
+      set_range_data("y",
+                     names = c("ymin", "ymax"),
+                     force_cols = FALSE, copy = FALSE) %>%
+      set_range_data("y",
+                     names = c("grp_min", "grp_max"),
+                     force_cols = TRUE, copy = FALSE)
 
     params <- setup_posterior_params(
       dt,
