@@ -93,6 +93,8 @@ post_int <- function(x, mid = c("median", "mean", "mode"),
       c(width_ids, "sd"))
   )
 
+  central <- interval <- NULL
+
   # reshape to multivariate format
   intervals <- intervals[order(-interval), ]
   intervals <- intervals[, central := mid]

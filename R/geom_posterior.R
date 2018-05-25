@@ -68,7 +68,7 @@ GeomPosterior <- ggproto(
     }
 
     midline_color <- midline_color %NA% NA
-    brighten <- as.numeric(brighten %NA% FALSE)
+    brighten <- brighten %NA% FALSE
     mirror <- mirror %NA% FALSE
 
     warn <- is.finite(interp_thresh %:% Inf) %?% FALSE %:% TRUE
@@ -92,14 +92,14 @@ GeomPosterior <- ggproto(
 
     dt <- as_dtbl(data, copy = TRUE) %>%
       set_range_data("x",
-                     names = c("xmin", "xmax"),
-                     force_cols = FALSE, copy = FALSE) %>%
+        names = c("xmin", "xmax"),
+        force_cols = FALSE, copy = FALSE) %>%
       set_range_data("y",
-                     names = c("ymin", "ymax"),
-                     force_cols = FALSE, copy = FALSE) %>%
+        names = c("ymin", "ymax"),
+        force_cols = FALSE, copy = FALSE) %>%
       set_range_data("y",
-                     names = c("grp_min", "grp_max"),
-                     force_cols = TRUE, copy = FALSE)
+        names = c("grp_min", "grp_max"),
+        force_cols = TRUE, copy = FALSE)
 
     params <- setup_posterior_params(
       dt,
@@ -128,14 +128,14 @@ setup_posterior_params <- function(data, ...) {
 setup_post_seg_params <- function(data, brighten, draw_ci, draw_sd, ...) {
   fill <- first_non_na(data$fill) %NA% NA
 
-  brighten <- if (all(brighten == 0)) {
-    rep(0, 5)
-  } else {
-    if (all(brighten == 1)) {
-      c(3, 0, 1.5, 0, 3)
+  brighten <- if (is.logical(brighten)) {
+    if (brighten) {
+      c(4, 0, 1.333, 0, 4)
     } else {
-      rep_len(c(brighten, rev(brighten)[-1]), 5)
+      rep(0, 5L)
     }
+  } else {
+    rep_len(c(brighten, rev(brighten)[-1]), 5L)
   }
 
   segments <- c("xmin", "cil", "sdl", "sdu", "ciu", "xmax")

@@ -11,8 +11,8 @@
 #' mejr_palette()
 mejr_palette <- function() {
   list(
-    black = "#141214", gray = "#939393", yellow = "#E0CF7C",
-    magenta = "#E069C6", cyan = "#60ADAB",
+    black = "#141214", gray = "#939393", lightgray = "#E8E8E8",
+    yellow = "#E0CF7C", magenta = "#E069C6", cyan = "#60ADAB",
     midline_color = "#767698", fill = "#8989B2", colour = "#585872")
 }
 
@@ -413,13 +413,14 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
     )
 
     mejr_geom_defaults(reset = TRUE)
-    theme_set(theme_test())
+    theme_set(do.call("theme_test", list()))
+
     ggsave(
       filename = normalizePath(
         file.path("~/../Desktop/theme_test.pdf"),
         mustWork = F
       ),
-      example_plot() + do.call(theme_test, test_theme_args) + gg,
+      example_plot() + do.call("theme_test", test_theme_args) + gg,
       width = w, height = h, device = "pdf")
   }
 
@@ -578,6 +579,9 @@ show_colors <- function(colors, show.legend = TRUE, ncols = NULL, alpha = NA) {
     }
   }
 
+  # R CMD check
+  i <- x <- y <- z <- l <- NULL
+
   rows <- ceiling(n / ncols)
   data <- expand.grid(x = seq_len(ncols), y = seq_len(rows))
   data <- data[with(data, order(y, x)), ]
@@ -615,7 +619,7 @@ gray2 <- function(black = 127) {
 
 
 change_brightness <- function(hex_color, adjust) {
-  if (adjust <= 0 || adjust == 1 || all_missing(hex_color)) {
+  if (adjust == 0 || all_missing(hex_color)) {
     return(hex_color)
   }
 

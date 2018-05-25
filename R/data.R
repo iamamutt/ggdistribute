@@ -17,7 +17,10 @@
 sre_data <- function(n = 1000, seed = 19850519) {
   set.seed(seed)
 
-  as_dtbl(sre) %>%
+  # R CMD check
+  effect <- contrast <- value <- NULL
+
+  as_dtbl(get("sre")) %>%
     .[
       , .(value = sample(value, n, replace = TRUE)),
       .(effect, contrast)
@@ -33,18 +36,21 @@ sre_data <- function(n = 1000, seed = 19850519) {
 #' @param n Number of observations for each group. Length 1 [integer].
 #' @param sd_range The min and max to use for standard deviations. Length 2
 #' @param seed A seed value to generate the same sample. [numeric] vector.
-#' @return A [data.frame] with the following variables: `grp`, `cond`, `value`.
+#' @return A [data.frame] with the following variables: `Group`, `Condition`,
+#' `value`.
 #' @export
-#'
 #' @examples
 #' data_normal_sample(0, 100)
 data_normal_sample <- function(mu = c(-0.5, 4), n = 500L,
                                sd_range = c(0.6, 1.4), seed = 19850519) {
   set.seed(seed)
+
   k <- clip_range(length(mu), max = 13)
   N <- n * k
   adj <- median(diff(sort(unique(c(0, mu))))) / max(1, (k - 1))
-  adj <- rep(c(-adj, adj), each = ceiling(n / 2))[1:n]
+  adj <- c(-adj, adj)
+  adj_len <- rep(adj, each = ceiling(n / 2))[1:n]
+
   value <- unlist(lapply(
     mu,
     function(x) {
@@ -52,13 +58,21 @@ data_normal_sample <- function(mu = c(-0.5, 4), n = 500L,
         mean = x,
         sd = runif(1L,
           min = sd_range[1],
-          max = sd_range[2])) + adj
+          max = sd_range[2])) + adj_len
     }))
-  cond <- rep(LETTERS[seq_len(k)], each = n)
-  grp <- sort(rep_len(letters[seq_len(k * 2)], N))
-  tibble::tibble(grp, cond, value)
-}
 
+  scores <- unlist(lapply(
+    mu,
+    function(x) {
+      sort(runif(2L, x + adj[1], x + adj[2]))
+    }))
+
+  Condition <- rep(LETTERS[seq_len(k)], each = n)
+  Group <- sort(rep_len(letters[seq_len(k * 2)], N))
+  GroupScore <- rep(scores, each = ceiling(N / k / 2))[1:N]
+
+  tibble::tibble(Condition, Group, GroupScore, value)
+}
 
 ggdist_data <- function(n = 500, j = 3, k = 2, na.rm = TRUE, seed = 20130110) {
   set.seed(seed)
@@ -66,6 +80,9 @@ ggdist_data <- function(n = 500, j = 3, k = 2, na.rm = TRUE, seed = 20130110) {
   k <- max(min(k, 26), 1)
   n_jk <- j * k
   n_i <- round(max(1, n / n_jk))
+
+  # R CMD check
+  jk_i <- qmin <- qmax <- value <- variable <- NULL
 
   dt <- expand.grid(j = seq_len(j), k = seq_len(k)) %>%
     as.data.table() %>%
@@ -75,16 +92,16 @@ ggdist_data <- function(n = 500, j = 3, k = 2, na.rm = TRUE, seed = 20130110) {
     .[, value := rnorm(.N, 2 * j, k^.618), .(j, k)] %>%
     cbind(.[, probit_tbl(value, n_jk)]) %>%
     .[, variable := runif(.N, qmin, qmax), .(qmin, qmax)] %>%
-    .[, jk_i := .GRP, .(j, k)] %>%
-    .[jk_i == max(jk_i), value := NA] %>%
-    .[, .__v := min(variable, na.rm = TRUE)] %>%
+    .[, `:=`(`jk_i` = .GRP), .(j, k)] %>%
+    .[`jk_i` == max(`jk_i`), value := NA] %>%
+    .[, .__tmp := min(variable, na.rm = TRUE)] %>%
     .[j == min(2, max(j)), variable := {
-      variable[which.min(variable)] <- .__v[1]
+      variable[which.min(variable)] <- .__tmp[1]
       variable
     }] %>%
     .[order(j, k, variable)] %>%
-    .[1, variable := min(.__v, na.rm = TRUE)] %>%
-    .[, .__v := NULL] %>%
+    .[1, variable := min(.__tmp, na.rm = TRUE)] %>%
+    .[, .__tmp := NULL] %>%
     .[, I := 1:.N]
 
 
@@ -93,50 +110,5 @@ ggdist_data <- function(n = 500, j = 3, k = 2, na.rm = TRUE, seed = 20130110) {
   }
 
   dt[!is.na(value), ] %>%
-    tibble::as.tibble()
-}
-
-diamonds_ggdistribute <- function(N = 1000,
-                                  rdist = c("rnorm", "rnbinom2", "rgamma2"),
-                                  na.rm = TRUE, seed = 19850519) {
-  rdist <- match.fun(rdist[1])
-  set.seed(seed)
-
-  dt <- ggplot2::diamonds %>%
-    as_dtbl() %>%
-    .[, .(cut, color, clarity, carat, price)] %>%
-    .[, price := as.numeric(price)] %>%
-    melt(measure.vars = c("carat", "price")) %>%
-    .[, na := ifelse(all_missing(value) | length(na.omit(value)) < 3,
-      TRUE, FALSE), .(cut, color, clarity, variable)] %>%
-    .[
-      , .(
-        center = all(na) %?% NA_real_ %:% dmode(value),
-        scale = all(na) %?% NA_real_ %:% mad(value, na.rm = TRUE)),
-      .(cut, color, clarity, variable)
-    ] %>%
-    .[, na := ifelse(is.na(center) | is.na(scale), TRUE, FALSE)] %>%
-    .[
-      , .(
-        sample = all(na) %?% 0L %:% as.integer(1:N),
-        value = all(na) %?% NA_real_ %:% rdist(N, center[1], scale[1])),
-      .(cut, color, clarity, variable)
-    ] %>%
-    .[, value := trim_ends(value, .2, na.rm = FALSE), .(sample, variable)] %>%
-    .[
-      , minv := abs(min(0, min(value %NA% 0, na.rm = TRUE))),
-      .(sample, cut, color, clarity, variable)
-    ] %>%
-    .[, value := value + minv] %>%
-    .[, `:=`(minv = NULL)] %>%
-    dcast(sample + cut + color + clarity ~ variable,
-      value.var = "value",
-      drop = FALSE, fill = NA, fun.aggregate = identity)
-
-  if (!na.rm) {
-    return(tibble::as.tibble(dt))
-  }
-
-  dt[!is.na(carat) & !is.na(price), ] %>%
     tibble::as.tibble()
 }

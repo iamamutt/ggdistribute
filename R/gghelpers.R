@@ -154,6 +154,9 @@ get_overlaps <- function(data, axis = c("x", "y"), tol = -1e-04) {
     space = NA_real_, space_ratio = NA_real_,
     scaled_space = NA_real_, overlap = NA, within = NA)
 
+  # R CMD check
+  h1 <- h2 <- i1 <- i2 <- max1 <- max2 <- min1 <- min2 <- NULL
+
   overlap_data <- as_dtbl(pairs) %>%
     setnames(c("V1", "V2"), c("i1", "i2")) %>%
     .[, I := .I] %>%
@@ -164,13 +167,16 @@ get_overlaps <- function(data, axis = c("x", "y"), tol = -1e-04) {
       max2 = minmax$.__max[match(i2, minmax$.__grp)],
       group1 = minmax$group[match(i1, minmax$.__grp)],
       group2 = minmax$group[match(i2, minmax$.__grp)])] %>%
-    .[, `:=`(h1 = max1 - min1, h2 = max2 - min2)] %>%
+    .[, `:=`("h1" = max1 - min1, "h2" = max2 - min2)] %>%
     .[, `:=`(i1 = NULL, i2 = NULL)] %>%
     .[, eval(names(calc_vals)) := lapply(calc_vals, identity)]
 
   if (n_grps == 1) {
     return(as.data.frame(overlap_data))
   }
+
+  # R CMD check
+  overlap <- pair_height <- scaled_space <- sep_height <- space <- space_ratio <- NULL
 
   overlap_data[] %>%
     .[
@@ -208,7 +214,6 @@ rescale_groups <- function(data, axis = c("x", "y"), min_col = ".__min",
     ),
     by = c("group", min_col, ht_col)
     ] %>%
-    .[, `:=`(.__adj = NULL, .__by_ht = NULL)] %>%
     .[]
 }
 
@@ -228,10 +233,9 @@ check_padding <- function(x, size, padding, mult = 1.5) {
 rm_temp_cols <- function(data, temp_names = NULL) {
   if (is.null(temp_names)) {
     temp_names <- c(
-      ".__n", ".__min", ".__min_y", ".__max_y", ".__min_x",
-      ".__max_x", ".__max", ".__mid", ".__grp",
-      ".__len", ".__ht", ".__hg", ".__hn", ".__y",
-      ".__csum", ".__tmp", ".__y_t", ".__y_b")
+      ".__adj", ".__by_ht", ".__grp", ".__ht", ".__len",
+      ".__max_x", ".__max_y", ".__max", ".__mid", ".__min_x",
+      ".__min_y", ".__min", ".__n", ".__tmp", ".__y")
   }
 
   temp_names <- temp_names %Names% data

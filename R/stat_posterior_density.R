@@ -193,8 +193,8 @@ calc_avg_bw <- function(data, bw, grps = "group") {
   bw_str <- sub(".", "", bw)
 
   as_dtbl(data) %>%
-    .[!is.na(x), .(b = calc_bw(x, bw_str)),
+    .[!is.na(x), .(bw = calc_bw(x, bw_str)),
       by = grps
     ] %>%
-    .[, mean(b, na.rm = TRUE)]
+    .[, mean(bw, na.rm = TRUE)]
 }

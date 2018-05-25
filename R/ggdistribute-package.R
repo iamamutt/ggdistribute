@@ -99,14 +99,24 @@ NULL
 #' - ciu: ciu cutoff value based on `ci_width`
 #' - xmax: maximum value of `x` from the data
 #' @examples
-#' library(ggplot2)
+#' \dontrun{
+#' x <- data_normal_sample(mu = c(-1, 0, 1), n = 500)
 #'
-#' x <- cbind(replicate(4, rnorm(2000, runif(1, -3, 3))), rnorm(2000, 15))
-#' x <- data.frame(
-#' cond = rep(letters[1:5], each = 2000),
-#' data = as.vector(x), grp = rep(LETTERS[1:2], each = 5000))
+#' p <- ggplot(x, aes(x = value))
 #'
-#' ggplot(x) + aes(y = cond, x = data) + geom_posterior(ci_width = 0.95)
+#' p + geom_posterior()
+#'
+#' p + geom_posterior(aes(y = Condition))
+#'
+#' p + geom_posterior(aes(y = GroupScore, fill = Condition))
+#'
+#' p + geom_posterior(aes(y = GroupScore, fill = Group),
+#' brighten = c(1.3, 0, -1.3),
+#' position = position_spread(
+#' height=0.5,
+#' padding = 0))
+#'
+#' }
 #' @md
 NULL
 
@@ -117,8 +127,8 @@ NULL
 example_plot <- function() {
   colors <- mejr_palette()
 
-  ggplot(sre_data(5000), aes(y = effect)) +
-    facet_grid(contrast ~ ., scales = "free_y", space = "free_y") +
+  ggplot(sre_data(5000), aes_string(y = "effect")) +
+    facet_grid("contrast ~ .", scales = "free_y", space = "free_y") +
     labs(x = "Difference in accuracy (posterior predictions)") +
     geom_vline(
       color = colors$gray, size = 0.333,
@@ -127,7 +137,7 @@ example_plot <- function() {
       # ------------------------
       # geom specific aesthetics
       # ------------------------
-      aes(x = value, fill = contrast),
+      aes_string(x = "value", fill = "contrast"),
       # ----------------
       # position options
       # ----------------
@@ -141,8 +151,8 @@ example_plot <- function() {
       draw_ci = TRUE, # confidence interval parts
       draw_sd = TRUE, # standard deviation parts
       mirror = FALSE, # violion-like toggle
-      midline_color = "#797979", # color of line showing center of dist.
-      brighten = c(3, 0, 1.5), # modify interval fill segments
+      midline_color = NULL, # color of line showing center of dist (uses color)
+      brighten = c(3, 0, 1.333), # modify interval fill segments
       # -------------------------------------
       # stat options for estimating intervals
       # -------------------------------------

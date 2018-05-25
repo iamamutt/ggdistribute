@@ -69,6 +69,9 @@ standardize_height_param <- function(data, height) {
 
   assert_names(c("PANEL", "group", "y"), data)
 
+  # R CMD check
+  space <- uspace <- NULL
+
   height_type <- height_type[1]
   n_heights <- nrow(unique(data[, c("PANEL", "group")]))
   dt <- as_dtbl(data, copy = TRUE)
@@ -215,19 +218,19 @@ shrink_and_stack <- function(SD, reverse = FALSE, padding = 0) {
     # total height of data
     .[, .__len := diff(range_no_inf(y))] %>%
     # each overlapping groups height
-    .[, .__hg := ymax - ymin] %>%
+    .[, .__ht := ymax - ymin] %>%
     # group heights sum to total height
-    .[, .__hn := .__len * unique_simplex(.__hg, .__grp)] %>%
+    .[, .__len := .__len * unique_simplex(.__ht, .__grp)] %>%
     # shrink y by group height segments
     .[
-      , .__y := rescale_as_other(y, c(0, .__hn * pad_adj)),
-      .(.__grp, .__hn)
+      , .__y := rescale_as_other(y, c(0, .__len * pad_adj)),
+      .(.__grp, .__len)
     ] %>%
     # reposition y by stacking based on group height values
-    .[, .__csum := unique_apply(.__y * (1 / pad_adj), .__grp, csum_left)] %>%
-    .[, y := .__y + .__csum + ymin] %>%
+    .[, .__tmp := unique_apply(.__y * (1 / pad_adj), .__grp, csum_left)] %>%
+    .[, y := .__y + .__tmp + ymin] %>%
     .[
-      , `:=`(ymin = min(y), ymax = min(y) + .__hn),
+      , `:=`(ymin = min(y), ymax = min(y) + .__len),
       .(.__grp)
     ] %>%
     # junk
