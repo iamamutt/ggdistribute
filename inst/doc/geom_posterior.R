@@ -24,26 +24,26 @@ library(ggdistribute)
 data <- data_normal_sample(mu = c(-1, 0, 2, 5, 10), n = 1000)
 
 ## ------------------------------------------------------------------------
-b_cond <- data[with(data, cond == "B"), ]
+b_cond <- data[with(data, Condition == "B"), ]
 
 ggplot(b_cond, aes(x = value))+
   geom_posterior()
 
 ## ------------------------------------------------------------------------
-ggplot(data, aes(x = value, y = cond))+
+ggplot(data, aes(x = value, y = Condition))+
   geom_posterior()
 
 ## ------------------------------------------------------------------------
-ggplot(data, aes(x = value, y = cond))+
+ggplot(data, aes(x = value, y = Condition))+
   geom_posterior(mirror = TRUE)+
-  facet_grid(grp~., scales = "free_y")
+  facet_grid(Group~., scales = "free_y")
 
 ## ------------------------------------------------------------------------
-ggplot(data, aes(x = value, y = cond)) +
+ggplot(data, aes(x = value, y = Condition)) +
   stat_density_ci(n = 1024, interp_thresh = .001)
 
 ## ------------------------------------------------------------------------
-ggplot(data, aes(x = value, y = ..density.., fill = cond)) +
+ggplot(data, aes(x = value, y = ..density.., fill = Condition)) +
   stat_density_ci(
     alpha = 0.5,
     n = 1024,
@@ -52,14 +52,11 @@ ggplot(data, aes(x = value, y = ..density.., fill = cond)) +
   )
 
 ## ------------------------------------------------------------------------
-data$grp[data$cond == "E"] <- "z"
+data$Group[data$Condition == "E"] <- "z"
 
-ggplot(data, aes(x = value, y = cond, group = grp)) +
+ggplot(data, aes(x = value, y = Condition, group = Group)) +
   geom_posterior(position = position_spread(padding = 0)) +
   theme(panel.grid.major.y = element_line(color = gray(.8)))
-
-## ---- results='hide', message=FALSE--------------------------------------
- theme_set(theme_gray(base_family = "serif"))
 
 ## ---- echo=FALSE---------------------------------------------------------
 ggdistribute:::print_fn(ex_plot_fn_chunk, example_plot)
@@ -69,8 +66,8 @@ example_plot <-
 function() {
   colors <- mejr_palette()
 
-  ggplot(sre_data(5000), aes(y = effect)) +
-    facet_grid(contrast ~ ., scales = "free_y", space = "free_y") +
+  ggplot(sre_data(5000), aes_string(y = "effect")) +
+    facet_grid("contrast ~ .", scales = "free_y", space = "free_y") +
     labs(x = "Difference in accuracy (posterior predictions)") +
     geom_vline(
       color = colors$gray, size = 0.333,
@@ -79,7 +76,7 @@ function() {
       # ------------------------
       # geom specific aesthetics
       # ------------------------
-      aes(x = value, fill = contrast),
+      aes_string(x = "value", fill = "contrast"),
       # ----------------
       # position options
       # ----------------
@@ -93,8 +90,8 @@ function() {
       draw_ci = TRUE, # confidence interval parts
       draw_sd = TRUE, # standard deviation parts
       mirror = FALSE, # violion-like toggle
-      midline_color = "#797979", # color of line showing center of dist.
-      brighten = c(3, 0, 1.5), # modify interval fill segments
+      midline_color = NULL, # color of line showing center of dist (uses color)
+      brighten = c(3, 0, 1.333), # modify interval fill segments
       # -------------------------------------
       # stat options for estimating intervals
       # -------------------------------------
@@ -134,6 +131,8 @@ function() {
 plot(example_plot())
 
 ## ---- eval=FALSE, echo=FALSE---------------------------------------------
+#  library(ggplot2)
+#  
 #  # other visual inspections
 #  dt <- ggdistribute:::ggdist_data(1000, j = 5)
 #  

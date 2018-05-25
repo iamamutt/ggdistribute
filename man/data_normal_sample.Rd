@@ -18,7 +18,8 @@ corresponding to the number of groups.}
 \item{seed}{A seed value to generate the same sample. \link{numeric} vector.}
 }
 \value{
-A \link{data.frame} with the following variables: \code{grp}, \code{cond}, \code{value}.
+A \link{data.frame} with the following variables: \code{Group}, \code{Condition},
+\code{value}.
 }
 \description{
 Testing dataset of grouped Normal distributions

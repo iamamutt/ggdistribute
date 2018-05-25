@@ -32,13 +32,15 @@ theme_set(theme_gray(10))
 
 # Introduction
 
-Load the package to access the ggplot2 extensions.
+The `ggdistribute` package is an extension for plotting posterior or other types of unimodal distributions that require overlaying information about a distribution's intervals. It makes use of the `ggproto` system to extend `ggplot2`, providing additional "geoms", "stats", and "positions." The extensions integrate with existing `ggplot2` layer elements.
+
+To load the package to access the exported `ggplot2` extensions, do the following,
 
 ```{r}
 library(ggdistribute)
 ```
 
-Randomly generate a dataset of 5 different normal distributions and assign two different factors `cond` and `grp` to the generated values.
+The `data` object below is a randomly generated dataset of 5 different normal distributions. Two factors `Condition` and `Group` are assigned according to the generated values. 1000 samples are generated for each value of `mu`.
 
 ```{r}
 data <- data_normal_sample(mu = c(-1, 0, 2, 5, 10), n = 1000)
@@ -51,7 +53,7 @@ data <- data_normal_sample(mu = c(-1, 0, 2, 5, 10), n = 1000)
 This is the main function wrapper to generate the posterior distribution grobs. See `help("geom_posterior")` for a list of options passed to the ggproto object `GeomPosterior`. The `geom_posterior()` function with no arguments and no `y` aesthetic defaults to estimating the normalized density (integerates to 1) times the number of data points. This is the same as `aes(y = ..count..)` with `geom_posterior`.
 
 ```{r}
-b_cond <- data[with(data, cond == "B"), ]
+b_cond <- data[with(data, Condition == "B"), ]
 
 ggplot(b_cond, aes(x = value))+
   geom_posterior()
@@ -60,16 +62,16 @@ ggplot(b_cond, aes(x = value))+
 If `y` is discrete, the densities are justified at the bottom of the `y` value.
 
 ```{r}
-ggplot(data, aes(x = value, y = cond))+
+ggplot(data, aes(x = value, y = Condition))+
   geom_posterior()
 ```
 
 Mirroring can be turned on to generate densities similar to `geom_violin`, and `geom_posterior` can be used like other `geoms` in `ggplot2`, like specifying facetting.
 
 ```{r}
-ggplot(data, aes(x = value, y = cond))+
+ggplot(data, aes(x = value, y = Condition))+
   geom_posterior(mirror = TRUE)+
-  facet_grid(grp~., scales = "free_y")
+  facet_grid(Group~., scales = "free_y")
 ```
 
 ## `stat_density_ci(...)`, `StatDensityCI`
@@ -77,14 +79,14 @@ ggplot(data, aes(x = value, y = cond))+
 The `StatDensityCI` class is the default stat for the `geom_posterior` wrapper. It computes densities for each group and finds the confidence intervals. See `help("stat_density_ci")` for additional options and computed variables.
 
 ```{r}
-ggplot(data, aes(x = value, y = cond)) +
+ggplot(data, aes(x = value, y = Condition)) +
   stat_density_ci(n = 1024, interp_thresh = .001)
 ```
 
 The `stat_density_ci` wrapper can also be used with other geoms that make use of `density`, `count`, and `scaled` variables.
 
 ```{r}
-ggplot(data, aes(x = value, y = ..density.., fill = cond)) +
+ggplot(data, aes(x = value, y = ..density.., fill = Condition)) +
   stat_density_ci(
     alpha = 0.5,
     n = 1024,
@@ -95,12 +97,12 @@ ggplot(data, aes(x = value, y = ..density.., fill = cond)) +
 
 ## `position_spread(...)`, `PositionSpread`
 
-The `PositionSpread` class spreads out overlapping densities within the range of their y axis value. For instance, there are two different groups for `cond` A-D, but only one group in E. Distributions within each `cond` are resized and spread over the group's y interval. Padding is turned off below to see where distributions begin and end.
+The `PositionSpread` class spreads out overlapping densities within the range of their y axis value. For instance, there are two different groups for `Condition` A-D, but only one group in E. Distributions within each `Condition` are resized and spread over the group's y interval. Padding is turned off below to see where distributions begin and end.
 
 ```{r}
-data$grp[data$cond == "E"] <- "z"
+data$Group[data$Condition == "E"] <- "z"
 
-ggplot(data, aes(x = value, y = cond, group = grp)) +
+ggplot(data, aes(x = value, y = Condition, group = Group)) +
   geom_posterior(position = position_spread(padding = 0)) +
   theme(panel.grid.major.y = element_line(color = gray(.8)))
 ```
@@ -108,15 +110,7 @@ ggplot(data, aes(x = value, y = cond, group = grp)) +
 
 # Extended example
 
-An overview of combining `ggdistribute` with other `ggplot2` elements.
-
-## Theme setup
-
-Setup theme options for the final plot.
-
-```{r, results='hide', message=FALSE}
- theme_set(theme_gray(base_family = "serif"))
-```
+The package function `example_plot()` is an overview of combining `ggdistribute` with other `ggplot2` elements. The contents of this function are printed below and gives details about the extended parts to `ggplot2`.
 
 ```{r, echo=FALSE}
 ggdistribute:::print_fn(ex_plot_fn_chunk, example_plot)
@@ -125,13 +119,13 @@ ggdistribute:::print_fn(ex_plot_fn_chunk, example_plot)
 ```{r print_ex_plot, ref.label="ex_plot_fn_chunk"}
 ```
 
-Print the plot to the graphics device.
-
 ```{r, fig.width=5, fig.height=3, out.width="100%"}
 plot(example_plot())
 ```
 
 ```{r, eval=FALSE, echo=FALSE}
+library(ggplot2)
+
 # other visual inspections
 dt <- ggdistribute:::ggdist_data(1000, j = 5)
 

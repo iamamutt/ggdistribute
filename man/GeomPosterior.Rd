@@ -168,12 +168,22 @@ aesthetics are in bold):
 }
 
 \examples{
-library(ggplot2)
+\dontrun{
+x <- data_normal_sample(mu = c(-1, 0, 1), n = 500)
 
-x <- cbind(replicate(4, rnorm(2000, runif(1, -3, 3))), rnorm(2000, 15))
-x <- data.frame(
-cond = rep(letters[1:5], each = 2000),
-data = as.vector(x), grp = rep(LETTERS[1:2], each = 5000))
+p <- ggplot(x, aes(x = value))
 
-ggplot(x) + aes(y = cond, x = data) + geom_posterior(ci_width = 0.95)
+p + geom_posterior()
+
+p + geom_posterior(aes(y = Condition))
+
+p + geom_posterior(aes(y = GroupScore, fill = Condition))
+
+p + geom_posterior(aes(y = GroupScore, fill = Group),
+brighten = c(1.3, 0, -1.3),
+position = position_spread(
+height=0.5,
+padding = 0))
+
+}
 }
