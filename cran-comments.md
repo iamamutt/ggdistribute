@@ -9,15 +9,8 @@
 0 errors | 0 warnings | 0 note
 
 * This is a new release.
-* Fixed: "field should be a call to person(), or combine such calls."
-* Fixed: "Examples with CPU or elapsed time > 10s"
-
-* The following are spelled correctly
-
-Possibly mis-spelled words in DESCRIPTION:
-  geoms (8:52)
-  ggproto (8:27)
-
+* Fixed: "replace \dontrun{} by \donttest{}"
+* Fixed: "ensure that your functions do not write by default or in your examples/vignettes/tests"
 
 ## Reverse dependencies
 

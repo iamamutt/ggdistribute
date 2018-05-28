@@ -104,7 +104,10 @@ assert <- function(..., err = NULL, envir = parent.frame(), print) {
 #' @param rhs object to return if `lhs` is `TRUE`.
 #' @return object on `rhs` or `NULL`
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' `%:%` <- ggdistribute:::`%:%`
+#' `%?%` <- ggdistribute:::`%?%`
+#'
 #' TRUE  %?% 1 %:% 0  #> 1
 #' FALSE %?% 1 %:% 0  #> 0
 #'
@@ -115,12 +118,12 @@ assert <- function(..., err = NULL, envir = parent.frame(), print) {
 #' (x == 1) %?% c("y", "yes") %:% c("n", "No", "false")
 #'
 #' # ERROR: The %?% operator captured only 0, which is not logical.
-#' x == 0 %?% "y" %:% "n"
+#' # x == 0 %?% "y" %:% "n"
 #'
 #' # ERROR: The TRUE slot cannot return NULL because NULL is used to
 #' # decide what to return in %:%
 #' #   `TRUE %?% NULL` and `FALSE %?% obj` would both return NULL.
-#' (x == 0) %?% NULL %:% "n"
+#' # (x == 0) %?% NULL %:% "n"
 #' }
 `%?%` <- function(lhs, rhs) {
   if (!is.logical(lhs) || length(lhs) > 1 || anyNA(lhs)) {

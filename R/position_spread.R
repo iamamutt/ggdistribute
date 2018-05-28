@@ -164,6 +164,7 @@ transform_heights <- function(data, heights, padding) {
 spread_by_ymin <- function(data, spreader, ...) {
   assert_names(c("PANEL", "group", "y"), data)
 
+  # NOTE: also creates the variables ymin, ymax in data
   as_dtbl(data) %>%
     set_range_data("y",
       by = c("PANEL", "group"),

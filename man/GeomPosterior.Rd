@@ -120,7 +120,9 @@ some proportion according to \code{trim}. If \code{NULL} or \code{NA}, don't tri
 tails. See \code{\link[=trim_ends]{trim_ends()}}.}
 }
 \description{
-Geom for plotting posterior distributions
+This geom may be used to plot the density of any type of numeric variable but
+the displayed intervals may not be informative if the distribution deviates
+too much from a unimodal, symmetric distribution.
 }
 \section{Functions}{
 \itemize{
@@ -131,22 +133,9 @@ confidence intervals for each group
 }}
 
 \section{Aesthetics}{
-
-\code{geom_posterior} understands the following aesthetics (required
-aesthetics are in bold):
-\itemize{
-\item \strong{x}
-\item \strong{y}
-\item xmin
-\item xmax
-\item alpha
-\item colour
-\item fill
-\item group
-\item linetype
-\item size
-\item weight
-}
+ \code{geom_posterior} understands the following aesthetics
+(required aesthetics are in bold): - \strong{x} - \strong{y} - xmin - xmax - alpha -
+colour - fill - group - linetype - size - weight
 }
 
 \section{Computed Variables}{
@@ -154,21 +143,26 @@ aesthetics are in bold):
 
 \emph{stat_density_ci}:
 \itemize{
-\item density: density estimate from \link[stats:density]{stats::density}
-\item scaled: Normalized density values: \code{density / max(density)}
-\item count: Number of samples at density level: \code{dens: n}
-\item xmin: minimum value of \code{x} from the data
-\item cil: cil cutoff value based on \code{ci_width}
-\item sdl: central value minus 1 sd of \code{x}
-\item mid: value of central tendency
-\item sdu: central value plus 1 sd of \code{x}
-\item ciu: ciu cutoff value based on \code{ci_width}
-\item xmax: maximum value of \code{x} from the data
+\item density: density estimate from \link[stats:density]{stats::density} - scaled: Normalized
+density values: \code{density / max(density)} - count: Number of samples at
+density level: \code{(density / sum(density)) * n} - xmin: minimum value of \code{x}
+from the data - cil: cil cutoff value based on \code{ci_width} - sdl: central
+value minus 1 sd of \code{x} - mid: value of central tendency - sdu: central
+value plus 1 sd of \code{x} - ciu: ciu cutoff value based on \code{ci_width} - xmax:
+maximum value of \code{x} from the data
+}
+
+\emph{position_spread}
+\itemize{
+\item ymin: minimum value of \code{y} for each group in a panel. - ymax: maximum
+value of \code{y} for each group in a panel.
 }
 }
 
 \examples{
-\dontrun{
+\donttest{
+library(ggplot2)
+
 x <- data_normal_sample(mu = c(-1, 0, 1), n = 500)
 
 p <- ggplot(x, aes(x = value))

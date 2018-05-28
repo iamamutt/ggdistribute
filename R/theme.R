@@ -34,7 +34,7 @@ mejr_palette <- function() {
 #' @seealso [mejr_geom_defaults], [ggplot2::theme_update], [ggplot2::theme_set]
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(ggplot2)
 #'
 #' theme_set(theme_mejr(debug = TRUE))
@@ -377,26 +377,16 @@ geom_defaults <- function(geom) {
 #'
 #' @param w pdf width (inches)
 #' @param h pdf height (inches)
-#' @param eplot list of options for \code{example_plot}
-#' @param mejr list of options for theme_mejr(...)
+#' @param eplot list of options for `example_plot`
+#' @param mejr list of options for `theme_mejr(...)`
 #' @param gg further theme customization with ggplot::theme(...)
 #' @param print show the `eplot` plot
 #' @param with_test_theme also print the same plot using `ggplot2::theme_test`
-#'
+#' @param dir directory where to save temp pdf files, such as tempdir()
 #' @return NULL
-#' @examples
-#' \dontrun{
-#' test_mejr_theme(w = 3.25, h = 3,
-#' mejr = list(base_size = 8, debug=TRUE),
-#' gg = theme(plot.title=element_blank()))
-#'
-#' test_mejr_theme(w = 5.25, h = 4,
-#' mejr = list(base_size = 11, debug=TRUE),
-#' gg = theme(plot.title=element_blank()))
-#' }
 test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
                             mejr = list(), gg = theme(),
-                            print = TRUE, with_test_theme = FALSE) {
+                            print = TRUE, with_test_theme = FALSE, dir) {
   if (length(eplot) < 1) {
     eplot <- list()
   }
@@ -404,6 +394,8 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
   if (length(mejr) < 1) {
     mejr <- list()
   }
+
+  cat(dir)
 
   if (with_test_theme) {
     test_theme_args <- list(base_size = 11, debug = FALSE)
@@ -417,7 +409,7 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
 
     ggsave(
       filename = normalizePath(
-        file.path("~/../Desktop/theme_test.pdf"),
+        file.path(dir, "theme_test.pdf"),
         mustWork = F
       ),
       example_plot() + do.call("theme_test", test_theme_args) + gg,
@@ -425,20 +417,20 @@ test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
   }
 
   theme_set(theme_mejr())
+
   p_mejr1 <- example_plot() + do.call(theme_mejr, mejr) + gg
   p_mejr2 <- do.call(example_plot, eplot) + do.call(theme_mejr, mejr) + gg
 
-  # combine_plots(p_mejr1, p_mejr2, ncols = 1, show=FALSE)
   ggsave(
     filename = normalizePath(
-      file.path("~/../Desktop/theme_mejr1.pdf"),
+      file.path(dir, "theme_mejr1.pdf"),
       mustWork = FALSE
     ),
     p_mejr1, width = w, height = h, device = "pdf")
 
   ggsave(
     filename = normalizePath(
-      file.path("~/../Desktop/theme_mejr2.pdf"),
+      file.path(dir, "theme_mejr2.pdf"),
       mustWork = FALSE
     ),
     p_mejr2, width = w, height = h, device = "pdf")

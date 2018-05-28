@@ -22,7 +22,10 @@ This is primarily used in conjuction with the \code{\%:\%} operator. See
 examples.
 }
 \examples{
-\dontrun{
+\donttest{
+`\%:\%` <- ggdistribute:::`\%:\%`
+`\%?\%` <- ggdistribute:::`\%?\%`
+
 TRUE  \%?\% 1 \%:\% 0  #> 1
 FALSE \%?\% 1 \%:\% 0  #> 0
 
@@ -33,11 +36,11 @@ x <- 0
 (x == 1) \%?\% c("y", "yes") \%:\% c("n", "No", "false")
 
 # ERROR: The \%?\% operator captured only 0, which is not logical.
-x == 0 \%?\% "y" \%:\% "n"
+# x == 0 \%?\% "y" \%:\% "n"
 
 # ERROR: The TRUE slot cannot return NULL because NULL is used to
 # decide what to return in \%:\%
 #   `TRUE \%?\% NULL` and `FALSE \%?\% obj` would both return NULL.
-(x == 0) \%?\% NULL \%:\% "n"
+# (x == 0) \%?\% NULL \%:\% "n"
 }
 }

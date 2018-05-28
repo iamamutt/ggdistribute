@@ -6,6 +6,7 @@
 .RData
 .Rhistory
 .Rproj.user
+.vscode
 *-Ex.R
 *.dll
 *.DS_Store

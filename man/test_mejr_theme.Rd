@@ -5,7 +5,7 @@
 \title{Test theme by printing plots to pdf and viewport}
 \usage{
 test_mejr_theme(w = 6.875, h = 4.5, eplot = list(), mejr = list(),
-  gg = theme(), print = TRUE, with_test_theme = FALSE)
+  gg = theme(), print = TRUE, with_test_theme = FALSE, dir)
 }
 \arguments{
 \item{w}{pdf width (inches)}
@@ -14,25 +14,16 @@ test_mejr_theme(w = 6.875, h = 4.5, eplot = list(), mejr = list(),
 
 \item{eplot}{list of options for \code{example_plot}}
 
-\item{mejr}{list of options for theme_mejr(...)}
+\item{mejr}{list of options for \code{theme_mejr(...)}}
 
 \item{gg}{further theme customization with ggplot::theme(...)}
 
 \item{print}{show the \code{eplot} plot}
 
 \item{with_test_theme}{also print the same plot using \code{ggplot2::theme_test}}
+
+\item{dir}{directory where to save temp pdf files, such as tempdir()}
 }
 \description{
 Test theme by printing plots to pdf and viewport
-}
-\examples{
-\dontrun{
-test_mejr_theme(w = 3.25, h = 3,
-mejr = list(base_size = 8, debug=TRUE),
-gg = theme(plot.title=element_blank()))
-
-test_mejr_theme(w = 5.25, h = 4,
-mejr = list(base_size = 11, debug=TRUE),
-gg = theme(plot.title=element_blank()))
-}
 }
