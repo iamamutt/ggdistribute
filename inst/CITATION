@@ -1,11 +1,14 @@
 citHeader("To cite ggdistribute in publications use:")
 
-citEntry(entry = "Manual",
-  title        = "{ggdistribute}: A ggplot2 Extension for Plotting Distributions",
-  author       = personList(as.person("Joseph M. Burling")),
+citEntry(entry = "Misc",
+  title        = "{ggdistribute}: {A ggplot2} Extension for Plotting Unimodal Distributions",
+  author       = person("Joseph M.", "Burling"),
+  note         = "R package version 1.0.1",
   year         = "2018",
   url          = "https://github.com/iamamutt/ggdistribute",
 
   textVersion  =
-  paste("")
+  paste("Burling, Joseph M. (2018).",
+  title = "ggdistribute: A ggplot2 Extension for Plotting Unimodal Distributions. R package version 1.0.1.",
+  "https://github.com/iamamutt/ggdistribute/.")
 )

@@ -48,7 +48,7 @@ data_normal_sample <- function(mu = c(-0.5, 4), n = 500L,
   k <- clip_range(length(mu), max = 13)
   N <- n * k
 
-  if (k ==1) {
+  if (k == 1) {
     adj <- 0
   } else {
     adj <- median(diff(sort(unique(c(0, mu))))) / max(1, (k - 1))

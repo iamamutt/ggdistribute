@@ -3,14 +3,17 @@
 \docType{package}
 \name{ggdistribute-package}
 \alias{ggdistribute-package}
-\title{ggdistribute: \code{ggplot2} Extension for Plotting Distributions}
+\title{A 'ggplot2' Extension for Plotting Unimodal Distributions}
 \description{
-\code{ggdistribute} Uses the ggproto system to provide different geoms, stats, and
-positions for plotting distributions.
+The \code{ggdistribute} package is an extension for plotting posterior or other
+types of unimodal distributions that require overlaying information about a
+distribution's intervals. It makes use of the \code{ggproto} system to extend
+\code{ggplot2}, providing additional "geoms", "stats", and "positions." The
+extensions integrate with existing \code{ggplot2} layer elements.
 }
 \details{
-\code{ggdistribute} Displaying the distributions relies heavily on stacking
-distributions using position_spread, which may not align with other geoms.
+Displaying the distributions relies heavily on stacking distributions using
+position_spread, which may not align with other geoms.
 }
 \seealso{
 \link[ggplot2:geom_density]{ggplot2::geom_density}, \link[ggplot2:position_dodge]{ggplot2::position_dodge}

@@ -9,8 +9,7 @@
 0 errors | 0 warnings | 0 note
 
 * This is a new release.
-* Fixed: "replace \dontrun{} by \donttest{}"
-* Fixed: "ensure that your functions do not write by default or in your examples/vignettes/tests"
+* Fixed: Use man/figures for README.md image links
 
 ## Reverse dependencies
 

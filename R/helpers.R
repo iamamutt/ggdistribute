@@ -328,8 +328,10 @@ unique_simplex <- function(size_vec, grp_idx = NULL, offset_vec = 0) {
     })
 }
 
-print_fn <- function(chunk_name, ...) {
-  fns <- as.character(match.call())[-1L]
-  txt <- capture.output(dump(fns[-1], ""))
-  knitr::read_chunk(lines = txt, labels = fns[1])
+function2chunk <- function(...) {
+  functions <- as.character(match.call())[-1L]
+  function_txt <- capture.output(dump(functions, "", control = "all"))
+  cat("\n\n```r\n")
+  cat(function_txt, sep = "\n")
+  cat("\n```\n\n")
 }

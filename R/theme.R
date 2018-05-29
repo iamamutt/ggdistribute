@@ -385,8 +385,8 @@ geom_defaults <- function(geom) {
 #' @param dir directory where to save temp pdf files, such as tempdir()
 #' @return NULL
 test_mejr_theme <- function(w = 6.875, h = 4.5, eplot = list(),
-                            mejr = list(), gg = theme(),
-                            print = TRUE, with_test_theme = FALSE, dir) {
+                            mejr = list(), gg = theme(), print = TRUE,
+                            with_test_theme = FALSE, dir) {
   if (length(eplot) < 1) {
     eplot <- list()
   }

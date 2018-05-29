@@ -19,12 +19,11 @@ knitr::opts_chunk$set(
   dpi = 300,
   fig.width = 5.25,
   fig.height = 3.8,
-  out.width = "90%",
-  out.height = "100%"
+  out.width = "90%"
 )
 ```
 
-```{r, echo=FALSE, message=FALSE}
+```{r load-and-opts, echo=FALSE, message=FALSE}
 library(ggplot2)
 library(data.table)
 theme_set(theme_gray(10))
@@ -36,13 +35,13 @@ The `ggdistribute` package is an extension for plotting posterior or other types
 
 To load the package to access the exported `ggplot2` extensions, do the following,
 
-```{r}
+```{r load-ggdistribute}
 library(ggdistribute)
 ```
 
 The `data` object below is a randomly generated dataset of 5 different normal distributions. Two factors `Condition` and `Group` are assigned according to the generated values. 1000 samples are generated for each value of `mu`.
 
-```{r}
+```{r make-data}
 data <- data_normal_sample(mu = c(-1, 0, 2, 5, 10), n = 1000)
 ```
 
@@ -52,7 +51,7 @@ data <- data_normal_sample(mu = c(-1, 0, 2, 5, 10), n = 1000)
 
 This is the main function wrapper to generate the posterior distribution grobs. See `help("geom_posterior")` for a list of options passed to the ggproto object `GeomPosterior`. The `geom_posterior()` function with no arguments and no `y` aesthetic defaults to estimating the normalized density (integerates to 1) times the number of data points. This is the same as `aes(y = ..count..)` with `geom_posterior`.
 
-```{r}
+```{r ex1}
 b_cond <- data[with(data, Condition == "B"), ]
 
 ggplot(b_cond, aes(x = value))+
@@ -61,14 +60,14 @@ ggplot(b_cond, aes(x = value))+
 
 If `y` is discrete, the densities are justified at the bottom of the `y` value.
 
-```{r}
+```{r ex2}
 ggplot(data, aes(x = value, y = Condition))+
   geom_posterior()
 ```
 
 Mirroring can be turned on to generate densities similar to `geom_violin`, and `geom_posterior` can be used like other `geoms` in `ggplot2`, like specifying facetting.
 
-```{r}
+```{r ex3, fig.height=6}
 ggplot(data, aes(x = value, y = Condition))+
   geom_posterior(mirror = TRUE)+
   facet_grid(Group~., scales = "free_y")
@@ -78,14 +77,14 @@ ggplot(data, aes(x = value, y = Condition))+
 
 The `StatDensityCI` class is the default stat for the `geom_posterior` wrapper. It computes densities for each group and finds the confidence intervals. See `help("stat_density_ci")` for additional options and computed variables.
 
-```{r}
+```{r ex4}
 ggplot(data, aes(x = value, y = Condition)) +
   stat_density_ci(n = 1024, interp_thresh = .001)
 ```
 
 The `stat_density_ci` wrapper can also be used with other geoms that make use of `density`, `count`, and `scaled` variables.
 
-```{r}
+```{r ex5}
 ggplot(data, aes(x = value, y = ..density.., fill = Condition)) +
   stat_density_ci(
     alpha = 0.5,
@@ -99,7 +98,7 @@ ggplot(data, aes(x = value, y = ..density.., fill = Condition)) +
 
 The `PositionSpread` class spreads out overlapping densities within the range of their y axis value. For instance, there are two different groups for `Condition` A-D, but only one group in E. Distributions within each `Condition` are resized and spread over the group's y interval. Padding is turned off below to see where distributions begin and end.
 
-```{r}
+```{r ex6}
 data$Group[data$Condition == "E"] <- "z"
 
 ggplot(data, aes(x = value, y = Condition, group = Group)) +
@@ -112,18 +111,15 @@ ggplot(data, aes(x = value, y = Condition, group = Group)) +
 
 The package function `example_plot()` is an overview of combining `ggdistribute` with other `ggplot2` elements. The contents of this function are printed below and gives details about the extended parts to `ggplot2`.
 
-```{r, echo=FALSE}
-ggdistribute:::print_fn(ex_plot_fn_chunk, example_plot)
+```{r ex-plot-show, echo=FALSE, results='asis'}
+ggdistribute:::function2chunk("example_plot")
 ```
 
-```{r print_ex_plot, ref.label="ex_plot_fn_chunk"}
-```
-
-```{r, fig.width=5, fig.height=3, out.width="100%"}
+```{r ex-plot-print, fig.width=5, fig.height=3, out.width="100%"}
 plot(example_plot())
 ```
 
-```{r, eval=FALSE, echo=FALSE}
+```{r other-tests, eval=FALSE, echo=FALSE}
 library(ggplot2)
 
 # other visual inspections

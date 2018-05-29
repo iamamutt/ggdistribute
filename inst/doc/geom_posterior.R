@@ -8,41 +8,40 @@ knitr::opts_chunk$set(
   dpi = 300,
   fig.width = 5.25,
   fig.height = 3.8,
-  out.width = "90%",
-  out.height = "100%"
+  out.width = "90%"
 )
 
-## ---- echo=FALSE, message=FALSE------------------------------------------
+## ----load-and-opts, echo=FALSE, message=FALSE----------------------------
 library(ggplot2)
 library(data.table)
 theme_set(theme_gray(10))
 
-## ------------------------------------------------------------------------
+## ----load-ggdistribute---------------------------------------------------
 library(ggdistribute)
 
-## ------------------------------------------------------------------------
+## ----make-data-----------------------------------------------------------
 data <- data_normal_sample(mu = c(-1, 0, 2, 5, 10), n = 1000)
 
-## ------------------------------------------------------------------------
+## ----ex1-----------------------------------------------------------------
 b_cond <- data[with(data, Condition == "B"), ]
 
 ggplot(b_cond, aes(x = value))+
   geom_posterior()
 
-## ------------------------------------------------------------------------
+## ----ex2-----------------------------------------------------------------
 ggplot(data, aes(x = value, y = Condition))+
   geom_posterior()
 
-## ------------------------------------------------------------------------
+## ----ex3, fig.height=6---------------------------------------------------
 ggplot(data, aes(x = value, y = Condition))+
   geom_posterior(mirror = TRUE)+
   facet_grid(Group~., scales = "free_y")
 
-## ------------------------------------------------------------------------
+## ----ex4-----------------------------------------------------------------
 ggplot(data, aes(x = value, y = Condition)) +
   stat_density_ci(n = 1024, interp_thresh = .001)
 
-## ------------------------------------------------------------------------
+## ----ex5-----------------------------------------------------------------
 ggplot(data, aes(x = value, y = ..density.., fill = Condition)) +
   stat_density_ci(
     alpha = 0.5,
@@ -51,86 +50,20 @@ ggplot(data, aes(x = value, y = ..density.., fill = Condition)) +
     position = "identity"
   )
 
-## ------------------------------------------------------------------------
+## ----ex6-----------------------------------------------------------------
 data$Group[data$Condition == "E"] <- "z"
 
 ggplot(data, aes(x = value, y = Condition, group = Group)) +
   geom_posterior(position = position_spread(padding = 0)) +
   theme(panel.grid.major.y = element_line(color = gray(.8)))
 
-## ---- echo=FALSE---------------------------------------------------------
-ggdistribute:::print_fn(ex_plot_fn_chunk, example_plot)
+## ----ex-plot-show, echo=FALSE, results='asis'----------------------------
+ggdistribute:::function2chunk("example_plot")
 
-## ----print_ex_plot, ref.label="ex_plot_fn_chunk"-------------------------
-example_plot <-
-function() {
-  colors <- mejr_palette()
-
-  ggplot(sre_data(5000), aes_string(y = "effect")) +
-    facet_grid("contrast ~ .", scales = "free_y", space = "free_y") +
-    labs(x = "Difference in accuracy (posterior predictions)") +
-    geom_vline(
-      color = colors$gray, size = 0.333,
-      linetype = 1, xintercept = 0) +
-    geom_posterior(
-      # ------------------------
-      # geom specific aesthetics
-      # ------------------------
-      aes_string(x = "value", fill = "contrast"),
-      # ----------------
-      # position options
-      # ----------------
-      position = position_spread(
-        reverse = TRUE, # order of groups within panels
-        padding = 0.3, # shrink heights of distributions
-        height = "panel" # scale by heights within panels
-      ), # ------------
-      # geom options
-      # ------------
-      draw_ci = TRUE, # confidence interval parts
-      draw_sd = TRUE, # standard deviation parts
-      mirror = FALSE, # violion-like toggle
-      midline_color = NULL, # color of line showing center of dist (uses color)
-      brighten = c(3, 0, 1.333), # modify interval fill segments
-      # -------------------------------------
-      # stat options for estimating intervals
-      # -------------------------------------
-      interp_thresh = .001, # threshold for interpolating segment gaps
-      center_stat = "median", # measure of central tendency
-      ci_width = 0.90, # width corresponding to CI segments
-      interval_type = "ci", # quantile intervals not highest density interval
-      # -------------------------------------
-      # stat options for density estimation
-      # -------------------------------------
-      bw = ".nrd0", # bandwidth estimator type
-      adjust = 1.5, # adjustment to bandwidth
-      n = 1024, # number of samples in final density
-      trim = .005, # trim x before estimating density
-      cut = 1.5, # tail extension
-      # ----------------
-      # standard options
-      # ---------------
-      size = 0.15, color = colors$gray, vjust = 0.7, show.legend = FALSE) +
-    scale_x_continuous(breaks = seq(-1, 1, .05)) +
-    scale_fill_manual(values = c(
-      colors$yellow, colors$magenta,
-      colors$cyan)) +
-    theme(
-      panel.grid.major.x = element_blank(), panel.ontop = FALSE,
-      panel.border = element_rect(
-        fill = NA, colour = gray(0.84), size = 0.67
-      ),
-      axis.title.y = element_blank(),
-      strip.text.y = element_text(angle = 0, hjust = 0.5),
-      plot.margin = margin(t = 2, r = 4, b = 2, l = 2, unit = "pt"),
-      legend.box.background = element_blank(),
-      legend.background = element_blank())
-}
-
-## ---- fig.width=5, fig.height=3, out.width="100%"------------------------
+## ----ex-plot-print, fig.width=5, fig.height=3, out.width="100%"----------
 plot(example_plot())
 
-## ---- eval=FALSE, echo=FALSE---------------------------------------------
+## ----other-tests, eval=FALSE, echo=FALSE---------------------------------
 #  library(ggplot2)
 #  
 #  # other visual inspections

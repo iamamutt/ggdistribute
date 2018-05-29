@@ -1,9 +1,11 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggdistribute)](https://cran.r-project.org/package=ggdistribute)
+
 # ggdistribute
 
-A `ggplot2` Extension for Plotting Distributions.
+A `ggplot2` Extension for Plotting Unimodal Distributions
 
 The `ggdistribute` package is an extension for plotting posterior or
 other types of unimodal distributions that require overlaying
@@ -24,7 +26,7 @@ library(ggplot2)
 library(ggdistribute)
 ```
 
-<img src="media/turtle_snails-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-turtle_snails-1.png" width="100%" style="display: block; margin: auto;" />
 
 ``` r
 example_plot <-
@@ -38,43 +40,44 @@ function() {
       color = colors$gray, size = 0.333,
       linetype = 1, xintercept = 0) +
     geom_posterior(
-      # ------------------------
+      # ------------------------------------------------------------------------
       # geom specific aesthetics
-      # ------------------------
+      # ------------------------------------------------------------------------
       aes_string(x = "value", fill = "contrast"),
-      # ----------------
+      # ------------------------------------------------------------------------
       # position options
-      # ----------------
+      # ------------------------------------------------------------------------
       position = position_spread(
         reverse = TRUE, # order of groups within panels
         padding = 0.3, # shrink heights of distributions
         height = "panel" # scale by heights within panels
-      ), # ------------
+      ), #
+      # ------------------------------------------------------------------------
       # geom options
-      # ------------
+      # ------------------------------------------------------------------------
       draw_ci = TRUE, # confidence interval parts
       draw_sd = TRUE, # standard deviation parts
       mirror = FALSE, # violion-like toggle
       midline_color = NULL, # color of line showing center of dist (uses color)
       brighten = c(3, 0, 1.333), # modify interval fill segments
-      # -------------------------------------
+      # ------------------------------------------------------------------------
       # stat options for estimating intervals
-      # -------------------------------------
+      # ------------------------------------------------------------------------
       interp_thresh = .001, # threshold for interpolating segment gaps
       center_stat = "median", # measure of central tendency
       ci_width = 0.90, # width corresponding to CI segments
       interval_type = "ci", # quantile intervals not highest density interval
-      # -------------------------------------
+      # ------------------------------------------------------------------------
       # stat options for density estimation
-      # -------------------------------------
+      # ------------------------------------------------------------------------
       bw = ".nrd0", # bandwidth estimator type
       adjust = 1.5, # adjustment to bandwidth
       n = 1024, # number of samples in final density
       trim = .005, # trim x before estimating density
       cut = 1.5, # tail extension
-      # ----------------
-      # standard options
-      # ---------------
+      # ------------------------------------------------------------------------
+      # standard layer options
+      # ------------------------------------------------------------------------
       size = 0.15, color = colors$gray, vjust = 0.7, show.legend = FALSE) +
     scale_x_continuous(breaks = seq(-1, 1, .05)) +
     scale_fill_manual(values = c(
@@ -158,7 +161,7 @@ ggplot(data) +
     x = "Parameter estimate")
 ```
 
-<img src="media/space_ships-1.png" width="80%" height="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-space_ships-1.png" width="80%" style="display: block; margin: auto;" />
 
 ### Changing the appearance of `geom_posterior`
 
@@ -188,7 +191,7 @@ ggplot(data) +
     panel.grid.major.y = element_line(color = gray(.92)))
 ```
 
-<img src="media/candy_wrappers-1.png" width="80%" height="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-candy_wrappers-1.png" width="80%" style="display: block; margin: auto;" />
 
 ### The *y* axis is a repeated, continuous grouping variable
 
@@ -236,7 +239,7 @@ ggplot(data) +
   scale_y_continuous(breaks = seq(-10, 10, .5))
 ```
 
-<img src="media/rainbow_hills-1.png" width="80%" height="100%" style="display: block; margin: auto;" />
+<img src="man/figures/README-rainbow_hills-1.png" width="80%" style="display: block; margin: auto;" />
 
 ## How to install
 
@@ -251,24 +254,23 @@ A current R installation.
   - `devtools` package:
     <https://www.rstudio.com/products/rpackages/devtools/>
 
-So that you can install the GitHub contents as an R package. You can
-install the package by opening up RStudio or an R terminal and running:
+The `devtools` package is an R package that makes it easier to install
+local or remote content as an R package that can be used like any other
+standard R package. You can install `devtools` by opening up RStudio or
+an R terminal and running
 
 ``` r
 install.packages("devtools")
 ```
 
-  - Build tools: <http://cran.r-project.org/bin/windows/Rtools/>
-
 For Windows users, you *may* be required to install Rtools first before
 you can use the `devtools` package, if there is any code that needs to
 be compiled. These are a set of build tools customized for building R
-packages (see `devtools` link for more
-details).
+packages (see the `devtools` link above for more details).
+
+  - Build tools: <http://cran.r-project.org/bin/windows/Rtools/>
 
 ### Installing from CRAN
-
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggdistribute)](https://cran.r-project.org/package=ggdistribute)
 
 If you want to use the last version that was uploaded to the CRAN
 repository, do the following:
@@ -279,23 +281,35 @@ install.packages("ggdistribute")
 
 ### Installing from the downloaded package content folder
 
-If you have all the package contents, you can open up the RScience.Rproj
-file in RStudio and use both `devtools` and RStudio to load or install
-package contents. First make sure you have all the package dependencies
-to be able to load or install the `ggdistribute` package contents.
+If you have all of the `ggdistribute` package contents (e.g., an
+unzipped folder containing `DESCRIPTION`, `NAMESPACE`, `R/`, etc…), you
+can open up the `ggdistribute.Rproj` file in RStudio and use both
+`devtools` and RStudio to load or install package.
+
+The first step is to make sure you have all the package dependencies
+(other packages that this pacakge relies on) to be able to load or
+install the `ggdistribute` package materials. You can run the line below
+to install dependencies first.
 
 ``` r
 devtools::install_dev_deps()
 ```
 
-Then build and install the package directory.
-
-<!--
-devtools::build(pkg = ".", path = "../tarballs", binary = FALSE, args = c("--md5"))
--->
+After the dependencies are installed, you can now build and install
+`ggdistribute` from the current working directory. Assuming the
+`ggdistribute` project is loaded in RStudio, you can leave out the first
+argument.
 
 ``` r
 devtools::install()
+```
+
+If installing from a different working directory, enter the path of the
+package contents to manually specify what to install.
+
+``` r
+devtools::install_dev_deps("/Path/to/the/folder/ggdistribute")
+devtools::install("/Path/to/the/folder/ggdistribute")
 ```
 
 ### Installing from GitHub
@@ -315,11 +329,14 @@ or to install all suggested packages as well…
 devtools::install_github("iamamutt/ggdistribute", dependencies=TRUE)
 ```
 
-If successful, the package should now be installed. Load the package as
-you normally would any other package (see below). Repeat these steps if
-there are updates to the package, or to reinstall on another machine You
+### Loading the package
+
+If successful, the package should now be installed and can be loaded as
+any other package. Repeat the last intall step if there are updates to
+the package, or complete all steps to install on another machine. You
 should now be able to use the package materials and should see it in
-your packages tab if using RStudio.
+your packages tab if using RStudio. It should be loaded like any other
+package.
 
 ``` r
 library(ggdistribute)
