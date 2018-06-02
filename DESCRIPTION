@@ -12,6 +12,7 @@ Description:
     distribution's intervals. It makes use of the 'ggproto' system to extend 
     'ggplot2', providing additional "geoms", "stats", and "positions." 
     The extensions integrate with existing 'ggplot2' layer elements.
+URL: https://github.com/iamamutt/ggdistribute
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

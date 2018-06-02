@@ -1,4 +1,4 @@
-# ggdistribute 1.0.1.9000
+# ggdistribute 1.0.1
 
 * Fix R CMD Check notes
 * Align geoms to y axis

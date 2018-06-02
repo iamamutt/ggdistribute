@@ -17,3 +17,5 @@ test_that("has correct variables", {
     x, NA, NA, NA
   ), is.na))))
 })
+
+# TODO: make a failure test of discrete x for density

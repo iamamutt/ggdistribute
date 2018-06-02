@@ -34,6 +34,7 @@ post_int <- function(x, mid = c("median", "mean", "mode"),
   if (!is.vector(x)) {
     stop("`x` must be a vector.")
   }
+
   mid <- match.arg(mid)
   int <- match.arg(int)
 
@@ -290,6 +291,8 @@ trim_ends <- function(x, trim = 0.05, na.rm = TRUE) {
   is_na <- is.na(x)
   len_finite <- sum(!is_na)
   len_trim <- as.integer(floor(len_finite * (trim / 2)))
+
+  # attributes
   which_na <- which(is_na)
   which_trimmed <- integer()
   trim_size <- len_trim * 2L
@@ -364,7 +367,6 @@ range_no_inf <- function(x, na.rm = TRUE) {
 
   range(x, na.rm = na.rm)
 }
-
 
 logit <- function(p) {
   p[p < 0 | p > 1] <- NA

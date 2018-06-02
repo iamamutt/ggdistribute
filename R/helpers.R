@@ -94,37 +94,47 @@ assert <- function(..., err = NULL, envir = parent.frame(), print) {
   invisible()
 }
 
+char_or_names <- function(x) {
+  if (!is.character(x)) {
+    x <- non_empty_names(x)
+    if (is_none(x)) {
+      stop("Could not determine names from object", call. = FALSE)
+    }
+  }
+  x
+}
+
 # special operators -------------------------------------------------------
 
-#' If true then object else null
-#'
-#' @details This is primarily used in conjuction with the `%:%` operator. See
-#' examples.
-#' @param lhs logical scalar.
-#' @param rhs object to return if `lhs` is `TRUE`.
-#' @return object on `rhs` or `NULL`
-#' @examples
-#' \donttest{
-#' `%:%` <- ggdistribute:::`%:%`
-#' `%?%` <- ggdistribute:::`%?%`
-#'
-#' TRUE  %?% 1 %:% 0  #> 1
-#' FALSE %?% 1 %:% 0  #> 0
-#'
-#' x <- 0
-#'
-#' # expression returns whatever objects are wrapped in between %:%
-#' (x == 0) %?% "y" %:% "n"
-#' (x == 1) %?% c("y", "yes") %:% c("n", "No", "false")
-#'
-#' # ERROR: The %?% operator captured only 0, which is not logical.
-#' # x == 0 %?% "y" %:% "n"
-#'
-#' # ERROR: The TRUE slot cannot return NULL because NULL is used to
-#' # decide what to return in %:%
-#' #   `TRUE %?% NULL` and `FALSE %?% obj` would both return NULL.
-#' # (x == 0) %?% NULL %:% "n"
-#' }
+# If true then object else null
+#
+# @details This is primarily used in conjuction with the `%:%` operator. See
+# examples.
+# @param lhs logical scalar.
+# @param rhs object to return if `lhs` is `TRUE`.
+# @return object on `rhs` or `NULL`
+# @examples
+# \donttest{
+# `%:%` <- ggdistribute:::`%:%`
+# `%?%` <- ggdistribute:::`%?%`
+#
+# TRUE  %?% 1 %:% 0  #> 1
+# FALSE %?% 1 %:% 0  #> 0
+#
+# x <- 0
+#
+# # expression returns whatever objects are wrapped in between %:%
+# (x == 0) %?% "y" %:% "n"
+# (x == 1) %?% c("y", "yes") %:% c("n", "No", "false")
+#
+# # ERROR: The %?% operator captured only 0, which is not logical.
+# # x == 0 %?% "y" %:% "n"
+#
+# # ERROR: The TRUE slot cannot return NULL because NULL is used to
+# # decide what to return in %:%
+# #   `TRUE %?% NULL` and `FALSE %?% obj` would both return NULL.
+# # (x == 0) %?% NULL %:% "n"
+# }
 `%?%` <- function(lhs, rhs) {
   if (!is.logical(lhs) || length(lhs) > 1 || anyNA(lhs)) {
     stop("Value left of %?% must be logical, of length 1, and not NA.")
@@ -167,16 +177,6 @@ assert <- function(..., err = NULL, envir = parent.frame(), print) {
   } else {
     lhs
   }
-}
-
-char_or_names <- function(x) {
-  if (!is.character(x)) {
-    x <- non_empty_names(x)
-    if (is_none(x)) {
-      stop("Could not determine names from object", call. = FALSE)
-    }
-  }
-  x
 }
 
 `%Names%` <- function(lhs, rhs) {

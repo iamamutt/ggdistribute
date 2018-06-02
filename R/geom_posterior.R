@@ -219,6 +219,7 @@ get_posterior_data <- function(data, lower_cut = NULL, upper_cut = NULL,
       .(grp_min, grp_max, ymin, ymax)
     ] %>%
       .[, adj]
+
     dt[, `:=`(ylower = ylower + adj, yupper = yupper + adj)]
   } else {
     dt[, `:=`(ylower = grp_min, yupper = y)]
@@ -406,19 +407,6 @@ grob_posterior <- function(data, ..., use_fill = FALSE, use_color = TRUE) {
   ))
 }
 
-# misc --------------------------------------------------------------------
-
-interp_low_res <- function(x, y, from, to, n = 128) {
-  x_interp <- seq(from, to, length.out = n)
-  interp_fun <- stats::approxfun(x, y)
-
-  data.table(x = x_interp, y = interp_fun(x_interp))
-}
-
-interp_vert_line <- function(x, from, to, v) {
-  c(stats::approxfun(x, from)(v), stats::approxfun(x, to)(v))
-}
-
 compute_vjust <- function(data, axis, vjust = NULL) {
   if (is.null(vjust)) {
     return(data)
@@ -439,4 +427,17 @@ compute_vjust <- function(data, axis, vjust = NULL) {
     dt[, y := y - (spacing * (1 - vjust))]
   }
   rm_temp_cols(dt)
+}
+
+# misc --------------------------------------------------------------------
+
+interp_low_res <- function(x, y, from, to, n = 128) {
+  x_interp <- seq(from, to, length.out = n)
+  interp_fun <- stats::approxfun(x, y)
+
+  data.table(x = x_interp, y = interp_fun(x_interp))
+}
+
+interp_vert_line <- function(x, from, to, v) {
+  c(stats::approxfun(x, from)(v), stats::approxfun(x, to)(v))
 }
