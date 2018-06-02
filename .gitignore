@@ -5,7 +5,6 @@
 .Rbuildignore
 .RData
 .Rhistory
-.Rproj.user
 .vscode
 *-Ex.R
 *.dll
@@ -25,3 +24,4 @@ vignettes/*.html
 vignettes/*.pdf
 
 ggdistribute.code-workspace
+.Rproj.user

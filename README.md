@@ -31,68 +31,74 @@ library(ggdistribute)
 ``` r
 example_plot <-
 function() {
+  # color palette
   colors <- mejr_palette()
 
   ggplot(sre_data(5000), aes_string(y = "effect")) +
-    facet_grid("contrast ~ .", scales = "free_y", space = "free_y") +
-    labs(x = "Difference in accuracy (posterior predictions)") +
-    geom_vline(
-      color = colors$gray, size = 0.333,
-      linetype = 1, xintercept = 0) +
+
+    # ggdistribute specific elements -------------------------------------------
     geom_posterior(
-      # ------------------------------------------------------------------------
-      # geom specific aesthetics
-      # ------------------------------------------------------------------------
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # geom_posterior() aesthetics mappings
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       aes_string(x = "value", fill = "contrast"),
-      # ------------------------------------------------------------------------
-      # position options
-      # ------------------------------------------------------------------------
-      position = position_spread(
-        reverse = TRUE, # order of groups within panels
-        padding = 0.3, # shrink heights of distributions
-        height = "panel" # scale by heights within panels
-      ), #
-      # ------------------------------------------------------------------------
-      # geom options
-      # ------------------------------------------------------------------------
-      draw_ci = TRUE, # confidence interval parts
-      draw_sd = TRUE, # standard deviation parts
-      mirror = FALSE, # violion-like toggle
-      midline_color = NULL, # color of line showing center of dist (uses color)
-      brighten = c(3, 0, 1.333), # modify interval fill segments
-      # ------------------------------------------------------------------------
-      # stat options for estimating intervals
-      # ------------------------------------------------------------------------
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # options passed to stat_density_ci() for estimating intervals
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       interp_thresh = .001, # threshold for interpolating segment gaps
       center_stat = "median", # measure of central tendency
       ci_width = 0.90, # width corresponding to CI segments
       interval_type = "ci", # quantile intervals not highest density interval
-      # ------------------------------------------------------------------------
-      # stat options for density estimation
-      # ------------------------------------------------------------------------
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # options passed to stat_density_ci() for estimating density
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       bw = ".nrd0", # bandwidth estimator type
       adjust = 1.5, # adjustment to bandwidth
       n = 1024, # number of samples in final density
-      trim = .005, # trim x before estimating density
-      cut = 1.5, # tail extension
-      # ------------------------------------------------------------------------
-      # standard layer options
-      # ------------------------------------------------------------------------
+      trim = .005, # trim `x` this proportion before estimating density
+      cut = 1.5, # tail extension for zero density estimation
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # geom_posterior() options
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      draw_ci = TRUE, # toggle showing confidence interval parts
+      draw_sd = TRUE, # toggle showing standard deviation parts
+      mirror = FALSE, # toggle horizontal violin distributions
+      midline_color = NULL, # line displaying center of dist. (NULL=aes color)
+      brighten = c(
+        3, 0, 1.333
+      ), # additive adjustment of segment fill colors
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # position_spread() options
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      position = position_spread(
+        reverse = TRUE, # order of spreaded groups within panels
+        padding = 0.3, # shrink heights of distributions
+        height = "panel" # scale by heights within panels
+      ), #
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # standard ggplot layer options
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       size = 0.15, color = colors$gray, vjust = 0.7, show.legend = FALSE) +
+
+    # standard ggplot2 elements ------------------------------------------------
+    geom_vline(
+      alpha = 0.5, color = colors$gray,
+      size = 0.333, linetype = 1, xintercept = 0) +
     scale_x_continuous(breaks = seq(-1, 1, .05)) +
+    facet_grid("contrast ~ .", scales = "free_y", space = "free_y") +
     scale_fill_manual(values = c(
       colors$yellow, colors$magenta,
       colors$cyan)) +
+    labs(x = "Difference in accuracy (posterior predictions)") +
     theme(
-      panel.grid.major.x = element_blank(), panel.ontop = FALSE,
-      panel.border = element_rect(
-        fill = NA, colour = gray(0.84), size = 0.67
-      ),
-      axis.title.y = element_blank(),
+      legend.position = "none",
       strip.text.y = element_text(angle = 0, hjust = 0.5),
-      plot.margin = margin(t = 2, r = 4, b = 2, l = 2, unit = "pt"),
-      legend.box.background = element_blank(),
-      legend.background = element_blank())
+      panel.border = element_rect(
+        fill = NA, color = colors$lightgray, size = 0.67
+      ),
+      panel.grid = element_blank(), panel.ontop = FALSE,
+      axis.title.y = element_blank(),
+      plot.margin = margin(t = 2, r = 4, b = 2, l = 2, unit = "pt"))
 }
 ```
 

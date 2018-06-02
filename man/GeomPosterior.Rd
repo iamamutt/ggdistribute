@@ -133,9 +133,22 @@ confidence intervals for each group
 }}
 
 \section{Aesthetics}{
- \code{geom_posterior} understands the following aesthetics
-(required aesthetics are in bold): - \strong{x} - \strong{y} - xmin - xmax - alpha -
-colour - fill - group - linetype - size - weight
+
+
+\code{geom_posterior} understands the following aesthetics (required aesthetics
+are in bold):
+\itemize{
+\item \strong{x}
+\item \strong{y}
+\item xmin
+\item xmax
+\item alpha - colour
+\item fill
+\item group
+\item linetype
+\item size
+\item weight
+}
 }
 
 \section{Computed Variables}{
@@ -143,19 +156,22 @@ colour - fill - group - linetype - size - weight
 
 \emph{stat_density_ci}:
 \itemize{
-\item density: density estimate from \link[stats:density]{stats::density} - scaled: Normalized
-density values: \code{density / max(density)} - count: Number of samples at
-density level: \code{(density / sum(density)) * n} - xmin: minimum value of \code{x}
-from the data - cil: cil cutoff value based on \code{ci_width} - sdl: central
-value minus 1 sd of \code{x} - mid: value of central tendency - sdu: central
-value plus 1 sd of \code{x} - ciu: ciu cutoff value based on \code{ci_width} - xmax:
-maximum value of \code{x} from the data
+\item density: density estimate from \link[stats:density]{stats::density}
+\item scaled: Normalized density values: \code{density / max(density)}
+\item count: Number of samples at density level: \code{(density / sum(density)) * n}
+\item xmin: minimum value of \code{x} from the data
+\item cil: cil cutoff value based on \code{ci_width}
+\item sdl: central value minus 1 sd of \code{x}
+\item mid: value of central tendency
+\item sdu: central value plus 1 sd of \code{x}
+\item ciu: ciu cutoff value based on \code{ci_width}
+\item xmax: maximum value of \code{x} from the data
 }
 
 \emph{position_spread}
 \itemize{
-\item ymin: minimum value of \code{y} for each group in a panel. - ymax: maximum
-value of \code{y} for each group in a panel.
+\item ymin: minimum value of \code{y} for each group in a panel.
+\item ymax: maximum value of \code{y} for each group in a panel.
 }
 }
 
