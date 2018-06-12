@@ -2,18 +2,13 @@
 
 # check if x is NULL or zero length.
 # if allow_na=TRUE then also accepts all NA values as none.
-is_none <- function(x, allow_na = TRUE) {
-  none <- is.null(x) || length(x) < 1
-  if (allow_na) {
-    return(none)
-  }
-  none || all(is.na(x))
+is_none <- function(x) {
+  is.null(x) || length(x) < 1L
 }
 
 # check if all values are length zero or NA
-# wrapper for is_none(x, FALSE)
 all_missing <- function(x) {
-  is_none(x, allow_na = FALSE)
+  is_none(x) || all(is.na(x))
 }
 
 # try to grab first non NA value in x, if none, return NULL
@@ -141,7 +136,7 @@ char_or_names <- function(x) {
   }
 
   if (lhs) {
-    if (is_none(rhs, allow_na = TRUE)) {
+    if (is_none(rhs)) {
       stop(
         "Values right of %?% cannot return NULL or length zero.",
         " Try changing LHS to !LHS and reordering expresions after %?%.")
@@ -163,7 +158,7 @@ char_or_names <- function(x) {
 
 # if LHS is NULL or length zero return RHS
 `%||%` <- function(lhs, rhs) {
-  if (is_none(lhs, allow_na = TRUE)) {
+  if (is_none(lhs)) {
     rhs
   } else {
     lhs
