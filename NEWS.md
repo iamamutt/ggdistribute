@@ -1,3 +1,7 @@
+# ggdistribute 1.0.2
+
+* `show_colors()` theme update for ggplot2 2.3.0
+
 # ggdistribute 1.0.1
 
 * Fix R CMD Check notes

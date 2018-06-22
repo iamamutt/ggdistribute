@@ -28,9 +28,8 @@
 #' post_int(x, "median", warn = FALSE)
 #' post_int(x, "mean", warn = FALSE)
 #' post_int(x, "mode", adj=2, rope = c(14, 16), warn = FALSE)
-post_int <- function(x, mid = c("median", "mean", "mode"),
-                     int = c("hdi", "ci"), widths = c(.50, .95),
-                     adj = 1.5, rope = NULL, warn = FALSE) {
+post_int <- function(x, mid=c("median", "mean", "mode"), int=c("hdi", "ci"),
+                     widths=c(.50, .95), adj=1.5, rope=NULL, warn=FALSE) {
   if (!is.vector(x)) {
     stop("`x` must be a vector.")
   }
@@ -43,16 +42,16 @@ post_int <- function(x, mid = c("median", "mean", "mode"),
 
   # measure of central tendency
   switch(mid,
-    "mean" = {
+    "mean"={
       center <- mean(x)
       scale <- sd(x)
     },
-    "median" = {
+    "median"={
       center <- median(x)
       scale <- mad(x)
     },
-    "mode" = {
-      center <- dmode(x, adjust = adj)
+    "mode"={
+      center <- dmode(x, adjust=adj)
       scale <- mad(x)
     },
     NULL)
@@ -60,16 +59,14 @@ post_int <- function(x, mid = c("median", "mean", "mode"),
   # interval function as an unevaluated function call
   int_fun <- switch(
     int,
-    "ci" = {
+    "ci"={
       match.call(quantile, call("quantile",
-        x = quote(x),
-        probs = quote(c(
-          (1 - w) / 2,
-          w + ((1 - w) / 2))),
-        names = FALSE))
+        x=quote(x),
+        probs=quote(c((1 - w) / 2, w + ((1 - w) / 2))),
+        names=FALSE))
     },
-    "hdi" = {
-      match.call(hdi, call("hdi", x = quote(x), prob = quote(w), warn = warn))
+    "hdi"={
+      match.call(hdi, call("hdi", x=quote(x), prob=quote(w), warn=warn))
     },
     NULL
   )
@@ -87,8 +84,8 @@ post_int <- function(x, mid = c("median", "mean", "mode"),
     Map(
       function(w, i) {
         ints <- structure(Reduce(cbind, eval(int_fun)),
-          dimnames = list(NULL, c("l", "r")))
-        data.table::data.table(interval = i, ints)
+          dimnames=list(NULL, c("l", "r")))
+        data.table::data.table(interval=i, ints)
       },
       c(widths, area_sd),
       c(width_ids, "sd"))
@@ -99,12 +96,12 @@ post_int <- function(x, mid = c("median", "mean", "mode"),
   # reshape to multivariate format
   intervals <- intervals[order(-interval), ]
   intervals <- intervals[, central := mid]
-  intervals <- data.table::dcast(intervals, central ~ interval,
-    value.var = c("l", "r"), sep = ".")
+  intervals <- data.table::dcast(
+    intervals, central ~ interval,
+    value.var=c("l", "r"), sep="."
+  )
   intervals[, c := center]
-  set_col_order(
-    intervals,
-    c("central", "c", "l.sd", "l.wide", "r.sd", "r.wide"))
+  set_col_order(intervals, c("central", "c", "l.sd", "l.wide", "r.sd", "r.wide"))
 
   # get rope
   if (!is.null(rope)) {
@@ -116,7 +113,7 @@ post_int <- function(x, mid = c("median", "mean", "mode"),
     }
     rope <- sort(rope)
     rope_mass <- prop_in_range(x, rope[1], rope[2])
-    intervals[, `:=`(l.rope = rope[1], r.rope = rope[2], rope = rope_mass)]
+    intervals[, `:=`(l.rope=rope[1], r.rope=rope[2], rope=rope_mass)]
   }
 
   as.data.frame(intervals)
@@ -155,16 +152,16 @@ post_int <- function(x, mid = c("median", "mean", "mode"),
 #' plot(density(x, adjust=0.25))
 #' abline(v=hdi(x, p=.49), col=2)
 #' abline(v=hdi(x, p=.50), col=3)
-hdi <- function(x, prob = 0.95, warn = TRUE) {
+hdi <- function(x, prob=0.95, warn=TRUE) {
   if (anyNA(x)) {
-    stop("HDI: ", "x must not contain any NA values.", call. = FALSE)
+    stop("HDI: ", "x must not contain any NA values.", call.=FALSE)
   }
 
   N <- length(x)
 
   if (N < 3) {
     if (warn) {
-      warning("HDI: ", "length of `x` < 3.", " Returning NAs", call. = FALSE)
+      warning("HDI: ", "length of `x` < 3.", " Returning NAs", call.=FALSE)
     }
     return(c(NA_integer_, NA_integer_))
   }
@@ -174,10 +171,9 @@ hdi <- function(x, prob = 0.95, warn = TRUE) {
 
   if (window_size < 2) {
     if (warn) {
-      warning("HDI: ", "window_size < 2.",
-        " `prob` is too small or x does not ",
+      warning("HDI: ", "window_size < 2.", " `prob` is too small or x does not ",
         "contain enough data points.", " Returning NAs.",
-        call. = FALSE)
+        call.=FALSE)
     }
     return(c(NA_integer_, NA_integer_))
   }
@@ -199,7 +195,7 @@ hdi <- function(x, prob = 0.95, warn = TRUE) {
         warning("HDI: ", "Identical densities found along ",
           "different segments of the distribution.",
           " Choosing rightmost.",
-          call. = FALSE)
+          call.=FALSE)
       }
       min_i <- max(min_i)
     } else {
@@ -225,9 +221,9 @@ hdi <- function(x, prob = 0.95, warn = TRUE) {
 #' abline(v = median(x), col = "green")
 #' abline(v = mean(x), col = "blue")
 #' @export
-dmode <- function(x, adjust = 1.5) {
-  x <- trim_ends(x, 0.05, na.rm = TRUE)
-  d <- density(x, n = 1000, bw = "SJ", adjust = adjust)
+dmode <- function(x, adjust=1.5) {
+  x <- trim_ends(x, 0.05, na.rm=TRUE)
+  d <- density(x, n=1000, bw="SJ", adjust=adjust)
   d$x[which.max(d$y)]
 }
 
@@ -279,7 +275,7 @@ cmode <- function(x) {
 #' range(t, na.rm = TRUE)
 #' length(t)     # <- 10000
 #' sum(is.na(t)) # <- 1000
-trim_ends <- function(x, trim = 0.05, na.rm = TRUE) {
+trim_ends <- function(x, trim=0.05, na.rm=TRUE) {
   if (!is.numeric(trim)) {
     stop("`trim` must be a numeric value.")
   }
@@ -302,7 +298,7 @@ trim_ends <- function(x, trim = 0.05, na.rm = TRUE) {
       warning("trim amount results in zero length vector or all NAs")
       x[] <- NA
     } else {
-      x_i_sort <- order(x, na.last = TRUE)
+      x_i_sort <- order(x, na.last=TRUE)
       trim_index <- seq_len(len_trim)
       trim_index <- unique(c(trim_index, len_finite - trim_index + 1))
       which_trimmed <- sort(x_i_sort[trim_index])
@@ -331,41 +327,39 @@ prop_in_range <- function(x, lower, upper) {
 probit_tbl <- function(x, k) {
   pct <- ecdf(x)(x)
   brks <- range_sequence(c(0, 1), k + 1)
-  idx <- cut(pct,
-    breaks = brks, include.lowest = TRUE,
-    right = FALSE, labels = FALSE)
-  data.table(qmin = brks[idx], qmax = brks[idx + 1], ecdf = pct)
+  idx <- cut(pct, breaks=brks, include.lowest=TRUE, right=FALSE, labels=FALSE)
+  data.table(qmin=brks[idx], qmax=brks[idx + 1], ecdf=pct)
 }
 
-rgamma2 <- function(n, mean = 1, sd = 1) {
+rgamma2 <- function(n, mean=1, sd=1) {
   rgamma(n, (mean / sd)^2, mean / sd^2)
 }
 
-rnbinom2 <- function(n, mean = 1, sd = 1, min_size = 1) {
+rnbinom2 <- function(n, mean=1, sd=1, min_size=1) {
   size <- max(min_size, mean^2 / (sd^2 - mean))
-  rnbinom(n, size = size, mu = mean)
+  rnbinom(n, size=size, mu=mean)
 }
 
-csum_left <- function(x, init = 0) {
+csum_left <- function(x, init=0) {
   cs <- cumsum(c(init, x))
   na.omit(shift(cs, 1, NA, "lag"))
 }
 
-norm_vec <- function(x, na.rm = TRUE) {
-  limits <- range_no_inf(x, na.rm = na.rm)
+norm_vec <- function(x, na.rm=TRUE) {
+  limits <- range_no_inf(x, na.rm=na.rm)
   (x - limits[1]) / diff(limits)
 }
 
-norm_vec_sum <- function(x, na.rm = TRUE) {
-  x / sum(x, na.rm = na.rm)
+norm_vec_sum <- function(x, na.rm=TRUE) {
+  x / sum(x, na.rm=na.rm)
 }
 
-range_no_inf <- function(x, na.rm = TRUE) {
+range_no_inf <- function(x, na.rm=TRUE) {
   if (all_missing(x)) {
     return(c(NA, NA))
   }
 
-  range(x, na.rm = na.rm)
+  range(x, na.rm=na.rm)
 }
 
 logit <- function(p) {
@@ -385,7 +379,7 @@ col_adj <- function(c, a) {
 }
 
 # Snap a value to either the min or max if outside some range
-clip_range <- function(x, min = NULL, max = NULL) {
+clip_range <- function(x, min=NULL, max=NULL) {
   if (!is.null(max)) {
     x <- pmin(x, max)
   }

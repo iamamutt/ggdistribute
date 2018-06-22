@@ -8,6 +8,8 @@
 
 0 errors | 0 warnings | 0 note
 
+* make compatible with ggplot 2.3.0
+
 ## Reverse dependencies
 
 There are no reverse dependencies.

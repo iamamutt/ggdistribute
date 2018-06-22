@@ -21,7 +21,7 @@ first_non_na <- function(x) {
 }
 
 # return names of object that have non-zero chars
-non_empty_names <- function(x, na.rm = TRUE) {
+non_empty_names <- function(x, na.rm=TRUE) {
   obj_names <- names(x)
   obj_names <- obj_names[nzchar(obj_names)]
   if (!na.rm) {
@@ -42,13 +42,11 @@ assert_names <- function(required, from_obj, ...) {
   }
 
   if (!(required %Names?% from_obj)) {
-    stop("names missing: ", paste0(required, collapse = ", "),
-      "\n", err,
-      call. = FALSE)
+    stop("names missing: ", paste0(required, collapse=", "), "\n", err, call.=FALSE)
   }
 }
 
-assert <- function(..., err = NULL, envir = parent.frame(), print) {
+assert <- function(..., err=NULL, envir=parent.frame(), print) {
   exprs <- eval(substitute(alist(...)))
 
   force(envir)
@@ -66,7 +64,7 @@ assert <- function(..., err = NULL, envir = parent.frame(), print) {
   lapply(
     exprs,
     function(e) {
-      result <- eval(e, envir = envir)
+      result <- eval(e, envir=envir)
       expr_str <- dQuote(deparse(e))
 
       if (print) {
@@ -76,11 +74,11 @@ assert <- function(..., err = NULL, envir = parent.frame(), print) {
       }
 
       if (!(length(result) == 1 && is.logical(result))) {
-        stop("expression ", expr_str, " not logical", call. = FALSE)
+        stop("expression ", expr_str, " not logical", call.=FALSE)
       }
 
       if (!result) {
-        stop(msg, call. = FALSE)
+        stop(msg, call.=FALSE)
       }
 
       NULL
@@ -93,7 +91,7 @@ char_or_names <- function(x) {
   if (!is.character(x)) {
     x <- non_empty_names(x)
     if (is_none(x)) {
-      stop("Could not determine names from object", call. = FALSE)
+      stop("Could not determine names from object", call.=FALSE)
     }
   }
   x
@@ -196,11 +194,11 @@ range_sequence <- function(x, n) {
   if (all_missing(limits)) {
     return(rep(NA, n))
   }
-  seq(limits[1], limits[2], length.out = n)
+  seq(limits[1], limits[2], length.out=n)
 }
 
 # rescale x to the scale of y
-rescale_as_other <- function(x, y, scalar_adj = 1) {
+rescale_as_other <- function(x, y, scalar_adj=1) {
   limits <- range_no_inf(y)
   if (all_missing(limits)) {
     warning("x left as is. No range detected from y.")
@@ -226,7 +224,7 @@ empty <- function(x) {
   is.null(x) || nrow(x) == 0 || ncol(x) == 0
 }
 
-as_dtbl <- function(x, copy = FALSE) {
+as_dtbl <- function(x, copy=FALSE) {
   if (data.table::is.data.table(x)) {
     if (copy) {
       return(data.table::copy(x))
@@ -260,7 +258,7 @@ rep.data.table <- function(x, ...) {
     }))
 }
 
-get_static_data <- function(from, ref = NULL) {
+get_static_data <- function(from, ref=NULL) {
   from <- as_dtbl(from)
 
   if (is.null(ref)) {
@@ -277,19 +275,19 @@ get_static_data <- function(from, ref = NULL) {
     .SD,
     function(i) {
       uniqueN(i) == 1
-    }), .SDcols = use_names]
+    }), .SDcols=use_names]
   static_cols <- names(Filter(isTRUE, is_static_df))
 
   if (is_none(static_cols)) {
     return(NULL)
   }
 
-  as.data.frame(from[1, static_cols, with = FALSE])
+  as.data.frame(from[1, static_cols, with=FALSE])
 }
 
 # misc --------------------------------------------------------------------
 
-append_diff <- function(x, val = NA) {
+append_diff <- function(x, val=NA) {
   c(diff(x), val)
 }
 
@@ -313,7 +311,7 @@ unique_apply <- function(x, i, FUN, ...) {
   unq_v[i]
 }
 
-unique_simplex <- function(size_vec, grp_idx = NULL, offset_vec = 0) {
+unique_simplex <- function(size_vec, grp_idx=NULL, offset_vec=0) {
   size <- size_vec - offset_vec
   unique_apply(
     size,
@@ -325,8 +323,8 @@ unique_simplex <- function(size_vec, grp_idx = NULL, offset_vec = 0) {
 
 function2chunk <- function(...) {
   functions <- as.character(match.call())[-1L]
-  function_txt <- capture.output(dump(functions, "", control = "all"))
+  function_txt <- capture.output(dump(functions, "", control="all"))
   cat("\n\n```r\n")
-  cat(function_txt, sep = "\n")
+  cat(function_txt, sep="\n")
   cat("\n```\n\n")
 }

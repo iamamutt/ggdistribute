@@ -4,18 +4,14 @@ context("Testing stat density computations")
 set.seed(20130110)
 x <- rnorm(1000, 100, 15)
 
-test_that("has correct variables", {
-  expect_named(
-    ggdistribute:::compute_density(x),
-    c("x", "density", "scaled", "count", "n"))
+test_that("List modification", {
+  expect_named(compute_density(x), c(
+    "x", "density", "scaled",
+    "count", "n"
+  ))
 
-  expect_named(
-    ggdistribute:::compute_conf_ints(x),
-    c("mid", "sdl", "sdu", "cil", "ciu"))
+  defaults <- compute_conf_ints(x)
 
-  expect_true(!all(unlist(lapply(ggdistribute:::compute_conf_ints(
-    x, NA, NA, NA
-  ), is.na))))
+  expect_named(defaults, c("mid", "sdl", "sdu", "cil", "ciu"))
+  expect_identical(defaults, compute_conf_ints(x, NA, NA, NA))
 })
-
-# TODO: make a failure test of discrete x for density

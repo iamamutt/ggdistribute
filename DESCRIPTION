@@ -1,6 +1,6 @@
 Package: ggdistribute
 Title: A 'ggplot2' Extension for Plotting Unimodal Distributions
-Version: 1.0.1.9000
+Version: 1.0.2
 Date: 2018-5-19
 Authors@R: c(
         person("Joseph M.", "Burling",
@@ -23,7 +23,8 @@ Imports:
     ggplot2,
     tibble,
     magrittr,
-    grDevices
+    grDevices,
+    dplyr
 Suggests:
     knitr,
     testthat,

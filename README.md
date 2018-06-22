@@ -26,6 +26,25 @@ library(ggplot2)
 library(ggdistribute)
 ```
 
+    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+    #> font family not found in Windows font database
+    
+    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+    #> font family not found in Windows font database
+    
+    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+    #> font family not found in Windows font database
+    
+    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+    #> font family not found in Windows font database
+    #> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+    #> x$y, : font family not found in Windows font database
+    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+    #> font family not found in Windows font database
+    
+    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+    #> font family not found in Windows font database
+
 <img src="man/figures/README-turtle_snails-1.png" width="100%" style="display: block; margin: auto;" />
 
 ``` r
@@ -34,71 +53,62 @@ function() {
   # color palette
   colors <- mejr_palette()
 
-  ggplot(sre_data(5000), aes_string(y = "effect")) +
+  ggplot(sre_data(5000), aes_string(y="effect")) +
 
     # ggdistribute specific elements -------------------------------------------
     geom_posterior(
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # geom_posterior() aesthetics mappings
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      aes_string(x = "value", fill = "contrast"),
+      aes_string(x="value", fill="contrast"),
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # options passed to stat_density_ci() for estimating intervals
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      interp_thresh = .001, # threshold for interpolating segment gaps
-      center_stat = "median", # measure of central tendency
-      ci_width = 0.90, # width corresponding to CI segments
-      interval_type = "ci", # quantile intervals not highest density interval
+      interp_thresh=.001, # threshold for interpolating segment gaps
+      center_stat="median", # measure of central tendency
+      ci_width=0.90, # width corresponding to CI segments
+      interval_type="ci", # quantile intervals not highest density interval
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # options passed to stat_density_ci() for estimating density
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      bw = ".nrd0", # bandwidth estimator type
-      adjust = 1.5, # adjustment to bandwidth
-      n = 1024, # number of samples in final density
-      trim = .005, # trim `x` this proportion before estimating density
-      cut = 1.5, # tail extension for zero density estimation
+      bw=".nrd0", # bandwidth estimator type
+      adjust=1.5, # adjustment to bandwidth
+      n=1024, # number of samples in final density
+      trim=.005, # trim `x` this proportion before estimating density
+      cut=1.5, # tail extension for zero density estimation
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # geom_posterior() options
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      draw_ci = TRUE, # toggle showing confidence interval parts
-      draw_sd = TRUE, # toggle showing standard deviation parts
-      mirror = FALSE, # toggle horizontal violin distributions
-      midline_color = NULL, # line displaying center of dist. (NULL=aes color)
-      brighten = c(
-        3, 0, 1.333
-      ), # additive adjustment of segment fill colors
+      draw_ci=TRUE, # toggle showing confidence interval parts
+      draw_sd=TRUE, # toggle showing standard deviation parts
+      mirror=FALSE, # toggle horizontal violin distributions
+      midline_color=NULL, # line displaying center of dist. (NULL=aes color)
+      brighten=c(3, 0, 1.333), # additive adjustment of segment fill colors
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # position_spread() options
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      position = position_spread(
-        reverse = TRUE, # order of spreaded groups within panels
-        padding = 0.3, # shrink heights of distributions
-        height = "panel" # scale by heights within panels
+      position=position_spread(
+        reverse=TRUE, # order of spreaded groups within panels
+        padding=0.3, # shrink heights of distributions
+        height="panel" # scale by heights within panels
       ), #
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # standard ggplot layer options
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      size = 0.15, color = colors$gray, vjust = 0.7, show.legend = FALSE) +
+      size=0.15, color=colors$gray, vjust=0.7, show.legend=FALSE) +
 
     # standard ggplot2 elements ------------------------------------------------
     geom_vline(
-      alpha = 0.5, color = colors$gray,
-      size = 0.333, linetype = 1, xintercept = 0) +
-    scale_x_continuous(breaks = seq(-1, 1, .05)) +
-    facet_grid("contrast ~ .", scales = "free_y", space = "free_y") +
-    scale_fill_manual(values = c(
-      colors$yellow, colors$magenta,
-      colors$cyan)) +
-    labs(x = "Difference in accuracy (posterior predictions)") +
+      alpha=0.5, color=colors$gray, size=0.333, linetype=1,
+      xintercept=0) + scale_x_continuous(breaks=seq(-1, 1, .05)) +
+    facet_grid("contrast ~ .", scales="free_y", space="free_y") +
+    scale_fill_manual(values=c(colors$yellow, colors$magenta, colors$cyan)) +
+    labs(x="Difference in accuracy (posterior predictions)") +
     theme(
-      legend.position = "none",
-      strip.text.y = element_text(angle = 0, hjust = 0.5),
-      panel.border = element_rect(
-        fill = NA, color = colors$lightgray, size = 0.67
-      ),
-      panel.grid = element_blank(), panel.ontop = FALSE,
-      axis.title.y = element_blank(),
-      plot.margin = margin(t = 2, r = 4, b = 2, l = 2, unit = "pt"))
+      legend.position="none", strip.text.y=element_text(angle=0, hjust=0.5),
+      panel.border=element_rect(fill=NA, color=colors$lightgray, size=0.67),
+      panel.grid=element_blank(), panel.ontop=FALSE, axis.title.y=element_blank(),
+      plot.margin=margin(t=2, r=4, b=2, l=2, unit="pt"))
 }
 ```
 
@@ -165,6 +175,43 @@ ggplot(data) +
     title = "Space Invaders",
     y = "Condition",
     x = "Parameter estimate")
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+#> x$y, : font family not found in Windows font database
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+#> x$y, : font family not found in Windows font database
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
 ```
 
 <img src="man/figures/README-space_ships-1.png" width="80%" style="display: block; margin: auto;" />
@@ -195,6 +242,51 @@ ggplot(data) +
     legend.position = c(.025, .9),
     legend.justification = c(0, 0),
     panel.grid.major.y = element_line(color = gray(.92)))
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+#> x$y, : font family not found in Windows font database
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
 ```
 
 <img src="man/figures/README-candy_wrappers-1.png" width="80%" style="display: block; margin: auto;" />
@@ -243,6 +335,51 @@ ggplot(data) +
     y = "Group's score") +
   scale_x_continuous(breaks = seq(-10, 10, 1))+
   scale_y_continuous(breaks = seq(-10, 10, .5))
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+#> x$y, : font family not found in Windows font database
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
+
+#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
 ```
 
 <img src="man/figures/README-rainbow_hills-1.png" width="80%" style="display: block; margin: auto;" />

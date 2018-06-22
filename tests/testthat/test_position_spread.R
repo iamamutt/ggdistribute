@@ -5,11 +5,13 @@ context("Testing position spread")
 test_that("Overlaps", {
   y_vals <- matrix(c(
     0, 1, 1, 2.5, 1.1, 2.5, 3, 4.9,
-    4, 5, 4.7, 5.5, 5.49999, 5.5), nrow = 2)
+    4, 5, 4.7, 5.5, 5.49999, 5.5
+  ), nrow = 2)
 
   data <- data.table(
     group = as.integer(seq_len(ncol(y_vals))),
-    PANEL = rep(1L, ncol(y_vals)))
+    PANEL = rep(1L, ncol(y_vals))
+  )
   data <- data[
     , .(y = seq(y_vals[1L, group],
       y_vals[2L, group],
