@@ -13,7 +13,6 @@ knitr::opts_chunk$set(
 
 ## ----load-and-opts, echo=FALSE, message=FALSE----------------------------
 library(ggplot2)
-library(data.table)
 theme_set(theme_gray(10))
 
 ## ----load-ggdistribute---------------------------------------------------
@@ -23,7 +22,7 @@ library(ggdistribute)
 data <- data_normal_sample(mu = c(-1, 0, 2, 5, 10), n = 1000)
 
 ## ----ex1-----------------------------------------------------------------
-b_cond <- data[with(data, Condition == "B"), ]
+b_cond <- data[data$Condition == "B", ]
 
 ggplot(b_cond, aes(x = value))+
   geom_posterior()

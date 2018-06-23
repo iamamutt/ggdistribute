@@ -26,25 +26,6 @@ library(ggplot2)
 library(ggdistribute)
 ```
 
-    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-    #> font family not found in Windows font database
-    
-    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-    #> font family not found in Windows font database
-    
-    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-    #> font family not found in Windows font database
-    
-    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-    #> font family not found in Windows font database
-    #> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
-    #> x$y, : font family not found in Windows font database
-    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-    #> font family not found in Windows font database
-    
-    #> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-    #> font family not found in Windows font database
-
 <img src="man/figures/README-turtle_snails-1.png" width="100%" style="display: block; margin: auto;" />
 
 ``` r
@@ -152,66 +133,23 @@ unique(data[, c("Group", "Condition", "Level")])
 
 ``` r
 ggplot(data) +
-  aes(x = value, y = Condition, group = Group) +
+  aes(x=value, y=Condition, group=Group) +
   geom_posterior(
-    aes(fill = Level),
-    mirror = TRUE,
-    show.legend = FALSE,
-    adjust = 1.5,
-    position = position_spread(reverse = TRUE)) +
+    aes(fill=Level),
+    mirror=TRUE,
+    show.legend=FALSE,
+    adjust=1.5,
+    brighten=c(6, 0, 2.5),
+    position=position_spread(reverse=TRUE)) +
   geom_point(
-    aes(color = Level, shape = Condition),
-    alpha = .08,
-    fill = NA,
-    show.legend = FALSE,
-    position = position_jitter(0, .45)) +
-  coord_cartesian(
-    ylim = c(0.5, 2.5),
-    expand = FALSE) +
-  facet_wrap(
-    ~Level,
-    scales = "free") +
-  labs(
-    title = "Space Invaders",
-    y = "Condition",
-    x = "Parameter estimate")
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
-#> x$y, : font family not found in Windows font database
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
-#> x$y, : font family not found in Windows font database
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
+    aes(color=Level, shape=Condition),
+    alpha=.08,
+    fill=NA,
+    show.legend=FALSE,
+    position=position_jitter(0, .45)) +
+  coord_cartesian(ylim=c(0.5, 2.5), expand=FALSE) +
+  facet_wrap(~ Level, scales="free") +
+  labs(title="Space Invaders", y="Condition", x="Parameter estimate")
 ```
 
 <img src="man/figures/README-space_ships-1.png" width="80%" style="display: block; margin: auto;" />
@@ -219,74 +157,25 @@ ggplot(data) +
 ### Changing the appearance of `geom_posterior`
 
 ``` r
-ggplot(data) +
-  aes(x = value, y = Group) +
-  geom_vline(
-    xintercept = 0,
-    size = .6) +
-  geom_posterior(
-    aes(color = Condition),
-    midline_color = NULL,
-    mirror = TRUE,
-    fill = "#FFFFFF",
-    draw_sd = FALSE,
-    interval_type = "hdi",
-    vjust = 0,
-    position = position_spread(height = 2)) +
+ggplot(data) + aes(x=value, y=Group) +
+  geom_vline(xintercept=0, size=.6) +
+  geom_posterior(aes(color=Condition),
+    midline_color=NULL,
+    mirror=TRUE,
+    fill="#FFFFFF",
+    draw_sd=FALSE,
+    interval_type="hdi",
+    vjust=0,
+    position=position_spread(height=2)) +
   labs(
-    title = "Candy Wrappers",
-    x = "Parameter estimate",
-    y = "Sample location") +
-  scale_x_continuous(breaks = seq(-10, 10, 1))+
+    title="Candy Wrappers",
+    x="Parameter estimate",
+    y="Sample location") +
+  scale_x_continuous(breaks=seq(-10, 10, 1)) +
   theme(
-    legend.position = c(.025, .9),
-    legend.justification = c(0, 0),
-    panel.grid.major.y = element_line(color = gray(.92)))
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
-#> x$y, : font family not found in Windows font database
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
+    legend.position=c(.025, .9),
+    legend.justification=c(0, 0),
+    panel.grid.major.y=element_line(color=gray(.92)))
 ```
 
 <img src="man/figures/README-candy_wrappers-1.png" width="80%" style="display: block; margin: auto;" />
@@ -314,72 +203,21 @@ unique(data[, c("Group", "GroupScore")])
 ```
 
 ``` r
-ggplot(data) +
-  aes(x = value, y = GroupScore) +
-  geom_vline(
-    xintercept = 0,
-    size = .6) +
-  geom_posterior(
-    aes(fill = Group),
-    midline_color = "#FFFFFF",
-    colour = "#FFFFFF",
-    alpha = 0.7,
-    brighten = c(1.3, 0, -1.3),
-    interval_type = "hdi",
-    position = position_spread(
-      height = 0.5,
-      padding = 0)) +
+ggplot(data) + aes(x=value, y=GroupScore) +
+  geom_vline(xintercept=0, size=.6) +
+  geom_posterior(aes(fill=Group),
+    midline_color="#FFFFFF",
+    colour="#FFFFFF",
+    alpha=0.7,
+    brighten=c(1.3, 0, -1.3),
+    interval_type="hdi",
+    position=position_spread(height=0.5, padding=0)) +
   labs(
-    title = "Rainbow Hills",
-    x = "Parameter estimate",
-    y = "Group's score") +
-  scale_x_continuous(breaks = seq(-10, 10, 1))+
-  scale_y_continuous(breaks = seq(-10, 10, .5))
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
-#> x$y, : font family not found in Windows font database
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
-
-#> Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
+    title="Rainbow Hills",
+    x="Parameter estimate",
+    y="Group's score") +
+  scale_x_continuous(breaks=seq(-10, 10, 1)) +
+  scale_y_continuous(breaks=seq(-10, 10, .5))
 ```
 
 <img src="man/figures/README-rainbow_hills-1.png" width="80%" style="display: block; margin: auto;" />
