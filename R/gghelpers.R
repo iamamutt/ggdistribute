@@ -50,7 +50,8 @@ set_range_data <- function(data, axis=c("x", "y"), by="group",
     max,
     function(x) {
       diff(range(x))
-    }), .Names=c(".__min", ".__max", ".__len"))
+    }
+  ), .Names=c(".__min", ".__max", ".__len"))
 
   if (!is.null(names)) {
     do_ops <- do_ops[seq_along(names)]
@@ -66,7 +67,8 @@ set_range_data <- function(data, axis=c("x", "y"), by="group",
       }
     },
     names(do_ops),
-    do_ops)
+    do_ops
+  )
 
   if (copy) {
     as.data.frame(dt)
@@ -162,7 +164,8 @@ get_overlaps <- function(data, axis=c("x", "y"), tol=-1e-04) {
       min2=minmax$.__min[match(i2, minmax$.__grp)],
       max2=minmax$.__max[match(i2, minmax$.__grp)],
       group1=minmax$group[match(i1, minmax$.__grp)],
-      group2=minmax$group[match(i2, minmax$.__grp)])] %>%
+      group2=minmax$group[match(i2, minmax$.__grp)]
+    )] %>%
     .[, `:=`("h1"=max1 - min1, "h2"=max2 - min2)] %>%
     .[, `:=`(i1=NULL, i2=NULL)] %>%
     .[, eval(names(calc_vals)) := lapply(calc_vals, identity)]
@@ -227,7 +230,8 @@ rm_temp_cols <- function(data, temp_names=NULL) {
     temp_names <- c(
       ".__adj", ".__by_ht", ".__grp", ".__ht", ".__len",
       ".__max_x", ".__max_y", ".__max", ".__mid", ".__min_x",
-      ".__min_y", ".__min", ".__n", ".__tmp", ".__y")
+      ".__min_y", ".__min", ".__n", ".__tmp", ".__y"
+    )
   }
 
   temp_names <- temp_names %Names% data
@@ -294,13 +298,14 @@ show_colors <- function(colors, show.legend=TRUE, ncols=NULL, alpha=NA) {
     scale_fill_manual(values=as.character(colors), breaks=data$z, labels=data$l) +
     geom_label(
       fill="white", hjust=0, nudge_x=-.45, colour=gray(0.5),
-      aes(label=i)) + scale_y_reverse() + theme_void() +
+      aes(label=i)
+    ) + scale_y_reverse() + theme_void() +
     guides(fill=guide_legend(override.aes=list(alpha=1))) +
     theme(
-      legend.position=ifelse(show.legend, "right", "none"),
-      legend.box="vertical",
+      legend.position=ifelse(show.legend, "right", "none"), legend.box="vertical",
       legend.box.background=element_blank(), legend.text.align=0,
-      legend.direction="vertical", legend.title=element_blank())
+      legend.direction="vertical", legend.title=element_blank()
+    )
 }
 
 gray2 <- function(black=127) {
@@ -329,7 +334,8 @@ change_brightness <- function(hex_color, adjust) {
     2,
     function(i) {
       do.call(rgb, as.list(i))
-    })
+    }
+  )
 }
 
 

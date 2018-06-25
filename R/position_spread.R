@@ -37,17 +37,20 @@ PositionSpread <- ggproto(
 
     list(
       height=height_pars$heights, custom=height_pars$custom,
-      padding=self$padding %NA% 0, reverse=self$reverse %NA% FALSE)
+      padding=self$padding %NA% 0, reverse=self$reverse %NA% FALSE
+    )
   },
 
   compute_panel=function(data, params, scales) {
     as_dtbl(data) %>%
       transform_heights(
         heights=params$height,
-        padding=params$padding) %>%
+        padding=params$padding
+      ) %>%
       spread_by_ymin(
         spreader=shrink_and_stack, reverse=params$reverse,
-        padding=params$padding) %>%
+        padding=params$padding
+      ) %>%
       rescale_overlapping(scales=scales, skip=params$custom) %>%
       set_col_order(c("PANEL", "group", "x", "y") %Names% data) %>%
       as.data.frame()
@@ -95,8 +98,7 @@ standardize_height_param <- function(data, height) {
           # order by min and use only these variables
           .[order(.__min), .(PANEL, group, .__min, .__max, .__len)] %>%
           # unique data
-          unique() %>%
-          # group by common y min values
+          unique() %>% # group by common y min values
           .[, .__grp := .GRP, .(.__min)] %>%
           # space in between y groups (from min y to next groups min y)
           .[, space := unique_apply(.__min, .__grp, append_diff)] %>%
@@ -201,10 +203,8 @@ shrink_and_stack <- function(SD, reverse=FALSE, padding=0) {
 
   pad_adj <- 1 - (padding / max(1, n_groups - 2))
 
-  dt[] %>%
-    # total height of data
-    .[, .__len := diff(range_no_inf(y))] %>%
-    # each overlapping groups height
+  dt[] %>% # total height of data
+    .[, .__len := diff(range_no_inf(y))] %>% # each overlapping groups height
     .[, .__ht := ymax - ymin] %>%
     # group heights sum to total height
     .[, .__len := .__len * unique_simplex(.__ht, .__grp)] %>%
@@ -213,8 +213,7 @@ shrink_and_stack <- function(SD, reverse=FALSE, padding=0) {
     # reposition y by stacking based on group height values
     .[, .__tmp := unique_apply(.__y * (1 / pad_adj), .__grp, csum_left)] %>%
     .[, y := .__y + .__tmp + ymin] %>%
-    .[, `:=`(ymin=min(y), ymax=min(y) + .__len), .(.__grp)] %>%
-    # junk
+    .[, `:=`(ymin=min(y), ymax=min(y) + .__len), .(.__grp)] %>% # junk
     rm_temp_cols()
 }
 

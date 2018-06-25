@@ -54,7 +54,8 @@ post_int <- function(x, mid=c("median", "mean", "mode"), int=c("hdi", "ci"),
       center <- dmode(x, adjust=adj)
       scale <- mad(x)
     },
-    NULL)
+    NULL
+  )
 
   # interval function as an unevaluated function call
   int_fun <- switch(
@@ -88,7 +89,8 @@ post_int <- function(x, mid=c("median", "mean", "mode"), int=c("hdi", "ci"),
         data.table::data.table(interval=i, ints)
       },
       c(widths, area_sd),
-      c(width_ids, "sd"))
+      c(width_ids, "sd")
+    )
   )
 
   central <- interval <- NULL

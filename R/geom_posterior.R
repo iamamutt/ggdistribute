@@ -15,7 +15,9 @@ geom_posterior <- function(mapping=NULL, data=NULL, stat="DensityCI",
     params=list(
       draw_ci=draw_ci, draw_sd=draw_sd, midline_color=midline_color,
       mirror=mirror, brighten=brighten,
-      interp_thresh=interp_thresh, na.rm=na.rm, ...))
+      interp_thresh=interp_thresh, na.rm=na.rm, ...
+    )
+  )
 }
 
 # ggproto object ----------------------------------------------------------
@@ -25,7 +27,8 @@ GeomPosterior <- ggproto(
   Geom,
   default_aes=aes(
     weight=1, colour="#585872", fill="#8989B2", size=0.5,
-    alpha=NA, linetype="solid", vjust=1),
+    alpha=NA, linetype="solid", vjust=1
+  ),
   required_aes=c("x", "y"),
   non_missing_aes=character(),
   optional_aes=c("xmin", "cil", "sdl", "mid", "sdu", "ciu", "xmax"),
@@ -73,14 +76,16 @@ GeomPosterior <- ggproto(
       assert_names(
         c("cil", "ciu"), data, "No confidence intervals found.",
         " Set `draw_ci=FALSE` to remove this segment or use ",
-        "`stat_density_ci` to compute this variable automatically.")
+        "`stat_density_ci` to compute this variable automatically."
+      )
     }
 
     if (draw_sd) {
       assert_names(
         c("sdl", "sdu"), data, "No SD intervals found.",
         " Set `draw_sd=FALSE` to remove this segment or use ",
-        "`stat_density_ci` to compute this variable automatically.")
+        "`stat_density_ci` to compute this variable automatically."
+      )
     }
 
     dt <- as_dtbl(data, copy=TRUE) %>%
@@ -102,8 +107,10 @@ GeomPosterior <- ggproto(
         grid::gList,
         c(
           get_posterior_segment_grobs(dt, params, ...),
-          get_posterior_line_grobs(dt, params, ...))
-    )))
+          get_posterior_line_grobs(dt, params, ...)
+        )
+      ))
+    )
   }
 )
 
@@ -149,7 +156,8 @@ setup_post_seg_params <- function(data, brighten, draw_ci, draw_sd, ...) {
     j]] <- list(
       lower_cut=first_non_na(data[[cols[1]]]) %:% NA_real_,
       upper_cut=first_non_na(data[[cols[2]]]) %:% NA_real_,
-      fill=change_brightness(fill, brighten[j]))
+      fill=change_brightness(fill, brighten[j])
+    )
   }
 
   c(list(segments=segment_list), fill=fill)
@@ -181,7 +189,8 @@ setup_post_line_params <- function(data, midline_color, draw_ci, draw_sd, ...) {
   for (j in seq_len(n)) {
     line_list[[j]] <- list(
       ci_column=line_pos[keep[j]], ci_color=line_colors[keep[j]],
-      ci_lwd_adj=line_widths[keep[j]])
+      ci_lwd_adj=line_widths[keep[j]]
+    )
   }
 
   c(list(lines=line_list), colour=colour)
@@ -216,7 +225,8 @@ get_posterior_data <- function(data, lower_cut=NULL, upper_cut=NULL,
       .[order(x)],
     copy(dt) %>%
       .[, y := yupper] %>%
-      .[order(-x)]) %>%
+      .[order(-x)]
+  ) %>%
     rm_temp_cols(c("colour", "fill")) %>%
     .[, `:=`(colour=colour, fill=fill)] %>%
     rbind(.[1, ])
@@ -251,7 +261,8 @@ compute_post_seg_data <- function(data, lower_cut=NULL, upper_cut=NULL,
   if (!any(within_range)) {
     warning(sprintf(
       "No data found between the cutoff points: (%.2f, %.2f)",
-      lower_cut, upper_cut), call.=FALSE)
+      lower_cut, upper_cut
+    ), call.=FALSE)
     return(cbind(dt[1, ], static))
   }
 
@@ -273,8 +284,10 @@ compute_post_seg_data <- function(data, lower_cut=NULL, upper_cut=NULL,
         paste0(
           "The left side at %.2f is missing %.2f%%,",
           " and the right side at %.2f is missing %.2f%%",
-          " of the CI width."), lower_cut,
-        lower_gap * 100, upper_cut, upper_gap * 100)
+          " of the CI width."
+        ), lower_cut,
+        lower_gap * 100, upper_cut, upper_gap * 100
+      )
 
       warning("Interpolating gaps. ", gap_info, " Try setting `n` to a higher value,",
         " setting `interp_thresh` to a smaller value, ",
@@ -334,7 +347,8 @@ get_posterior_line_grobs <- function(data, params, ...) {
 
 
       return(GeomPath$draw_panel(grob_data, ...))
-    })
+    }
+  )
 
   # path grob of density outline
   if (nrow(lines_data) < 2) {
@@ -358,7 +372,8 @@ get_posterior_segment_grobs <- function(data, params, ...) {
       segment <- do.call(get_posterior_data, c(shared_pars, j))
 
       grob_posterior(segment, ..., use_fill=TRUE, use_color=FALSE)
-    })
+    }
+  )
 }
 
 grob_posterior <- function(data, ..., use_fill=FALSE, use_color=TRUE) {
@@ -385,7 +400,8 @@ grob_posterior <- function(data, ..., use_fill=FALSE, use_color=TRUE) {
           1 %:% ((first_rows$alpha) %:% 1),
         lwd=first_rows$size, lex=.pt, lty=first_rows$linetype
       )
-  ))
+    )
+  )
 }
 
 compute_vjust <- function(data, axis, vjust=NULL) {

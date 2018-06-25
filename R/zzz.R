@@ -19,7 +19,8 @@ set_pkg_opts <- function(..., opt_list=NULL) {
 .onLoad <- function(libname, pkgname) {
   set_pkg_opts(
     ggdistribute.font="sans", ggdistribute.geom.defaults=list(edited=FALSE),
-    ggdistribute.geom.edits=list())
+    ggdistribute.geom.edits=list()
+  )
   invisible()
 }
 

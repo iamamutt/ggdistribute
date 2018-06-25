@@ -208,12 +208,14 @@ example_plot <- function() {
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # standard ggplot layer options
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      size=0.15, color=colors$gray, vjust=0.7, show.legend=FALSE) +
+      size=0.15, color=colors$gray, vjust=0.7, show.legend=FALSE
+    ) +
 
     # standard ggplot2 elements ------------------------------------------------
     geom_vline(
       alpha=0.5, color=colors$gray, size=0.333, linetype=1,
-      xintercept=0) + scale_x_continuous(breaks=seq(-1, 1, .05)) +
+      xintercept=0
+    ) + scale_x_continuous(breaks=seq(-1, 1, .05)) +
     facet_grid("contrast ~ .", scales="free_y", space="free_y") +
     scale_fill_manual(values=c(colors$yellow, colors$magenta, colors$cyan)) +
     labs(x="Difference in accuracy (posterior predictions)") +
@@ -221,5 +223,6 @@ example_plot <- function() {
       legend.position="none", strip.text.y=element_text(angle=0, hjust=0.5),
       panel.border=element_rect(fill=NA, color=colors$lightgray, size=0.67),
       panel.grid=element_blank(), panel.ontop=FALSE, axis.title.y=element_blank(),
-      plot.margin=margin(t=2, r=4, b=2, l=2, unit="pt"))
+      plot.margin=margin(t=2, r=4, b=2, l=2, unit="pt")
+    )
 }

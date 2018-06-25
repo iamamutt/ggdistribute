@@ -63,13 +63,15 @@ data_normal_sample <- function(mu=c(-0.5, 4), n=500L,
       rnorm(n, mean=x, sd=runif(1L,
         min=sd_range[1],
         max=sd_range[2])) + adj_len
-    }))
+    }
+  ))
 
   scores <- unlist(lapply(
     mu,
     function(x) {
       sort(runif(2L, x + adj[1], x + adj[2]))
-    }))
+    }
+  ))
 
   Condition <- rep(LETTERS[seq_len(k)], each=n)
   Group <- sort(rep_len(letters[seq_len(k * 2)], N))

@@ -82,7 +82,8 @@ assert <- function(..., err=NULL, envir=parent.frame(), print) {
       }
 
       NULL
-    })
+    }
+  )
 
   invisible()
 }
@@ -137,7 +138,8 @@ char_or_names <- function(x) {
     if (is_none(rhs)) {
       stop(
         "Values right of %?% cannot return NULL or length zero.",
-        " Try changing LHS to !LHS and reordering expresions after %?%.")
+        " Try changing LHS to !LHS and reordering expresions after %?%."
+      )
     }
     rhs
   } else {
@@ -255,7 +257,8 @@ rep.data.table <- function(x, ...) {
     seq_len(n),
     function(...) {
       x
-    }))
+    }
+  ))
 }
 
 get_static_data <- function(from, ref=NULL) {
@@ -275,7 +278,8 @@ get_static_data <- function(from, ref=NULL) {
     .SD,
     function(i) {
       uniqueN(i) == 1
-    }), .SDcols=use_names]
+    }
+  ), .SDcols=use_names]
   static_cols <- names(Filter(isTRUE, is_static_df))
 
   if (is_none(static_cols)) {
@@ -318,7 +322,8 @@ unique_simplex <- function(size_vec, grp_idx=NULL, offset_vec=0) {
     grp_idx,
     function(x) {
       x / sum(x)
-    })
+    }
+  )
 }
 
 function2chunk <- function(...) {

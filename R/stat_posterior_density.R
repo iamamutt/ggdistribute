@@ -14,7 +14,8 @@ stat_density_ci <- function(mapping=NULL, data=NULL, geom="Posterior",
     params=list(...,
       center_stat=center_stat, ci_width=ci_width,
       interval_type=interval_type, bw=bw, adjust=adjust,
-      kernel=kernel, cut=cut, n=n, trim=trim, na.rm=na.rm))
+      kernel=kernel, cut=cut, n=n, trim=trim, na.rm=na.rm)
+  )
 }
 
 
@@ -53,7 +54,8 @@ StatDensityCI <- ggproto(
     # density coords
     dens <- compute_density(
       x=data$x, y=data$y, w=NULL, cut=cut, bw=calc_bw(data$x, bw),
-      adjust=adjust, kernel=kernel, n=n, trim=trim)
+      adjust=adjust, kernel=kernel, n=n, trim=trim
+    )
 
     if (all_missing(dens$x)) {
       return(NULL)
@@ -136,7 +138,8 @@ compute_density <- function(x, y=NULL, w=NULL, cut=1, bw="nrd0", adjust=1,
 compute_conf_ints <- function(x, center_stat=NULL, ci_width=NULL, interval_type=NULL) {
   interval_frame <- data.frame(
     mid=NA_real_, sdl=NA_real_, sdu=NA_real_,
-    cil=NA_real_, ciu=NA_real_)
+    cil=NA_real_, ciu=NA_real_
+  )
 
   # setup defaults from missing
   ci_width <- max(ci_width %NA% 0.9)
