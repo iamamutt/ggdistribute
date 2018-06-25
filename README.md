@@ -107,7 +107,7 @@ means <- c(-1, 2, 3, 5)
 The `data` object below is a randomly generated dataset of 4 different
 normal distributions. Two factors, `Condition` and `Group`, are assigned
 to subsets of the generated values. 2500 samples are generated for each
-value of `mu` for a total of 10^{4} rows.
+value of `mu` for a total of $ 10^{4} $ rows.
 
 ``` r
 data <- data_normal_sample(mu = means, n = N)
@@ -121,11 +121,12 @@ Create a new grouping variable called `Level` based on the column
 num_levels <- 8L
 
 # R version >= 3.5 now let's you assign factors this way.
-data$Level <- with(data, factor(Group,
+data$Level <- with(data, factor(
+  Group,
   levels = letters[seq_len(num_levels)],
-  labels = c(
-    rep("Low", 3), rep("Mid", 2),
-    rep("High", 3)), ordered = TRUE))
+  labels = c(rep("Low", 3), rep("Mid", 2), rep("High", 3)),
+  ordered = TRUE
+))
 ```
 
 Show unique groups per `Group`, `Condition`, and `Level` to help
@@ -157,13 +158,15 @@ ggplot(data) +
     show.legend=FALSE,
     adjust=1.5,
     brighten=c(6, 0, 2.5),
-    position=position_spread(reverse=TRUE)) +
+    position=position_spread(reverse=TRUE)
+  ) +
   geom_point(
     aes(color=Level, shape=Condition),
     alpha=.08,
     fill=NA,
     show.legend=FALSE,
-    position=position_jitter(0, .45)) +
+    position=position_jitter(0, .45)
+  ) +
   coord_cartesian(ylim=c(0.5, 2.5), expand=FALSE) +
   facet_wrap(~ Level, scales="free") +
   labs(title="Space Invaders", y="Condition", x="Parameter estimate")
@@ -174,25 +177,32 @@ ggplot(data) +
 ### Changing the appearance of `geom_posterior`
 
 ``` r
-ggplot(data) + aes(x=value, y=Group) +
-  geom_vline(xintercept=0, size=.6) +
-  geom_posterior(aes(color=Condition),
+ggplot(data) +
+  aes(x=value, y=Group) +
+  geom_vline(
+    xintercept=0, size=.6
+  ) +
+  geom_posterior(
+    aes(color=Condition),
     midline_color=NULL,
     mirror=TRUE,
     fill="#FFFFFF",
     draw_sd=FALSE,
     interval_type="hdi",
     vjust=0,
-    position=position_spread(height=2)) +
+    position=position_spread(height=2)
+  ) +
   labs(
     title="Candy Wrappers",
     x="Parameter estimate",
-    y="Sample location") +
+    y="Sample location"
+  ) +
   scale_x_continuous(breaks=seq(-10, 10, 1)) +
   theme(
     legend.position=c(.025, .9),
     legend.justification=c(0, 0),
-    panel.grid.major.y=element_line(color=gray(.92)))
+    panel.grid.major.y=element_line(color=gray(.92))
+  )
 ```
 
 <img src="man/figures/README-candy_wrappers-1.png" width="80%" style="display: block; margin: auto;" />
@@ -220,19 +230,25 @@ unique(data[, c("Group", "GroupScore")])
 ```
 
 ``` r
-ggplot(data) + aes(x=value, y=GroupScore) +
-  geom_vline(xintercept=0, size=.6) +
-  geom_posterior(aes(fill=Group),
+ggplot(data) +
+  aes(x=value, y=GroupScore) +
+  geom_vline(
+    xintercept=0, size=.6
+  ) +
+  geom_posterior(
+    aes(fill=Group),
     midline_color="#FFFFFF",
     colour="#FFFFFF",
     alpha=0.7,
     brighten=c(1.3, 0, -1.3),
     interval_type="hdi",
-    position=position_spread(height=0.5, padding=0)) +
+    position=position_spread(height=0.5, padding=0)
+  ) +
   labs(
     title="Rainbow Hills",
     x="Parameter estimate",
-    y="Group's score") +
+    y="Group's score"
+  ) +
   scale_x_continuous(breaks=seq(-10, 10, 1)) +
   scale_y_continuous(breaks=seq(-10, 10, .5))
 ```
