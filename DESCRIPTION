@@ -1,16 +1,16 @@
 Package: ggdistribute
 Title: A 'ggplot2' Extension for Plotting Unimodal Distributions
-Version: 1.0.2
-Date: 2018-5-19
+Version: 1.0.2.9000
+Date: 2018-6-24
 Authors@R: c(
         person("Joseph M.", "Burling",
                email = "josephburling@gmail.com",
                role = c("aut", "cre")))
 Description:
-    The 'ggdistribute' package is an extension for plotting posterior or other 
-    types of unimodal distributions that require overlaying information about a 
-    distribution's intervals. It makes use of the 'ggproto' system to extend 
-    'ggplot2', providing additional "geoms", "stats", and "positions." 
+    The 'ggdistribute' package is an extension for plotting posterior or other
+    types of unimodal distributions that require overlaying information about a
+    distribution's intervals. It makes use of the 'ggproto' system to extend
+    'ggplot2', providing additional "geoms", "stats", and "positions."
     The extensions integrate with existing 'ggplot2' layer elements.
 URL: https://github.com/iamamutt/ggdistribute
 License: GPL-3
@@ -20,7 +20,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     data.table,
-    ggplot2,
+    ggplot2 (> 2.2.1),
     tibble,
     magrittr,
     grDevices,
