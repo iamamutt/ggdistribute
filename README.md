@@ -76,12 +76,14 @@ function() {
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # standard ggplot layer options
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      size=0.15, color=colors$gray, vjust=0.7, show.legend=FALSE) +
+      size=0.15, color=colors$gray, vjust=0.7, show.legend=FALSE
+    ) +
 
     # standard ggplot2 elements ------------------------------------------------
     geom_vline(
       alpha=0.5, color=colors$gray, size=0.333, linetype=1,
-      xintercept=0) + scale_x_continuous(breaks=seq(-1, 1, .05)) +
+      xintercept=0
+    ) + scale_x_continuous(breaks=seq(-1, 1, .05)) +
     facet_grid("contrast ~ .", scales="free_y", space="free_y") +
     scale_fill_manual(values=c(colors$yellow, colors$magenta, colors$cyan)) +
     labs(x="Difference in accuracy (posterior predictions)") +
@@ -89,30 +91,45 @@ function() {
       legend.position="none", strip.text.y=element_text(angle=0, hjust=0.5),
       panel.border=element_rect(fill=NA, color=colors$lightgray, size=0.67),
       panel.grid=element_blank(), panel.ontop=FALSE, axis.title.y=element_blank(),
-      plot.margin=margin(t=2, r=4, b=2, l=2, unit="pt"))
+      plot.margin=margin(t=2, r=4, b=2, l=2, unit="pt")
+    )
 }
 ```
 
-The `data` object below is a randomly generated dataset of 5 different
-normal distributions. Two factors `Condition` and `Group` are assigned
-according to the generated values. 1000 samples are generated for each
-value of `mu`.
+## Additional examples from an arbritrary dataset
 
 ``` r
-data <- data_normal_sample(mu = c(-1, 2, 3, 5), n = 2500)
+# total number of samples in the dataset
+N <- 2500
+means <- c(-1, 2, 3, 5)
 ```
 
+The `data` object below is a randomly generated dataset of 4 different
+normal distributions. Two factors, `Condition` and `Group`, are assigned
+to subsets of the generated values. 2500 samples are generated for each
+value of `mu` for a total of 10^{4} rows.
+
 ``` r
-# create new grouping variable from `Group`
+data <- data_normal_sample(mu = means, n = N)
+```
+
+Create a new grouping variable called `Level` based on the column
+`Group`.
+
+``` r
+# number of levels to make
+num_levels <- 8L
+
 # R version >= 3.5 now let's you assign factors this way.
 data$Level <- with(data, factor(Group,
-  levels = letters[1:8],
+  levels = letters[seq_len(num_levels)],
   labels = c(
     rep("Low", 3), rep("Mid", 2),
     rep("High", 3)), ordered = TRUE))
 ```
 
-Unique groups per `Group`, `Condition`, and `Level`.
+Show unique groups per `Group`, `Condition`, and `Level` to help
+understand the data factors.
 
 ``` r
 unique(data[, c("Group", "Condition", "Level")])
