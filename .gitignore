@@ -17,7 +17,6 @@
 /*.Rcheck/
 /*.tar.gz
 /cache/
-README.Rmd
 src-i386
 src-x64
 vignettes/*.html

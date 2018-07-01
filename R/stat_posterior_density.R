@@ -166,9 +166,9 @@ calc_bw <- function(x, bw) {
       stop("need at least 2 points to select a bandwidth automatically", call.=FALSE)
     }
     bw <- switch(tolower(bw), nrd0=stats::bw.nrd0(x), nrd=stats::bw.nrd(x),
-    ucv=stats::bw.ucv(x), bcv=stats::bw.bcv(x), sj= ,
-    `sj-ste`=stats::bw.SJ(x, method="ste"),
-    `sj-dpi`=stats::bw.SJ(x, method="dpi"), stop("unknown bandwidth rule"))
+      ucv=stats::bw.ucv(x), bcv=stats::bw.bcv(x), sj= ,
+      `sj-ste`=stats::bw.SJ(x, method="ste"),
+      `sj-dpi`=stats::bw.SJ(x, method="dpi"), stop("unknown bandwidth rule"))
   }
   bw
 }

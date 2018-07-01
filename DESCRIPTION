@@ -31,6 +31,8 @@ Suggests:
     rmarkdown,
     viridisLite,
     extrafont
+Remotes:
+    tidyverse/ggplot2
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1.9000
 Roxygen: list(markdown=TRUE)

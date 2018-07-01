@@ -138,7 +138,7 @@ standardize_height_param <- function(data, height) {
 
 height_char_groups <- function(height_str=c("total", "panel", "single")) {
   switch(tolower(match.arg(height_str)), total=NULL, panel="PANEL",
-  single=c("PANEL", "group"), NULL)
+    single=c("PANEL", "group"), NULL)
 }
 
 transform_heights <- function(data, heights, padding) {
