@@ -4,17 +4,17 @@
 #' confidence intervals for each group
 #' @export
 stat_density_ci <- function(mapping=NULL, data=NULL, geom="Posterior",
-                            position="spread", ..., center_stat="median",
-                            ci_width=0.9, interval_type="ci", bw="nrd0", adjust=1,
-                            kernel="gaussian", cut=1, n=1024, trim=0.01,
-                            na.rm=FALSE, show.legend=NA, inherit.aes=TRUE) {
+                            position="spread", ..., center_stat="median", ci_width=0.9,
+                            interval_type="ci", bw="nrd0", adjust=1, kernel="gaussian",
+                            cut=1, n=1024, trim=0.01, na.rm=FALSE, show.legend=NA,
+                            inherit.aes=TRUE) {
   layer(
-    data=data, mapping=mapping, stat=StatDensityCI, geom=geom,
-    position=position, show.legend=show.legend, inherit.aes=inherit.aes,
+    data=data, mapping=mapping, stat=StatDensityCI, geom=geom, position=position,
+    show.legend=show.legend, inherit.aes=inherit.aes,
     params=list(...,
       center_stat=center_stat, ci_width=ci_width,
-      interval_type=interval_type, bw=bw, adjust=adjust,
-      kernel=kernel, cut=cut, n=n, trim=trim, na.rm=na.rm)
+      interval_type=interval_type, bw=bw, adjust=adjust, kernel=kernel,
+      cut=cut, n=n, trim=trim, na.rm=na.rm)
   )
 }
 
@@ -22,16 +22,13 @@ stat_density_ci <- function(mapping=NULL, data=NULL, geom="Posterior",
 # ggproto object ----------------------------------------------------------
 
 StatDensityCI <- ggproto(
-  "StatDensityCI",
-  Stat,
-  required_aes="x",
-  default_aes=aes(y=..count..),
+  "StatDensityCI", Stat,
+  required_aes="x", default_aes=aes(y=..count..),
 
   setup_params=function(data, params) {
     params$bw <- calc_avg_bw(data, params$bw)
     params
   },
-
   compute_panel=function(self, data, scales, ...) {
     if (scales$x$is_discrete()) {
       stop("in stat_density_ci, `x` cannot be discrete.")
@@ -42,7 +39,6 @@ StatDensityCI <- ggproto(
       .[, self$compute_group(.SD, ...), .(PANEL, group)] %>%
       as.data.frame()
   },
-
   compute_group=function(data, center_stat="median", ci_width=0.9,
                            interval_type="ci", adjust=1, kernel="gaussian", cut=1,
                            n=1024, bw="nrd0", trim=0.01, na.rm=FALSE, ...) {
@@ -53,7 +49,9 @@ StatDensityCI <- ggproto(
 
     # density coords
     dens <- compute_density(
-      x=data$x, y=data$y, w=NULL, cut=cut, bw=calc_bw(data$x, bw),
+      x=data$x, y=data$y, w=NULL, cut=cut, bw=calc_bw(
+        data$x, bw
+      ),
       adjust=adjust, kernel=kernel, n=n, trim=trim
     )
 
@@ -137,8 +135,7 @@ compute_density <- function(x, y=NULL, w=NULL, cut=1, bw="nrd0", adjust=1,
 # x coords for cil ci, sd cil, mid, sd ciu, ciu ci
 compute_conf_ints <- function(x, center_stat=NULL, ci_width=NULL, interval_type=NULL) {
   interval_frame <- data.frame(
-    mid=NA_real_, sdl=NA_real_, sdu=NA_real_,
-    cil=NA_real_, ciu=NA_real_
+    mid=NA_real_, sdl=NA_real_, sdu=NA_real_, cil=NA_real_, ciu=NA_real_
   )
 
   # setup defaults from missing
@@ -165,10 +162,11 @@ calc_bw <- function(x, bw) {
     if (length(x) < 2) {
       stop("need at least 2 points to select a bandwidth automatically", call.=FALSE)
     }
-    bw <- switch(tolower(bw), nrd0=stats::bw.nrd0(x), nrd=stats::bw.nrd(x),
-      ucv=stats::bw.ucv(x), bcv=stats::bw.bcv(x), sj= ,
-      `sj-ste`=stats::bw.SJ(x, method="ste"),
-      `sj-dpi`=stats::bw.SJ(x, method="dpi"), stop("unknown bandwidth rule"))
+    bw <- switch(
+      tolower(bw), nrd0=stats::bw.nrd0(x), nrd=stats::bw.nrd(x), ucv=stats::bw.ucv(x),
+      bcv=stats::bw.bcv(x), sj= , `sj-ste`=stats::bw.SJ(x, method="ste"),
+      `sj-dpi`=stats::bw.SJ(x, method="dpi"), stop("unknown bandwidth rule")
+    )
   }
   bw
 }

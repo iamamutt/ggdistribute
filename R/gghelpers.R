@@ -42,16 +42,12 @@ scale_add <- function(base_size, amount=1, adj=0) {
   (base_size * amount) + adj
 }
 
-set_range_data <- function(data, axis=c("x", "y"), by="group",
-                           force_cols=FALSE, names=NULL, copy=TRUE) {
+set_range_data <- function(data, axis=c("x", "y"), by="group", force_cols=FALSE,
+                           names=NULL, copy=TRUE) {
   axis <- match.arg(axis)
-  do_ops <- structure(list(
-    min,
-    max,
-    function(x) {
-      diff(range(x))
-    }
-  ), .Names=c(".__min", ".__max", ".__len"))
+  do_ops <- structure(list(min, max, function(x) {
+    diff(range(x))
+  }), .Names=c(".__min", ".__max", ".__len"))
 
   if (!is.null(names)) {
     do_ops <- do_ops[seq_along(names)]
@@ -60,15 +56,11 @@ set_range_data <- function(data, axis=c("x", "y"), by="group",
 
   dt <- as_dtbl(data, copy=copy)
 
-  Map(
-    function(n, f) {
-      if (force_cols || all_missing(data[[n]])) {
-        dt[, eval(n) := f(get(axis)), by=eval(by)]
-      }
-    },
-    names(do_ops),
-    do_ops
-  )
+  Map(function(n, f) {
+    if (force_cols || all_missing(data[[n]])) {
+      dt[, eval(n) := f(get(axis)), by=eval(by)]
+    }
+  }, names(do_ops), do_ops)
 
   if (copy) {
     as.data.frame(dt)
@@ -189,8 +181,8 @@ get_overlaps <- function(data, axis=c("x", "y"), tol=-1e-04) {
     as.data.frame()
 }
 
-rescale_groups <- function(data, axis=c("x", "y"), min_col=".__min",
-                           ht_col=".__len", scaler=0, by=NULL) {
+rescale_groups <- function(data, axis=c("x", "y"), min_col=".__min", ht_col=".__len",
+                           scaler=0, by=NULL) {
   axis <- match.arg(axis)
   assert_names(unique(c("group", min_col, ht_col, axis)), data)
 
@@ -228,9 +220,8 @@ check_padding <- function(x, size, padding, mult=1.5) {
 rm_temp_cols <- function(data, temp_names=NULL) {
   if (is.null(temp_names)) {
     temp_names <- c(
-      ".__adj", ".__by_ht", ".__grp", ".__ht", ".__len",
-      ".__max_x", ".__max_y", ".__max", ".__mid", ".__min_x",
-      ".__min_y", ".__min", ".__n", ".__tmp", ".__y"
+      ".__adj", ".__by_ht", ".__grp", ".__ht", ".__len", ".__max_x", ".__max_y",
+      ".__max", ".__mid", ".__min_x", ".__min_y", ".__min", ".__n", ".__tmp", ".__y"
     )
   }
 
@@ -296,11 +287,9 @@ show_colors <- function(colors, show.legend=TRUE, ncols=NULL, alpha=NA) {
 
   ggplot(data, aes(x, y, fill=z)) + geom_raster(aes(fill=z), alpha=alpha) +
     scale_fill_manual(values=as.character(colors), breaks=data$z, labels=data$l) +
-    geom_label(
-      fill="white", hjust=0, nudge_x=-.45, colour=gray(0.5),
-      aes(label=i)
-    ) + scale_y_reverse() + theme_void() +
-    guides(fill=guide_legend(override.aes=list(alpha=1))) +
+    geom_label(fill="white", hjust=0, nudge_x=-.45, colour=gray(0.5), aes(label=i)) +
+    scale_y_reverse() +
+    theme_void() + guides(fill=guide_legend(override.aes=list(alpha=1))) +
     theme(
       legend.position=ifelse(show.legend, "right", "none"), legend.box="vertical",
       legend.box.background=element_blank(), legend.text.align=0,
@@ -329,13 +318,9 @@ change_brightness <- function(hex_color, adjust) {
   rgb_mat <- clip_range(col2rgb(hex_color), 1, 254)
   rgb_adj <- sigmoid(logit(rgb_mat / 255) + adjust)
 
-  apply(
-    rgb_adj,
-    2,
-    function(i) {
-      do.call(rgb, as.list(i))
-    }
-  )
+  apply(rgb_adj, 2, function(i) {
+    do.call(rgb, as.list(i))
+  })
 }
 
 

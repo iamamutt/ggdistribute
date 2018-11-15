@@ -25,15 +25,12 @@ position_spread <- function(height=NULL, reverse=FALSE, padding=0.2) {
 # ggproto object ----------------------------------------------------------
 
 PositionSpread <- ggproto(
-  "PositionSpread",
-  Position,
-  required_aes="y",
-  height=NULL,
-  reverse=FALSE,
+  "PositionSpread", Position,
+  required_aes="y", height=NULL, reverse=FALSE,
   padding=0.2,
-
   setup_params=function(self, data) {
-    height_pars <- standardize_height_param(data, self$height %NA% "single")
+    height_pars <- standardize_height_param(data, self$height %NA%
+      "single")
 
     list(
       height=height_pars$heights, custom=height_pars$custom,
@@ -43,10 +40,7 @@ PositionSpread <- ggproto(
 
   compute_panel=function(data, params, scales) {
     as_dtbl(data) %>%
-      transform_heights(
-        heights=params$height,
-        padding=params$padding
-      ) %>%
+      transform_heights(heights=params$height, padding=params$padding) %>%
       spread_by_ymin(
         spreader=shrink_and_stack, reverse=params$reverse,
         padding=params$padding
@@ -81,9 +75,7 @@ standardize_height_param <- function(data, height) {
 
       # check if only one group per panel
       lonely_groups <- dt[] %>%
-        set_range_data("y",
-          by=c("group", "PANEL"),
-          force_cols=TRUE, copy=FALSE) %>%
+        set_range_data("y", by=c("group", "PANEL"), force_cols=TRUE, copy=FALSE) %>%
         .[, .(.__n=length(unique(.__min))), PANEL] %>%
         .[, all(.__n == 1)]
 
@@ -116,19 +108,16 @@ standardize_height_param <- function(data, height) {
       }
 
       ht
-    },
-    num={
+    }, num={
       n_user_heights <- length(height)
       if (n_user_heights != 1 && n_user_heights != n_heights) {
-        warning("Height length was size ", n_user_heights, " but ",
-          n_heights, " heights are required. ",
-          "Recycling heights if any are missing.",
+        warning("Height length was size ", n_user_heights, " but ", n_heights,
+          " heights are required. ", "Recycling heights if any are missing.",
           call.=FALSE)
       }
 
       rep_len(height, n_heights)
-    },
-    NULL
+    }, NULL
   )
 
   heights <- dt[, .(`.__ht`=heights[.GRP]), .(PANEL, group)]
@@ -157,9 +146,8 @@ spread_by_ymin <- function(data, spreader, ...) {
   # NOTE: also creates the variables ymin, ymax in data
   as_dtbl(data) %>%
     set_range_data("y",
-      by=c("PANEL", "group"),
-      force_cols=TRUE, names=c("ymin", "ymax"),
-      copy=FALSE) %>%
+      by=c("PANEL", "group"), force_cols=TRUE,
+      names=c("ymin", "ymax"), copy=FALSE) %>%
     .[, .__min := ymin] %>%
     .[, spreader(.SD, ...), .(.__min, PANEL)] %>%
     rm_temp_cols()

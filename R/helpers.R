@@ -61,29 +61,26 @@ assert <- function(..., err=NULL, envir=parent.frame(), print) {
 
   err <- paste0(err %:% "\b")
 
-  lapply(
-    exprs,
-    function(e) {
-      result <- eval(e, envir=envir)
-      expr_str <- dQuote(deparse(e))
+  lapply(exprs, function(e) {
+    result <- eval(e, envir=envir)
+    expr_str <- dQuote(deparse(e))
 
-      if (print) {
-        msg <- paste(err, "expression", expr_str, "failed")
-      } else {
-        msg <- err
-      }
-
-      if (!(length(result) == 1 && is.logical(result))) {
-        stop("expression ", expr_str, " not logical", call.=FALSE)
-      }
-
-      if (!result) {
-        stop(msg, call.=FALSE)
-      }
-
-      NULL
+    if (print) {
+      msg <- paste(err, "expression", expr_str, "failed")
+    } else {
+      msg <- err
     }
-  )
+
+    if (!(length(result) == 1 && is.logical(result))) {
+      stop("expression ", expr_str, " not logical", call.=FALSE)
+    }
+
+    if (!result) {
+      stop(msg, call.=FALSE)
+    }
+
+    NULL
+  })
 
   invisible()
 }
@@ -253,12 +250,9 @@ rep.data.table <- function(x, ...) {
   if (!is.numeric(n)) {
     stop("second input argument must be numeric")
   }
-  rbindlist(lapply(
-    seq_len(n),
-    function(...) {
-      x
-    }
-  ))
+  rbindlist(lapply(seq_len(n), function(...) {
+    x
+  }))
 }
 
 get_static_data <- function(from, ref=NULL) {
@@ -274,12 +268,9 @@ get_static_data <- function(from, ref=NULL) {
     return(NULL)
   }
 
-  is_static_df <- from[, lapply(
-    .SD,
-    function(i) {
-      uniqueN(i) == 1
-    }
-  ), .SDcols=use_names]
+  is_static_df <- from[, lapply(.SD, function(i) {
+    uniqueN(i) == 1
+  }), .SDcols=use_names]
   static_cols <- names(Filter(isTRUE, is_static_df))
 
   if (is_none(static_cols)) {
@@ -317,13 +308,9 @@ unique_apply <- function(x, i, FUN, ...) {
 
 unique_simplex <- function(size_vec, grp_idx=NULL, offset_vec=0) {
   size <- size_vec - offset_vec
-  unique_apply(
-    size,
-    grp_idx,
-    function(x) {
-      x / sum(x)
-    }
-  )
+  unique_apply(size, grp_idx, function(x) {
+    x / sum(x)
+  })
 }
 
 function2chunk <- function(...) {

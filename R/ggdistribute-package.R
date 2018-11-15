@@ -47,7 +47,7 @@ NULL
 #' segments.
 #' @param draw_sd *geom*. Toggles drawing of the standard deviation interval
 #' lines and segments.
-#' @param midline_color *geom*. Color of the vertical, center line. Set to `NA`
+#' @param midline *geom*. Color of the vertical, center line. Set to `NA`
 #' to omit the line.
 #' @param brighten *geom*. Numeric adjustments to the fill color. A value above
 #' 1 increases brightness, below decreases. Should be of length 1 or 5,
@@ -195,7 +195,7 @@ example_plot <- function() {
       draw_ci=TRUE, # toggle showing confidence interval parts
       draw_sd=TRUE, # toggle showing standard deviation parts
       mirror=FALSE, # toggle horizontal violin distributions
-      midline_color=NULL, # line displaying center of dist. (NULL=aes color)
+      midline=NULL, # line displaying center of dist. (NULL=aes color)
       brighten=c(3, 0, 1.333), # additive adjustment of segment fill colors
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # position_spread() options
@@ -212,10 +212,8 @@ example_plot <- function() {
     ) +
 
     # standard ggplot2 elements ------------------------------------------------
-    geom_vline(
-      alpha=0.5, color=colors$gray, size=0.333, linetype=1,
-      xintercept=0
-    ) + scale_x_continuous(breaks=seq(-1, 1, .05)) +
+    geom_vline(alpha=0.5, color=colors$gray, size=0.333, linetype=1, xintercept=0) +
+    scale_x_continuous(breaks=seq(-1, 1, .05)) +
     facet_grid("contrast ~ .", scales="free_y", space="free_y") +
     scale_fill_manual(values=c(colors$yellow, colors$magenta, colors$cyan)) +
     labs(x="Difference in accuracy (posterior predictions)") +

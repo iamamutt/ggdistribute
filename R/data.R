@@ -41,8 +41,8 @@ sre_data <- function(n=1000, seed=19850519) {
 #' @export
 #' @examples
 #' data_normal_sample(0, 100)
-data_normal_sample <- function(mu=c(-0.5, 4), n=500L,
-                               sd_range=c(0.6, 1.4), seed=19850519) {
+data_normal_sample <- function(mu=c(-0.5, 4), n=500L, sd_range=c(0.6, 1.4),
+                               seed=19850519) {
   set.seed(seed)
 
   k <- clip_range(length(mu), max=13)
@@ -57,21 +57,15 @@ data_normal_sample <- function(mu=c(-0.5, 4), n=500L,
   adj <- c(-adj, adj)
   adj_len <- rep(adj, each=ceiling(n / 2))[1:n]
 
-  value <- unlist(lapply(
-    mu,
-    function(x) {
-      rnorm(n, mean=x, sd=runif(1L,
-        min=sd_range[1],
-        max=sd_range[2])) + adj_len
-    }
-  ))
+  value <- unlist(lapply(mu, function(x) {
+    rnorm(n, mean=x, sd=runif(1L,
+      min=sd_range[1],
+      max=sd_range[2])) + adj_len
+  }))
 
-  scores <- unlist(lapply(
-    mu,
-    function(x) {
-      sort(runif(2L, x + adj[1], x + adj[2]))
-    }
-  ))
+  scores <- unlist(lapply(mu, function(x) {
+    sort(runif(2L, x + adj[1], x + adj[2]))
+  }))
 
   Condition <- rep(LETTERS[seq_len(k)], each=n)
   Group <- sort(rep_len(letters[seq_len(k * 2)], N))

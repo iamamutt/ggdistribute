@@ -41,35 +41,29 @@ post_int <- function(x, mid=c("median", "mean", "mode"), int=c("hdi", "ci"),
   scale <- NA_real_
 
   # measure of central tendency
-  switch(mid,
-    "mean"={
-      center <- mean(x)
-      scale <- sd(x)
-    },
-    "median"={
-      center <- median(x)
-      scale <- mad(x)
-    },
-    "mode"={
-      center <- dmode(x, adjust=adj)
-      scale <- mad(x)
-    },
-    NULL
-  )
+  switch(mid, "mean"={
+    center <- mean(x)
+    scale <- sd(x)
+  }, "median"={
+    center <- median(x)
+    scale <- mad(x)
+  }, "mode"={
+    center <- dmode(x, adjust=adj)
+    scale <- mad(x)
+  }, NULL)
 
   # interval function as an unevaluated function call
   int_fun <- switch(
-    int,
-    "ci"={
-      match.call(quantile, call("quantile",
-        x=quote(x),
-        probs=quote(c((1 - w) / 2, w + ((1 - w) / 2))),
-        names=FALSE))
-    },
-    "hdi"={
+    int, "ci"={
+      match.call(
+        quantile,
+        call("quantile",
+          x=quote(x),
+          probs=quote(c((1 - w) / 2, w + ((1 - w) / 2))), names=FALSE)
+      )
+    }, "hdi"={
       match.call(hdi, call("hdi", x=quote(x), prob=quote(w), warn=warn))
-    },
-    NULL
+    }, NULL
   )
 
   # mass within 1 sd range
@@ -82,15 +76,13 @@ post_int <- function(x, mid=c("median", "mean", "mode"), int=c("hdi", "ci"),
 
   # left/right values for each width
   intervals <- data.table::rbindlist(
-    Map(
-      function(w, i) {
-        ints <- structure(Reduce(cbind, eval(int_fun)),
-          dimnames=list(NULL, c("l", "r")))
-        data.table::data.table(interval=i, ints)
-      },
-      c(widths, area_sd),
-      c(width_ids, "sd")
-    )
+    Map(function(w, i) {
+      ints <- structure(
+        Reduce(cbind, eval(int_fun)),
+        dimnames=list(NULL, c("l", "r"))
+      )
+      data.table::data.table(interval=i, ints)
+    }, c(widths, area_sd), c(width_ids, "sd"))
   )
 
   central <- interval <- NULL
@@ -195,8 +187,7 @@ hdi <- function(x, prob=0.95, warn=TRUE) {
     if (any(diff(sort(min_i)) != 1)) {
       if (warn) {
         warning("HDI: ", "Identical densities found along ",
-          "different segments of the distribution.",
-          " Choosing rightmost.",
+          "different segments of the distribution.", " Choosing rightmost.",
           call.=FALSE)
       }
       min_i <- max(min_i)
