@@ -9,15 +9,15 @@
 \usage{
 geom_posterior(mapping = NULL, data = NULL, stat = "DensityCI",
   position = "spread", ..., draw_ci = TRUE, draw_sd = TRUE,
-  midline_color = "#767698", brighten = TRUE, mirror = FALSE,
+  midline = "#767698", brighten = TRUE, mirror = FALSE,
   interp_thresh = NULL, na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE)
 
 stat_density_ci(mapping = NULL, data = NULL, geom = "Posterior",
   position = "spread", ..., center_stat = "median", ci_width = 0.9,
-  interval_type = "ci", bw = "nrd0", adjust = 1, kernel = "gaussian",
-  cut = 1, n = 1024, trim = 0.01, na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE)
+  interval_type = "ci", bw = "nrd0", adjust = 1,
+  kernel = "gaussian", cut = 1, n = 1024, trim = 0.01,
+  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
@@ -36,7 +36,7 @@ data. All objects will be fortified to produce a data frame. See
 \code{\link[=fortify]{fortify()}} for which variables will be created.
 
 A \code{function} will be called with a single argument,
-the plot data. The return value must be a \code{data.frame.}, and
+the plot data. The return value must be a \code{data.frame}, and
 will be used as the layer data.}
 
 \item{stat}{Used to override the default connection between \code{geom_posterior}
@@ -47,7 +47,7 @@ a call to a position adjustment function.}
 
 \item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like
-\code{color = "red"} or \code{size = 3}. They may also be parameters
+\code{colour = "red"} or \code{size = 3}. They may also be parameters
 to the paired geom/stat.}
 
 \item{draw_ci}{\emph{geom}. Toggles drawing of the confidence interval lines and
@@ -56,7 +56,7 @@ segments.}
 \item{draw_sd}{\emph{geom}. Toggles drawing of the standard deviation interval
 lines and segments.}
 
-\item{midline_color}{\emph{geom}. Color of the vertical, center line. Set to \code{NA}
+\item{midline}{\emph{geom}. Color of the vertical, center line. Set to \code{NA}
 to omit the line.}
 
 \item{brighten}{\emph{geom}. Numeric adjustments to the fill color. A value above

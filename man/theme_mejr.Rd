@@ -4,8 +4,9 @@
 \alias{theme_mejr}
 \title{Custom ggplot2 theme}
 \usage{
-theme_mejr(base_size = 11, base_family = getOption("ggdistribute.font"),
-  black = 67, margin_add = 2, debug = FALSE, FUN = NULL, ...)
+theme_mejr(base_size = 11,
+  base_family = getOption("ggdistribute.font"), black = 67,
+  margin_add = 2, debug = FALSE, FUN = NULL, ...)
 }
 \arguments{
 \item{base_size}{base font size}

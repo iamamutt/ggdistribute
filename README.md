@@ -1,5 +1,5 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.Rmd. Please edit the .Rmd file -->
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggdistribute)](https://cran.r-project.org/package=ggdistribute)
 
@@ -63,7 +63,7 @@ function() {
       draw_ci=TRUE, # toggle showing confidence interval parts
       draw_sd=TRUE, # toggle showing standard deviation parts
       mirror=FALSE, # toggle horizontal violin distributions
-      midline_color=NULL, # line displaying center of dist. (NULL=aes color)
+      midline=NULL, # line displaying center of dist. (NULL=aes color)
       brighten=c(3, 0, 1.333), # additive adjustment of segment fill colors
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # position_spread() options
@@ -80,10 +80,8 @@ function() {
     ) +
 
     # standard ggplot2 elements ------------------------------------------------
-    geom_vline(
-      alpha=0.5, color=colors$gray, size=0.333, linetype=1,
-      xintercept=0
-    ) + scale_x_continuous(breaks=seq(-1, 1, .05)) +
+    geom_vline(alpha=0.5, color=colors$gray, size=0.333, linetype=1, xintercept=0) +
+    scale_x_continuous(breaks=seq(-1, 1, .05)) +
     facet_grid("contrast ~ .", scales="free_y", space="free_y") +
     scale_fill_manual(values=c(colors$yellow, colors$magenta, colors$cyan)) +
     labs(x="Difference in accuracy (posterior predictions)") +
@@ -172,7 +170,7 @@ ggplot(data) +
   labs(title="Space Invaders", y="Condition", x="Parameter estimate")
 ```
 
-<img src="man/figures/README-space_ships-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="man/figures/README-space_ships-1.png" width="700px" style="display: block; margin: auto;" />
 
 ### Changing the appearance of `geom_posterior`
 
@@ -184,7 +182,7 @@ ggplot(data) +
   ) +
   geom_posterior(
     aes(color=Condition),
-    midline_color=NULL,
+    midline=NULL,
     mirror=TRUE,
     fill="#FFFFFF",
     draw_sd=FALSE,
@@ -205,7 +203,7 @@ ggplot(data) +
   )
 ```
 
-<img src="man/figures/README-candy_wrappers-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="man/figures/README-candy_wrappers-1.png" width="700px" style="display: block; margin: auto;" />
 
 ### The *y* axis is a repeated, continuous grouping variable
 
@@ -237,7 +235,7 @@ ggplot(data) +
   ) +
   geom_posterior(
     aes(fill=Group),
-    midline_color="#FFFFFF",
+    midline="#FFFFFF",
     colour="#FFFFFF",
     alpha=0.7,
     brighten=c(1.3, 0, -1.3),
@@ -253,7 +251,7 @@ ggplot(data) +
   scale_y_continuous(breaks=seq(-10, 10, .5))
 ```
 
-<img src="man/figures/README-rainbow_hills-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="man/figures/README-rainbow_hills-1.png" width="700px" style="display: block; margin: auto;" />
 
 ## How to install
 

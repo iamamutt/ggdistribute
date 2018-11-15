@@ -1,3 +1,7 @@
+# ggdistribute 1.0.3
+
+* Change all occurences of `midline_color` to `midline` to avoid warnings for `_colour` parameters
+
 # ggdistribute 1.0.2
 
 * `show_colors()` theme update for ggplot2 2.3.0

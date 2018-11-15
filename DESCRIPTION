@@ -1,7 +1,7 @@
 Package: ggdistribute
 Title: A 'ggplot2' Extension for Plotting Unimodal Distributions
-Version: 1.0.2.9000
-Date: 2018-6-24
+Version: 1.0.3
+Date: 2018-11-15
 Authors@R: c(
         person("Joseph M.", "Burling",
                email = "josephburling@gmail.com",
@@ -20,7 +20,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     data.table,
-    ggplot2 (> 2.2.1),
+    ggplot2 (>= 3.0.0),
     tibble,
     magrittr,
     grDevices,
@@ -31,8 +31,6 @@ Suggests:
     rmarkdown,
     viridisLite,
     extrafont
-Remotes:
-    tidyverse/ggplot2
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.1
 Roxygen: list(markdown=TRUE)

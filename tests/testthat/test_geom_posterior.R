@@ -9,9 +9,12 @@ test_that("Identity stat", {
   dt$dy <- d$y
   dt$mid <- 4
 
-  expect_s3_class(ggplot(dt, aes(x=dx, y=dy)) +
-    geom_posterior(
-      stat="identity", position="identity",
-      draw_ci=FALSE, draw_sd=FALSE, aes(mid=mid)
-    ), c("gg", "ggplot"))
+  expect_s3_class(
+    ggplot(dt, aes(x=dx, y=dy)) +
+      geom_posterior(
+        stat="identity", position="identity",
+        draw_ci=FALSE, draw_sd=FALSE, aes(mid=mid)
+      ) #
+    , c("gg", "ggplot")
+  )
 })

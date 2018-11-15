@@ -2,7 +2,7 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.Rmd. Please edit the .Rmd file -->
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   fig.path="man/figures/README-",
   fig.width=5.25,
   fig.height=3.8,
-  out.width="80%"
+  out.width="700px"
 )
 ```
 
@@ -121,7 +121,7 @@ ggplot(data) +
   ) +
   geom_posterior(
     aes(color=Condition),
-    midline_color=NULL,
+    midline=NULL,
     mirror=TRUE,
     fill="#FFFFFF",
     draw_sd=FALSE,
@@ -158,7 +158,7 @@ ggplot(data) +
   ) +
   geom_posterior(
     aes(fill=Group),
-    midline_color="#FFFFFF",
+    midline="#FFFFFF",
     colour="#FFFFFF",
     alpha=0.7,
     brighten=c(1.3, 0, -1.3),
