@@ -217,11 +217,14 @@ get_posterior_data <- function(data, lower_cut=NULL, upper_cut=NULL, interp_thre
   rbind(
     copy(dt) %>%
       .[, y := ylower] %>%
-      .[order(x)],
+      .[order(x)] %>%
+      data.frame,
     copy(dt) %>%
       .[, y := yupper] %>%
-      .[order(-x)]
+      .[order(-x)] %>%
+      data.frame
   ) %>%
+    as.data.table %>%
     rm_temp_cols(c("colour", "fill")) %>%
     .[, `:=`(colour=colour, fill=fill)] %>%
     rbind(.[1, ])
@@ -423,11 +426,12 @@ compute_vjust <- function(data, axis, vjust=NULL) {
 
 interp_low_res <- function(x, y, from, to, n=128) {
   x_interp <- seq(from, to, length.out=n)
-  interp_fun <- stats::approxfun(x, y)
+  interp_fun <- stats::approxfun(x, y, ties = min)
 
   data.table(x=x_interp, y=interp_fun(x_interp))
 }
 
 interp_vert_line <- function(x, from, to, v) {
-  c(stats::approxfun(x, from)(v), stats::approxfun(x, to)(v))
+  c(stats::approxfun(x, from, ties = min)(v),
+    stats::approxfun(x, to, ties = min)(v))
 }
